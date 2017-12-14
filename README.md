@@ -17,11 +17,9 @@
 - [xnu-4570.1.46.tar.gz](https://opensource.apple.com/tarballs/xnu/xnu-4570.1.46.tar.gz)
 
 
-
-
 #### Build Precondition
 
-###### Missing Private Header 
+##### Missing Private Header 
 
 1. `#include <sys/reason.h>`
 
@@ -76,7 +74,6 @@
         /libclosure-67/Block_private.h
 
 
-
 ###### Unincluded Private Header
 
 1. `#include <pthread/tsd_private.h>`
@@ -95,10 +92,9 @@
 4. `#include <sys/qos_private.h>`
 
         /libpthread-301.1.6/sys/qos_private.h
+        
 
-
-
-###### Project Configuration
+##### Project Configuration
 
 - HEADER_SEARCH_PATHS = $(SRCROOT)/../macosx.internal/System/Library/Frameworks/System.framework/PrivateHeaders
 
