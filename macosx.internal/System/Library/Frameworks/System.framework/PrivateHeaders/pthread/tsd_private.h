@@ -53,7 +53,9 @@
 #include <sys/cdefs.h>
 #include <TargetConditionals.h>
 #include <Availability.h>
+#warning resolve missing header /xnu-4570.1.46/libsyscall/os/tsd.h
 #include <os/tsd.h>
+#warning resolve missing header /libpthread-301.1.6/private/spinlock_private.h
 #include <pthread/spinlock_private.h>
 
 #ifndef __TSD_MACH_THREAD_SELF
