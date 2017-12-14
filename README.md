@@ -1,19 +1,14 @@
-## objc4  ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/0xxd0/objc4.svg?colorA=000000&colorB=000000&style=plastic) ![GitHub tag](https://img.shields.io/github/tag/0xxd0/objc4.svg?colorA=000000&colorB=000000&style=plastic) ![GitHub release](https://img.shields.io/github/release/0xxd0/objc4.svg?colorA=000000&colorB=000000&style=plastic)
+## objc4  ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/0xxd0/objc4.svg?colorA=24292e&colorB=24292e&style=flat) ![license](https://img.shields.io/github/license/0xxd0/objc4.svg?colorA=24292e&colorB=24292e&style=flat)
 
 ![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-orange.svg)
 
-![language](https://img.shields.io/badge/language-C%20%7C%20Objective--C%2B%2B-ff69b4.svg)
-![GitHub top language](https://img.shields.io/github/languages/top/0xxd0/objc4.svg?colorB=ff69b4)
-![GitHub language count](https://img.shields.io/github/languages/count/0xxd0/objc4.svg?colorB=000000)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/0xxd0/objc4.svg?colorB=000000)
-
-![GitHub commit activity the past week, 4 weeks, year](https://img.shields.io/github/commit-activity/w/0xxd0/objc4.svg?colorB=28B9FE)
-![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/0xxd0/objc4.svg?colorB=28B9FE)
-![Github All Releases](https://img.shields.io/github/downloads/0xxd0/objc4/total.svg?colorB=28B9FE)
+![language](https://img.shields.io/badge/language-C%20%7C%20Objective--C%2B%2B-ff69b4.svg?colorB=6866fb&label=main%20language)
+![GitHub top language](https://img.shields.io/github/languages/top/0xxd0/objc4.svg?colorB=6866fb)
+![GitHub language count](https://img.shields.io/github/languages/count/0xxd0/objc4.svg?colorB=28b9fe)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/0xxd0/objc4.svg?colorB=28b9fe)
 
 
 
-![license](https://img.shields.io/github/license/0xxd0/objc4.svg?colorB=000000)
 
 #### Requirement 
 
@@ -121,3 +116,4 @@
 
 - OTHER_LDFLAGS[sdk=iphoneos*][arch=*] = -lc++abi -Wl,-segalign,0x4000 -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt -isystem -iframework
 - OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*] = -lc++abi -Xlinker -interposable_list -Xlinker interposable.txt
+
