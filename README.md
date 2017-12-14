@@ -1,23 +1,20 @@
-## objc4 ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/0xxd0/objc4.svg) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/0xxd0/objc4.svg)
+## objc4  ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/0xxd0/objc4.svg?colorA=000000&colorB=000000&style=plastic)
 
 ![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-orange.svg)
 
 ![language](https://img.shields.io/badge/language-C%20%7C%20Objective--C%2B%2B-ff69b4.svg)
 ![GitHub top language](https://img.shields.io/github/languages/top/0xxd0/objc4.svg?colorB=ff69b4)
-![GitHub language count](https://img.shields.io/github/languages/count/0xxd0/objc4.svg?colorB=ff69b4)
+![GitHub language count](https://img.shields.io/github/languages/count/0xxd0/objc4.svg?colorB=000000)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/0xxd0/objc4.svg?colorB=000000)
 
-![GitHub last commit](https://img.shields.io/github/last-commit/0xxd0/objc4.svg)
 ![GitHub commit activity the past week, 4 weeks, year](https://img.shields.io/github/commit-activity/w/0xxd0/objc4.svg)
-![GitHub contributors](https://img.shields.io/github/contributors/0xxd0/objc4.svg)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/0xxd0/objc4.svg)
 ![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/0xxd0/objc4.svg)
 ![Github All Releases](https://img.shields.io/github/downloads/0xxd0/objc4/total.svg)
-
 
 ![GitHub tag](https://img.shields.io/github/tag/0xxd0/objc4.svg)
 ![GitHub release](https://img.shields.io/github/release/0xxd0/objc4.svg)
 
-![license](https://img.shields.io/github/license/0xxd0/objc4.svg)
+![license](https://img.shields.io/github/license/0xxd0/objc4.svg?colorB=000000)
 
 #### Requirement 
 
