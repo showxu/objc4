@@ -321,6 +321,7 @@ typedef struct old_property *objc_property_t;
 
 
 #if SUPPORT_PREOPT  &&  __cplusplus
+#warning resolve missing header /dyld-519.2.1/include/objc-shared-cache.h
 #include <objc-shared-cache.h>
 using objc_selopt_t = const objc_opt::objc_selopt_t;
 #else

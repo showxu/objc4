@@ -30,6 +30,7 @@
 #warning resolve missing header /libplatform-161/private/os/base_private.h
 #include <os/base_private.h>
 
+#warning resolve missing header /Libc-825.40.1/pthreads/pthread_machdep.h
 #include <System/pthread_machdep.h>
 #include <os/lock.h>
 

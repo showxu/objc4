@@ -992,7 +992,7 @@ static inline semaphore_t create_semaphore(void)
 #if SUPPORT_QOS_HACK
 // Override QOS class to avoid priority inversion in rwlocks
 // <rdar://17697862> do a qos override before taking rw lock in objc
-
+#warning resolve missing header libpthread-301.1.6/private/workqueue_private.h
 #include <pthread/workqueue_private.h>
 extern pthread_priority_t BackgroundPriority;
 extern pthread_priority_t MainPriority;

@@ -26,6 +26,7 @@
 
 #include <pthread/qos.h>
 #include <sys/qos.h> /* qos_class_t */
+#warning resolve missing header /libpthread-301.1.6/sys/qos_private.h
 #include <sys/qos_private.h>
 
 #if __DARWIN_C_LEVEL >= __DARWIN_C_FULL
