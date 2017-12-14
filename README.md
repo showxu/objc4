@@ -1,7 +1,4 @@
-## objc4
-
-![GitHub repo size in bytes](https://img.shields.io/github/repo-size/showxu/objc4.svg)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/showxu/objc4.svg)
+## objc4 ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/showxu/objc4.svg) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/showxu/objc4.svg)
 
 ![platform](https://img.shields.io/badge/platform-macOS-orange.svg)
 
