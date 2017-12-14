@@ -1,5 +1,10 @@
 ## objc4
 
+![platform](https://img.shields.io/badge/platform-macOS-orange.svg)
+![language](https://img.shields.io/badge/language-ObjC%2B%2B-ff69b4.svg)
+
+![Github All Releases](https://img.shields.io/github/downloads/0xxd0/objc4/total.svg)
+
 #### Requirement 
 
 - Xcode 9.0 +
