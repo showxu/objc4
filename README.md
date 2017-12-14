@@ -1,10 +1,10 @@
 ## objc4 ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/showxu/objc4.svg) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/showxu/objc4.svg)
 
-![platform](https://img.shields.io/badge/platform-macOS-orange.svg)
+![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-orange.svg)
 
-![language](https://img.shields.io/badge/language-Objective--C%2B%2B-ff69b4.svg)
-![GitHub language count](https://img.shields.io/github/languages/count/showxu/objc4.svg)
-![GitHub top language](https://img.shields.io/github/languages/top/showxu/objc4.svg)
+![language](https://img.shields.io/badge/language-C%20%7C%20Objective--C%2B%2B-ff69b4.svg)
+![GitHub top language](https://img.shields.io/github/languages/top/showxu/objc4.svg?colorB=ff69b4)
+![GitHub language count](https://img.shields.io/github/languages/count/showxu/objc4.svg?colorB=ff69b4)
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/showxu/objc4.svg)
 ![GitHub commit activity the past week, 4 weeks, year](https://img.shields.io/github/commit-activity/w/showxu/objc4.svg)
