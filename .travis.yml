@@ -1,0 +1,28 @@
+os: osx
+osx_image: xcode9.2
+
+language: objective-c
+
+env:
+  global:
+    - WORKSPACE="objc.xcworkspace"
+    - SCHEME="objc-debug"
+    - DESTINATION="arch=x86_64"
+git:
+  depth: 1
+  submodules: false
+  
+branches:
+  only:
+    - master
+
+before_install:
+  - brew install git-lfs
+  
+install: true
+
+before_script:
+  - git lfs pulll
+  
+script:
+  - xcodebuild clean build -workspace ${WORKSPACE} -scheme ${SCHEME} -destination ${DESTINATION} CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
