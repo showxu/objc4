@@ -12,6 +12,7 @@ git:
 branches:
   only:
     - master
+    - feature-travis-ci
 
 before_install:
   - brew install git-lfs
