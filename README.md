@@ -1,5 +1,6 @@
 
-# `objc4`  ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/showxu/objc4.svg?colorA=24292e&colorB=24292e&style=flat) ![license](https://img.shields.io/github/license/showxu/objc4.svg?colorA=24292e&colorB=24292e&style=flat)
+# `objc4`  ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/showxu/objc4.svg?colorA=24292e&colorB=24292e&style=flat) ![Travis](https://img.shields.io/travis/showxu/objc4.svg?colorA=24292e&style=flat)
+
 
 ![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-orange.svg)
 
@@ -67,4 +68,3 @@
 | `OTHER_LDFLAGS[sdk=macosx*]` | `-lc++abi -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt` |
 | `OTHER_LDFLAGS[sdk=iphoneos*][arch=*]` | `-lc++abi -Wl,-segalign,0x4000 -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt -isystem -iframework` |
 | `OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]` | `-lc++abi -Xlinker -interposable_list -Xlinker interposable.txt` |
-
