@@ -28,7 +28,7 @@
 
 ## Build Phases
 
-#### Missing Private Header 
+> #### Missing Private Header 
 
 | file | header | tarball |
 |------|--------|---------|
@@ -46,7 +46,7 @@
 | `objc-block-trampolines.mm` | `#include <Block_private.h>` | `/libclosure-67/Block_private.h` |
 
 
-#### Uninclude Private Header
+> #### Uninclude Private Header
 
 | file | header | tarball |
 |------|--------|---------|
