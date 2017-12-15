@@ -5,14 +5,11 @@ language: objective-c
 
 env:
   global:
-    - XCODE_WORKSPACE="objc.xcworkspace"
-    - XCODE_SCHEME="objc-debug"
-    
-xcode_workspace: ${XCODE_WORKSPACE}
-xcode_scheme: ${XCODE_SCHEME}
-
+    - WORKSPACE="objc.xcworkspace"
+    - SCHEME="objc-debug"
+    - DESTINATION="arch=x86_64"
 git:
-  depth: 3
+  depth: 1
   submodules: false
   
 branches:
@@ -28,4 +25,4 @@ before_script:
   - git lfs pulll
   
 script:
-  - xcodebuild clean build  -workspace ${XCODE_WORKSPACE} -scheme ${XCODE_SCHEME}
+  - clean build  -workspace ${WORKSPACE} -scheme ${SCHEME} -destination ${DESTINATION} CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
