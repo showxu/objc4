@@ -1,32 +1,19 @@
-## objc4
 
-![platform](https://img.shields.io/badge/platform-macOS-orange.svg)
-![language](https://img.shields.io/badge/language-Objective--C%2B%2B-ff69b4.svg)
-![GitHub top language](https://img.shields.io/github/languages/top/0xxd0/objc4.svg)
+# `objc4`  ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/0xxd0/objc4.svg?colorA=24292e&colorB=24292e&style=flat) ![license](https://img.shields.io/github/license/0xxd0/objc4.svg?colorA=24292e&colorB=24292e&style=flat)
 
+![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-orange.svg)
 
-![GitHub contributors](https://img.shields.io/github/contributors/0xxd0/objc4.svg)
-![GitHub last commit](https://img.shields.io/github/last-commit/0xxd0/objc4.svg)
-![GitHub commit activity the past week, 4 weeks, year](https://img.shields.io/github/commit-activity/w/0xxd0/objc4.svg)
-![GitHub tag](https://img.shields.io/github/tag/0xxd0/objc4.svg)
-![GitHub release](https://img.shields.io/github/release/0xxd0/objc4.svg)
-![GitHub pull requests](https://img.shields.io/github/issues-pr/0xxd0/objc4.svg)
-![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/0xxd0/objc4.svg)
-![Github All Releases](https://img.shields.io/github/downloads/0xxd0/objc4/total.svg)
+![language](https://img.shields.io/badge/language-C%20%7C%20Objective--C%2B%2B-ff69b4.svg?colorB=6866fb&label=main%20language)
+![GitHub top language](https://img.shields.io/github/languages/top/0xxd0/objc4.svg?colorB=6866fb)
+![GitHub language count](https://img.shields.io/github/languages/count/0xxd0/objc4.svg?colorB=28b9fe)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/0xxd0/objc4.svg?colorB=28b9fe)
 
 
-![GitHub language count](https://img.shields.io/github/languages/count/0xxd0/objc4.svg)
-![GitHub repo size in bytes](https://img.shields.io/github/repo-size/0xxd0/objc4.svg)
-![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/0xxd0/objc4.svg)
+## Requirement
 
-![Github search hit counter](https://img.shields.io/github/search/0xxd0/objc4/goto.svg)
-![license](https://img.shields.io/github/license/0xxd0/objc4.svg)
+[![Xcode 9.0+](https://img.shields.io/badge/Xcode-9.0%2B-blue.svg?colorA=3caefc&colorB=1d1d1d)](https://developer.apple.com/xcode/)
 
-#### Requirement 
-
-- Xcode 9.0 +
-
-#### Target dependencies tarballs
+## Target dependencies tarballs
 
 - [Libc-825.40.1.tar.gz](https://opensource.apple.com/tarballs/Libc/Libc-825.24.tar.gz)
 - [dyld-519.2.1.tar.gz](https://opensource.apple.com/tarballs/dyld/dyld-519.2.1.tar.gz)
@@ -39,92 +26,45 @@
 - [xnu-4570.1.46.tar.gz](https://opensource.apple.com/tarballs/xnu/xnu-4570.1.46.tar.gz)
 
 
-#### Build Precondition
+## Build Phases
 
-##### Missing Private Header 
+![Private Header Missing](https://img.shields.io/badge/Private%20Header-Missing-ff2600.svg)
 
-1. `#include <sys/reason.h>`
-
-        /xnu-4570.1.46/bsd/sys/reason.h
-
-2. `#include <mach-o/dyld_priv.h>`
-
-        /dyld-519.2.1/include/mach-o/dyld_priv.h
-
-3. `#include <os/lock_private.h>`
-
-        /libplatform-161/private/os/lock_private.h
-
-4. `#include <System/pthread_machdep.h>`
-
-        /Libc-825.24/pthreads/pthread_machdep.h
-
-5. `#include <os/base_private.h>`
-
-        /libplatform-161/private/os/base_private.h
-
-6. `#include <System/machine/cpu_capabilities.h>` 
-
-        /xnu-4570.1.46/osfmk/machine/cpu_capabilities.h
-
-7. `#include <CrashReporterClient.h>` 
-
-        /Libc-825.24/include/CrashReporterClient.h
-
-8. `#include <_simple.h>`
-
-        /Libc-825.24/gen/_simple.h
-
-9. `#include <Block_private.h>`
-
-        /libclosure-67/Block_private.h
-
-10. `#include <pthread/workqueue_private.h>`
-
-        /libpthread-301.1.6/private/workqueue_private.h
-
-11. `#include <System/pthread_machdep.h>`
-
-        /Libc-825.40.1/pthreads/pthread_machdep.h
-
-12. `#include <objc-shared-cache.h>`
-
-        /dyld-519.2.1/include/objc-shared-cache.h
-
-13. `#include <Block_private.h>`
-    
-        /libclosure-67/Block_private.h
+| file | header | tarball |
+|------|--------|---------|
+| `objc-os.h` | `#include <sys/reason.h>` | `/xnu-4570.1.46/bsd/sys/reason.h` |
+| `objc-os.h` | `#include <mach-o/dyld_priv.h>` | `/dyld-519.2.1/include/mach-o/dyld_priv.h` |
+| `objc-os.h` | `#include <os/lock_private.h>` | `/libplatform-161/private/os/lock_private.h` |
+| `lock_private.h` | `#include <os/base_private.h>` | `/libplatform-161/private/os/base_private.h` |
+| `lock_private.h` | `#include <System/pthread_machdep.h>` | `/Libc-825.24/pthreads/pthread_machdep.h` |
+| `objc-os.h` | `#include <System/pthread_machdep.h>` | `/Libc-825.24/pthreads/pthread_machdep.h` |
+| `pthread_machdep.h` | `#include <System/machine/cpu_capabilities.h>` | `/xnu-4570.1.46/osfmk/machine/cpu_capabilities.h` |
+| `objc-os.h` | `#include <CrashReporterClient.h>` | `/Libc-825.24/include/CrashReporterClient.h` | 
+| `objc-os.h` | `#include <pthread/workqueue_private.h>` | `/libpthread-301.1.6/private/workqueue_private.h` | 
+| `objc-os.h` | `#include <objc-shared-cache.h>` | `/dyld-519.2.1/include/objc-shared-cache.h` | 
+| `objc-errors.mm` | `#include <_simple.h>` | `/Libc-825.24/gen/_simple.h` | 
+| `objc-block-trampolines.mm` | `#include <Block_private.h>` | `/libclosure-67/Block_private.h` |
 
 
-###### Unincluded Private Header
+![Private Header Uninclude](https://img.shields.io/badge/Private%20Header-Uninclude-ffb900.svg)
 
-1. `#include <pthread/tsd_private.h>`
-        
-        /libpthread/libpthread-301.1.6/private/tsd_private.h
+| file | header | tarball |
+|------|--------|---------|
+| `tsd_private.h` | `#include <os/tsd.h>` | `/xnu-4570.1.46/libsyscall/os/tsd.h` |
+| `tsd_private.h`| `#include <pthread/spinlock_private.h>` | `/libpthread-301.1.6/private/spinlock_private.h` |
+| `objc-os.h` | `#include <pthread/tsd_private.h>` | `/libpthread/libpthread-301.1.6/private/tsd_private.h` |
+| `objc-os.h` | `#include <pthread/qos_private.h>` | `/libpthread/libpthread-301.1.6/private/qos_private.h` |
+| `qos_private.h` | `#include <sys/qos_private.h>`  | `/libpthread-301.1.6/sys/qos_private.h` |
 
-2. `#include <os/tsd.h>`
 
-        /xnu-4570.1.46/libsyscall/os/tsd.h
+## Build Setting
 
+| Declaration | Value |
+|-------------|-------|
+| `HEADER_SEARCH_PATHS` | `$(SRCROOT)/../macosx.internal/System/Library/Frameworks/System.framework/PrivateHeaders` |
+| `GCC_PREPROCESSOR_DEFINITIONS` | `LIBC_NO_LIBCRASHREPORTERCLIENT` |
+| `ORDER_FILE` | `$(SRCROOT)/libobjc.order` |
+| `OTHER_LDFLAGS[sdk=macosx*]` | `-lc++abi -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt` |
+| `OTHER_LDFLAGS[sdk=iphoneos*][arch=*]` | `-lc++abi -Wl,-segalign,0x4000 -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt -isystem -iframework` |
+| `OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]` | `-lc++abi -Xlinker -interposable_list -Xlinker interposable.txt` |
 
-3. `#include <pthread/qos_private.h>`
-
-        /libpthread/libpthread-301.1.6/private/qos_private.h
-
-4. `#include <sys/qos_private.h>`
-
-        /libpthread-301.1.6/sys/qos_private.h
-        
-
-##### Project Configuration
-
-- HEADER_SEARCH_PATHS = $(SRCROOT)/../macosx.internal/System/Library/Frameworks/System.framework/PrivateHeaders
-
-- GCC_PREPROCESSOR_DEFINITIONS = LIBC_NO_LIBCRASHREPORTERCLIENT
-
-- ORDER_FILE = $(SRCROOT)/libobjc.order
-
-- OTHER_LDFLAGS[sdk=macosx*] = -lc++abi -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt
-
-- OTHER_LDFLAGS[sdk=iphoneos*][arch=*] = -lc++abi -Wl,-segalign,0x4000 -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt -isystem -iframework
-- OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*] = -lc++abi -Xlinker -interposable_list -Xlinker interposable.txt
