@@ -3,7 +3,7 @@ osx_image: xcode9.2
 
 language: objective-c
 xcode_workspace: objc.xcworkspace
-xcode_scheme: objc
+xcode_scheme: objc-debug
 
 git:
   depth: 3
