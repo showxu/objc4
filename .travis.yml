@@ -25,4 +25,4 @@ before_script:
   - git lfs pulll
   
 script:
-  - clean build  -workspace ${WORKSPACE} -scheme ${SCHEME} -destination ${DESTINATION} CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
+  - xcodebuild clean build -workspace ${WORKSPACE} -scheme ${SCHEME} -destination ${DESTINATION} CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
