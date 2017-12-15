@@ -28,7 +28,7 @@
 
 ## Build Phases
 
-> #### Missing Private Header 
+![Private Header Missing](https://img.shields.io/badge/Private%20Header-Missing-ff2600.svg)
 
 | file | header | tarball |
 |------|--------|---------|
@@ -46,7 +46,7 @@
 | `objc-block-trampolines.mm` | `#include <Block_private.h>` | `/libclosure-67/Block_private.h` |
 
 
-> #### Uninclude Private Header
+![Private Header Uninclude](https://img.shields.io/badge/Private%20Header-Uninclude-ffb900.svg)
 
 | file | header | tarball |
 |------|--------|---------|
