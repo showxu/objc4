@@ -2,8 +2,14 @@ os: osx
 osx_image: xcode9.2
 
 language: objective-c
-xcode_workspace: objc.xcworkspace
-xcode_scheme: objc-debug
+
+env:
+  global:
+    - XCODE_WORKSPACE="objc.xcworkspace"
+    - XCODE_SCHEME="objc-debug"
+    
+xcode_workspace: ${XCODE_WORKSPACE}
+xcode_scheme: ${XCODE_SCHEME}
 
 git:
   depth: 3
@@ -21,3 +27,6 @@ install: true
 
 before_script:
   - git lfs pulll
+  
+script:
+  - xcodebuild clean build  -workspace ${XCODE_WORKSPACE} -scheme ${XCODE_SCHEME}
