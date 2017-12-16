@@ -12,6 +12,7 @@ This project is a buildable version of Objective-C runtime on [Apple Open Source
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/0xxd0/objc4.svg?colorB=28b9fe)
 
 - [Requirement](#requirement)
+- [Installation](#installation)
 - [Target dependencies tarballs](#target-dependencies-tarballs)
 - [Build Phases](#build-phases)
     - **Header** - [Missing Private Header](#missing-private-header), [Uninclude Private Header](#uninclude-private-header)
@@ -22,6 +23,12 @@ This project is a buildable version of Objective-C runtime on [Apple Open Source
 ## Requirement
 
 [![Xcode 9.0+](https://img.shields.io/badge/Xcode-9.0%2B-blue.svg?colorA=3caefc&colorB=1d1d1d)](https://developer.apple.com/xcode/)
+
+## Installation
+
+### Manually
+
+Download zip or clone repo and integrate into your project manually.
 
 ## Target dependencies tarballs
 
