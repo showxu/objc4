@@ -1,13 +1,13 @@
 
-# objc4  ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/0xxd0/objc4.svg?colorA=24292e&colorB=24292e&style=flat) [![Travis](https://img.shields.io/travis/0xxd0/objc4.svg?colorA=24292e&style=flat)](https://www.travis-ci.org/0xxd0/objc4)
-
+# objc4 ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/0xxd0/objc4.svg?colorA=24292e&colorB=24292e&style=flat)
 
 ![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-orange.svg)
-
 ![language](https://img.shields.io/badge/language-C%20%7C%20Objective--C%2B%2B-ff69b4.svg?colorB=6866fb&label=main%20language)
 ![GitHub top language](https://img.shields.io/github/languages/top/0xxd0/objc4.svg?colorB=6866fb)
 ![GitHub language count](https://img.shields.io/github/languages/count/0xxd0/objc4.svg?colorB=28b9fe)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/0xxd0/objc4.svg?colorB=28b9fe)
+
+[![Travis](https://img.shields.io/travis/0xxd0/objc4.svg?colorA=24292e&style=flat)](https://www.travis-ci.org/0xxd0/objc4)
 
 
 ## Requirement
