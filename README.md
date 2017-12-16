@@ -1,6 +1,8 @@
 
 # objc4 
 
+[![Join the chat at https://gitter.im/showxu/objc4](https://badges.gitter.im/showxu/objc4.svg)](https://gitter.im/showxu/objc4?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/showxu/objc4.svg?colorA=24292e&colorB=24292e&style=flat) [![Travis](https://img.shields.io/travis/showxu/objc4.svg?colorA=24292e&style=flat)](https://www.travis-ci.org/showxu/objc4)
 
 This project is a buildable version of Objective-C runtime on [Apple Open Source](https://opensource.apple.com/tarballs/objc4/)
