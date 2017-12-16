@@ -7,6 +7,14 @@
 ![GitHub language count](https://img.shields.io/github/languages/count/0xxd0/objc4.svg?colorB=28b9fe)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/0xxd0/objc4.svg?colorB=28b9fe)
 
+- [Requirement](#requirement)
+- [Target dependencies tarballs](#target-dependencies-tarballs)
+- [Build Phases](#build-phases)
+  - [Missing Private Header](#missing-private-header)
+  - [Uninclude Private Header](#uninclude-private-header)
+- [Build Setting](#build-setting)
+- [License](#license)
+
 
 ## Requirement
 
@@ -27,7 +35,7 @@
 
 ## Build Phases
 
-![Private Header Missing](https://img.shields.io/badge/Private%20Header-Missing-ff2600.svg)
+#### Missing Private Header 
 
 | file | header | tarball |
 |------|--------|---------|
@@ -45,7 +53,7 @@
 | `objc-block-trampolines.mm` | `#include <Block_private.h>` | `/libclosure-67/Block_private.h` |
 
 
-![Private Header Uninclude](https://img.shields.io/badge/Private%20Header-Uninclude-ffb900.svg)
+#### Uninclude Private Header 
 
 | file | header | tarball |
 |------|--------|---------|
@@ -68,7 +76,9 @@
 | `OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]` | `-lc++abi -Xlinker -interposable_list -Xlinker interposable.txt` |
 
 
-## License  [![license](https://img.shields.io/github/license/0xxd0/objc4.svg?colorA=24292e&colorB=24292e&style=flat)](https://github.com/0xxd0/objc4/blob/master/LICENSE)
+## License 
 
 This project is released under the **Apache License 2.0**. The objc4 project is released under the **APPLE PUBLIC SOURCE LICENSE Version 2.0**.
+
+[![license](https://img.shields.io/github/license/0xxd0/objc4.svg?colorA=24292e&colorB=24292e&style=flat)](https://github.com/0xxd0/objc4/blob/master/LICENSE)
 
