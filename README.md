@@ -1,5 +1,5 @@
 
-# `objc4`  ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/0xxd0/objc4.svg?colorA=24292e&colorB=24292e&style=flat) ![Travis](https://img.shields.io/travis/0xxd0/objc4.svg?colorA=24292e&style=flat)
+# objc4  ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/0xxd0/objc4.svg?colorA=24292e&colorB=24292e&style=flat) ![Travis](https://img.shields.io/travis/0xxd0/objc4.svg?colorA=24292e&style=flat)
 
 
 ![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-orange.svg)
@@ -68,3 +68,9 @@
 | `OTHER_LDFLAGS[sdk=macosx*]` | `-lc++abi -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt` |
 | `OTHER_LDFLAGS[sdk=iphoneos*][arch=*]` | `-lc++abi -Wl,-segalign,0x4000 -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt -isystem -iframework` |
 | `OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]` | `-lc++abi -Xlinker -interposable_list -Xlinker interposable.txt` |
+
+
+## License  [![license](https://img.shields.io/github/license/0xxd0/objc4.svg?colorA=24292e&colorB=24292e&style=flat)](https://github.com/0xxd0/objc4/blob/master/LICENSE)
+
+This project is released under the **Apache License 2.0**. The objc4 project is released under the **APPLE PUBLIC SOURCE LICENSE Version 2.0**.
+
