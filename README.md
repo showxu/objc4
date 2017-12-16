@@ -38,7 +38,7 @@ This project is a buildable version of Objective-C runtime on [Apple Open Source
 
 ## Build Phases
 
-#### Missing Private Header 
+### Missing Private Header 
 
 | file | header | tarball |
 |------|--------|---------|
@@ -56,7 +56,7 @@ This project is a buildable version of Objective-C runtime on [Apple Open Source
 | `objc-block-trampolines.mm` | `#include <Block_private.h>` | `/libclosure-67/Block_private.h` |
 
 
-#### Uninclude Private Header 
+### Uninclude Private Header 
 
 | file | header | tarball |
 |------|--------|---------|
