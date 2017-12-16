@@ -1,5 +1,5 @@
 
-# objc4  ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/0xxd0/objc4.svg?colorA=24292e&colorB=24292e&style=flat) ![Travis](https://img.shields.io/travis/0xxd0/objc4.svg?colorA=24292e&style=flat)
+# objc4  ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/0xxd0/objc4.svg?colorA=24292e&colorB=24292e&style=flat) [![Travis](https://img.shields.io/travis/0xxd0/objc4.svg?colorA=24292e&style=flat)](https://www.travis-ci.org/0xxd0/objc4)
 
 
 ![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-orange.svg)
