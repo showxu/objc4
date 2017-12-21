@@ -67,7 +67,7 @@
 			children = (
 				33AE293C1FE40BC00091AA1E /* objc.xcodeproj */,
 				330CB39A1FEBFFE9001FD41C /* Config */,
-				33B571A51FE3A49100FCE649 /* objc-debug */,
+				33B571A51FE3A49100FCE649 /* Source */,
 				33B571AB1FE3A4E200FCE649 /* Frameworks */,
 				338049DB1FE3CAAE003488DC /* objc-debug */,
 			);
@@ -81,13 +81,13 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		33B571A51FE3A49100FCE649 /* objc-debug */ = {
+		33B571A51FE3A49100FCE649 /* Source */ = {
 			isa = PBXGroup;
 			children = (
 				330CB3961FEB7B5E001FD41C /* base.h */,
 				33B571A61FE3A49100FCE649 /* main.c */,
 			);
-			path = "objc-debug";
+			path = Source;
 			sourceTree = "<group>";
 		};
 		33B571AB1FE3A4E200FCE649 /* Frameworks */ = {
