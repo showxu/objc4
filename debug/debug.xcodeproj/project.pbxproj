@@ -37,7 +37,7 @@
 		330CB3961FEB7B5E001FD41C /* base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base.h; sourceTree = "<group>"; };
 		330CB39B1FEBFFFA001FD41C /* target.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = target.xcconfig; sourceTree = "<group>"; };
 		3310EAB71FE40B5E00A545A8 /* libobjc.A.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libobjc.A.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		338049DB1FE3CAAE003488DC /* objc-debug */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "objc-debug"; sourceTree = BUILT_PRODUCTS_DIR; };
+		338049DB1FE3CAAE003488DC /* debug */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = debug; sourceTree = BUILT_PRODUCTS_DIR; };
 		33AE293C1FE40BC00091AA1E /* objc.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = objc.xcodeproj; path = ../objc4/objc.xcodeproj; sourceTree = "<group>"; };
 		33B571A61FE3A49100FCE649 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -69,7 +69,7 @@
 				330CB39A1FEBFFE9001FD41C /* Config */,
 				33B571A51FE3A49100FCE649 /* Source */,
 				33B571AB1FE3A4E200FCE649 /* Frameworks */,
-				338049DB1FE3CAAE003488DC /* objc-debug */,
+				338049DB1FE3CAAE003488DC /* debug */,
 			);
 			sourceTree = "<group>";
 		};
@@ -101,9 +101,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		33B571A31FE3A49100FCE649 /* objc-debug */ = {
+		33B571A31FE3A49100FCE649 /* debug */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 33B571A81FE3A49100FCE649 /* Build configuration list for PBXNativeTarget "objc-debug" */;
+			buildConfigurationList = 33B571A81FE3A49100FCE649 /* Build configuration list for PBXNativeTarget "debug" */;
 			buildPhases = (
 				33B571A01FE3A49100FCE649 /* Sources */,
 				33B571A11FE3A49100FCE649 /* Frameworks */,
@@ -113,9 +113,9 @@
 			);
 			dependencies = (
 			);
-			name = "objc-debug";
+			name = debug;
 			productName = "objc-debug";
-			productReference = 338049DB1FE3CAAE003488DC /* objc-debug */;
+			productReference = 338049DB1FE3CAAE003488DC /* debug */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -133,7 +133,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 335562B11FE3A17F00BD601B /* Build configuration list for PBXProject "objc-debug" */;
+			buildConfigurationList = 335562B11FE3A17F00BD601B /* Build configuration list for PBXProject "debug" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -151,7 +151,7 @@
 			);
 			projectRoot = "";
 			targets = (
-				33B571A31FE3A49100FCE649 /* objc-debug */,
+				33B571A31FE3A49100FCE649 /* debug */,
 			);
 		};
 /* End PBXProject section */
@@ -310,7 +310,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		335562B11FE3A17F00BD601B /* Build configuration list for PBXProject "objc-debug" */ = {
+		335562B11FE3A17F00BD601B /* Build configuration list for PBXProject "debug" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				335562BB1FE3A17F00BD601B /* Debug */,
@@ -319,7 +319,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		33B571A81FE3A49100FCE649 /* Build configuration list for PBXNativeTarget "objc-debug" */ = {
+		33B571A81FE3A49100FCE649 /* Build configuration list for PBXNativeTarget "debug" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				33B571A91FE3A49100FCE649 /* Debug */,
