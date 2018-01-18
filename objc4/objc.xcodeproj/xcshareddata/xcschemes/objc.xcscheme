@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "33B571A31FE3A49100FCE649"
-               BuildableName = "objc-debug"
-               BlueprintName = "objc-debug"
-               ReferencedContainer = "container:objc-debug.xcodeproj">
+               BlueprintIdentifier = "D2AAC0620554660B00DB518D"
+               BuildableName = "libobjc.A.dylib"
+               BlueprintName = "objc"
+               ReferencedContainer = "container:objc.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -30,15 +30,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "33B571A31FE3A49100FCE649"
-            BuildableName = "objc-debug"
-            BlueprintName = "objc-debug"
-            ReferencedContainer = "container:objc-debug.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -53,16 +44,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "33B571A31FE3A49100FCE649"
-            BuildableName = "objc-debug"
-            BlueprintName = "objc-debug"
-            ReferencedContainer = "container:objc-debug.xcodeproj">
+            BlueprintIdentifier = "D2AAC0620554660B00DB518D"
+            BuildableName = "libobjc.A.dylib"
+            BlueprintName = "objc"
+            ReferencedContainer = "container:objc.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -72,16 +62,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "33B571A31FE3A49100FCE649"
-            BuildableName = "objc-debug"
-            BlueprintName = "objc-debug"
-            ReferencedContainer = "container:objc-debug.xcodeproj">
+            BlueprintIdentifier = "D2AAC0620554660B00DB518D"
+            BuildableName = "libobjc.A.dylib"
+            BlueprintName = "objc"
+            ReferencedContainer = "container:objc.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
