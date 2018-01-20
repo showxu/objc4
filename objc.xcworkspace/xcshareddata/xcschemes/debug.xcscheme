@@ -17,7 +17,7 @@
                BlueprintIdentifier = "33B571A31FE3A49100FCE649"
                BuildableName = "debug"
                BlueprintName = "debug"
-               ReferencedContainer = "container:debug.xcodeproj">
+               ReferencedContainer = "container:debug/debug.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -36,7 +36,7 @@
             BlueprintIdentifier = "33B571A31FE3A49100FCE649"
             BuildableName = "debug"
             BlueprintName = "debug"
-            ReferencedContainer = "container:debug.xcodeproj">
+            ReferencedContainer = "container:debug/debug.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -60,7 +60,7 @@
             BlueprintIdentifier = "33B571A31FE3A49100FCE649"
             BuildableName = "debug"
             BlueprintName = "debug"
-            ReferencedContainer = "container:debug.xcodeproj">
+            ReferencedContainer = "container:debug/debug.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -79,7 +79,7 @@
             BlueprintIdentifier = "33B571A31FE3A49100FCE649"
             BuildableName = "debug"
             BlueprintName = "debug"
-            ReferencedContainer = "container:debug.xcodeproj">
+            ReferencedContainer = "container:debug/debug.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
