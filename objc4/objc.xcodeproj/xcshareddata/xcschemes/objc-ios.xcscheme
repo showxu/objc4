@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0900"
+   LastUpgradeVersion = "0930"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D2AAC0620554660B00DB518D"
+               BlueprintIdentifier = "840B5362208C93A700FAAA28"
                BuildableName = "libobjc.A.dylib"
-               BlueprintName = "objc"
+               BlueprintName = "objc-ios"
                ReferencedContainer = "container:objc.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D2AAC0620554660B00DB518D"
+            BlueprintIdentifier = "840B5362208C93A700FAAA28"
             BuildableName = "libobjc.A.dylib"
-            BlueprintName = "objc"
+            BlueprintName = "objc-ios"
             ReferencedContainer = "container:objc.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -63,9 +63,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D2AAC0620554660B00DB518D"
+            BlueprintIdentifier = "840B5362208C93A700FAAA28"
             BuildableName = "libobjc.A.dylib"
-            BlueprintName = "objc"
+            BlueprintName = "objc-ios"
             ReferencedContainer = "container:objc.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
