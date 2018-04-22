@@ -1,11 +1,9 @@
 
-# objc4 ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/showxu/objc4.svg?colorA=24292e&colorB=24292e&style=flat)
+# objc4 
  
-[![VSTS Build](https://alchemistxxd.visualstudio.com/_apis/public/build/definitions/e0656143-5484-4af8-8aa3-01f9baba5da1/1/badge)](https://alchemistxxd.visualstudio.com/Apple%20Open%20Source/_git/objc4) [![Travis](https://img.shields.io/travis/showxu/objc4.svg?style=flat)](https://www.travis-ci.org/showxu/objc4) [![Join the chat at https://gitter.im/showxu/objc4](https://badges.gitter.im/showxu/objc4.svg)](https://gitter.im/showxu/objc4?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![VSTS Build](https://alchemistxxd.visualstudio.com/_apis/public/build/definitions/e0656143-5484-4af8-8aa3-01f9baba5da1/1/badge)](https://alchemistxxd.visualstudio.com/Apple%20Open%20Source/_git/objc4) [![Travis](https://img.shields.io/travis/showxu/objc4.svg?style=flat)](https://www.travis-ci.org/showxu/objc4) [![Join the chat at https://gitter.im/showxu/objc4](https://badges.gitter.im/showxu/objc4.svg)](https://gitter.im/showxu/objc4?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![support](https://img.shields.io/badge/support-macOS%20%7C%20iOS-orange.svg) ![GitHub top language](https://img.shields.io/github/languages/top/showxu/objc4.svg?colorB=6866fb) ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/showxu/objc4.svg?colorA=24292e&colorB=24292e&style=flat)
 
 This project is a buildable version of Objective-C runtime (latest objc 723) on [Apple Open Source](https://opensource.apple.com/tarballs/objc4/)
-
-![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-orange.svg) ![support](https://img.shields.io/badge/support-macOS%20%7C%20iOS-orange.svg) ![GitHub top language](https://img.shields.io/github/languages/top/showxu/objc4.svg?colorB=6866fb)
 
 - [Requirement](#requirement)
 - [Installation](#installation)
