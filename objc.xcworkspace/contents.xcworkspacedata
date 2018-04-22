@@ -5,6 +5,6 @@
       location = "group:objc4/objc.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:/Users/alchemist/Developer/Repository/Github/0xxd0/objc4/debug/debug.xcodeproj">
+      location = "group:debug/debug.xcodeproj">
    </FileRef>
 </Workspace>
