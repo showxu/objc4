@@ -28,7 +28,7 @@ Download zip or clone repo and integrate into your project manually.
 
 ## Target dependencies tarballs
 
-- [Libc-825.40.1.tar.gz](https://opensource.apple.com/tarballs/Libc/Libc-825.24.tar.gz)
+- [Libc-825.24.tar.gz](https://opensource.apple.com/tarballs/Libc/Libc-825.24.tar.gz)
 - [dyld-519.2.1.tar.gz](https://opensource.apple.com/tarballs/dyld/dyld-519.2.1.tar.gz)
 - [libauto-187.tar.gz](https://opensource.apple.com/tarballs/libauto/libauto-187.tar.gz)
 - [libclosure-67.tar.gz](https://opensource.apple.com/tarballs/libclosure/libclosure-67.tar.gz)
@@ -57,7 +57,8 @@ Download zip or clone repo and integrate into your project manually.
 | objc-os.h | `#include <objc-shared-cache.h>` | /dyld-519.2.1/include/objc-shared-cache.h | 
 | objc-errors.mm | `#include <_simple.h>` | /Libc-825.24/gen/_simple.h | 
 | objc-block-trampolines.mm | `#include <Block_private.h>` | /libclosure-67/Block_private.h |
-
+| objc-os.h | `#include <crt_externs.h>` (iOS exclusive) | /Libc-825.24/include/crt_externs.h |
+| objc-runtime-new.mm | `#include <mach/shared_region.h>` (iOS exclusive) | /xnu-4570.1.46/osfmk/mach/shared_region.h |
 
 ### Uninclude Private Header 
 
