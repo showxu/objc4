@@ -5,7 +5,7 @@
 
 This project is a buildable version of Objective-C runtime (latest objc 723) on [Apple Open Source](https://opensource.apple.com/tarballs/objc4/)
 
-![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-orange.svg) ![language](https://img.shields.io/badge/Objective--C%2B%2B-C%2B%2B-ff69b4.svg?colorB=f14e7e&colorA=6866fb) ![GitHub top language](https://img.shields.io/github/languages/top/0xxd0/objc4.svg?colorB=6866fb) ![GitHub language count](https://img.shields.io/github/languages/count/0xxd0/objc4.svg?colorB=28b9fe) ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/0xxd0/objc4.svg?colorB=28b9fe)
+![platform](https://img.shields.io/badge/platform-macOS%20%7C%20Windows-orange.svg) ![support](https://img.shields.io/badge/support-macOS%20%7C%20iOS-orange.svg) ![GitHub top language](https://img.shields.io/github/languages/top/0xxd0/objc4.svg?colorB=6866fb)
 
 - [Requirement](#requirement)
 - [Installation](#installation)
