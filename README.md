@@ -53,9 +53,9 @@ Download zip or clone repo and integrate into your project manually.
 | objc-os.h | `#include <CrashReporterClient.h>` | /Libc-825.24/include/CrashReporterClient.h | 
 | objc-os.h | `#include <pthread/workqueue_private.h>` | /libpthread-416.40.3/private/workqueue_private.h | 
 | objc-os.h | `#include <objc-shared-cache.h>` | /dyld-733.6/include/objc-shared-cache.h | 
-| objc-errors.mm | `#include <_simple.h>` | /Libc-825.24/gen/_simple.h | 
+| objc-errors.mm | `#include <_simple.h>` | /libplatform-220/private/_simple.h | 
 | objc-block-trampolines.mm | `#include <Block_private.h>` | /libclosure-74/Block_private.h |
-| objc-os.h | `#include <crt_externs.h>` (iOS exclusive) | /Libc-825.24/include/crt_externs.h |
+| objc-os.h | `#include <crt_externs.h>` (iOS exclusive) | /Libc-1353.41.1/include/crt_externs.h |
 | objc-runtime-new.mm | `#include <mach/shared_region.h>` (iOS exclusive) | /xnu-6153.41.3/osfmk/mach/shared_region.h |
 
 ### Uninclude Private Header 
@@ -67,6 +67,10 @@ Download zip or clone repo and integrate into your project manually.
 | objc-os.h | `#include <pthread/tsd_private.h>` | /libpthread-416.40.3/private/tsd_private.h |
 | objc-os.h | `#include <pthread/qos_private.h>` | /llibpthread-416.40.3/private/qos_private.h |
 | qos_private.h | `#include <sys/qos_private.h>`  | /libpthread-416.40.3/sys/qos_private.h |
+
+### dyld SPIs
+
+dyld use https://opensource.apple.com/source/dyld/dyld-733.6/bin/expand.rb.auto.html to generate `dyld version SPIs.` in dyld_priv.h, so we need to mannual add platform defs, 
 
 
 ## Build Setting
