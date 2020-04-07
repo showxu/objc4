@@ -43,26 +43,26 @@ Download zip or clone repo and integrate into your project manually.
 
 | file | header | tarball |
 |------|--------|---------|
-| objc-os.h | `#include <sys/reason.h>` | /xnu-4570.1.46/bsd/sys/reason.h |
-| objc-os.h | `#include <mach-o/dyld_priv.h>` | /dyld-519.2.1/include/mach-o/dyld_priv.h |
+| objc-os.h | `#include <sys/reason.h>` | /xnu-6153.41.3/bsd/sys/reason.h |
+| objc-os.h | `#include <mach-o/dyld_priv.h>` | /dyld-733.6/include/mach-o/dyld_priv.h |
 | objc-os.h | `#include <os/lock_private.h>` | /libplatform-220/private/os/lock_private.h |
 | lock_private.h | `#include <os/base_private.h>` | /libplatform-220/private/os/base_private.h |
 | lock_private.h | `#include <System/pthread_machdep.h>` | /Libc-825.24/pthreads/pthread_machdep.h |
 | objc-os.h | `#include <System/pthread_machdep.h>` | /Libc-825.24/pthreads/pthread_machdep.h |
-| pthread_machdep.h | `#include <System/machine/cpu_capabilities.h>` | /xnu-4570.1.46/osfmk/machine/cpu_capabilities.h |
+| pthread_machdep.h | `#include <System/machine/cpu_capabilities.h>` | /xnu-6153.41.3/osfmk/machine/cpu_capabilities.h |
 | objc-os.h | `#include <CrashReporterClient.h>` | /Libc-825.24/include/CrashReporterClient.h | 
 | objc-os.h | `#include <pthread/workqueue_private.h>` | /libpthread-301.1.6/private/workqueue_private.h | 
-| objc-os.h | `#include <objc-shared-cache.h>` | /dyld-519.2.1/include/objc-shared-cache.h | 
+| objc-os.h | `#include <objc-shared-cache.h>` | /dyld-733.6/include/objc-shared-cache.h | 
 | objc-errors.mm | `#include <_simple.h>` | /Libc-825.24/gen/_simple.h | 
 | objc-block-trampolines.mm | `#include <Block_private.h>` | /libclosure-67/Block_private.h |
 | objc-os.h | `#include <crt_externs.h>` (iOS exclusive) | /Libc-825.24/include/crt_externs.h |
-| objc-runtime-new.mm | `#include <mach/shared_region.h>` (iOS exclusive) | /xnu-4570.1.46/osfmk/mach/shared_region.h |
+| objc-runtime-new.mm | `#include <mach/shared_region.h>` (iOS exclusive) | /xnu-6153.41.3/osfmk/mach/shared_region.h |
 
 ### Uninclude Private Header 
 
 | file | header | tarball |
 |------|--------|---------|
-| tsd_private.h | `#include <os/tsd.h>` | /xnu-4570.1.46/libsyscall/os/tsd.h |
+| tsd_private.h | `#include <os/tsd.h>` | /xnu-6153.41.3/libsyscall/os/tsd.h |
 | tsd_private.h | `#include <pthread/spinlock_private.h>` | /libpthread-301.1.6/private/spinlock_private.h |
 | objc-os.h | `#include <pthread/tsd_private.h>` | /libpthread/libpthread-301.1.6/private/tsd_private.h |
 | objc-os.h | `#include <pthread/qos_private.h>` | /libpthread/libpthread-301.1.6/private/qos_private.h |
