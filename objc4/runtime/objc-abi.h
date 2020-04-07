@@ -43,6 +43,45 @@
 #include <objc/runtime.h>
 #include <objc/message.h>
 
+/* Linker metadata symbols */
+
+// NSObject was in Foundation/CF on macOS < 10.8.
+#if TARGET_OS_OSX
+#if __OBJC2__
+
+OBJC_EXPORT const char __objc_nsobject_class_10_5
+    __asm__("$ld$hide$os10.5$_OBJC_CLASS_$_NSObject");
+OBJC_EXPORT const char __objc_nsobject_class_10_6
+    __asm__("$ld$hide$os10.6$_OBJC_CLASS_$_NSObject");
+OBJC_EXPORT const char __objc_nsobject_class_10_7
+    __asm__("$ld$hide$os10.7$_OBJC_CLASS_$_NSObject");
+
+OBJC_EXPORT const char __objc_nsobject_metaclass_10_5
+    __asm__("$ld$hide$os10.5$_OBJC_METACLASS_$_NSObject");
+OBJC_EXPORT const char __objc_nsobject_metaclass_10_6
+    __asm__("$ld$hide$os10.6$_OBJC_METACLASS_$_NSObject");
+OBJC_EXPORT const char __objc_nsobject_metaclass_10_7
+    __asm__("$ld$hide$os10.7$_OBJC_METACLASS_$_NSObject");
+
+OBJC_EXPORT const char __objc_nsobject_isa_10_5
+    __asm__("$ld$hide$os10.5$_OBJC_IVAR_$_NSObject.isa");
+OBJC_EXPORT const char __objc_nsobject_isa_10_6
+    __asm__("$ld$hide$os10.6$_OBJC_IVAR_$_NSObject.isa");
+OBJC_EXPORT const char __objc_nsobject_isa_10_7
+    __asm__("$ld$hide$os10.7$_OBJC_IVAR_$_NSObject.isa");
+
+#else
+
+OBJC_EXPORT const char __objc_nsobject_class_10_5
+    __asm__("$ld$hide$os10.5$.objc_class_name_NSObject");
+OBJC_EXPORT const char __objc_nsobject_class_10_6
+    __asm__("$ld$hide$os10.6$.objc_class_name_NSObject");
+OBJC_EXPORT const char __objc_nsobject_class_10_7
+    __asm__("$ld$hide$os10.7$.objc_class_name_NSObject");
+
+#endif
+#endif
+
 /* Runtime startup. */
 
 // Old static initializer. Used by old crt1.o and old bug workarounds.
@@ -61,6 +100,7 @@ typedef struct objc_image_info {
 #if __cplusplus >= 201103L
   private:
     enum : uint32_t {
+        // 1 byte assorted flags
         IsReplacement       = 1<<0,  // used for Fix&Continue, now ignored
         SupportsGC          = 1<<1,  // image supports GC
         RequiresGC          = 1<<2,  // image requires GC
@@ -68,17 +108,28 @@ typedef struct objc_image_info {
         CorrectedSynthesize = 1<<4,  // used for an old workaround, now ignored
         IsSimulated         = 1<<5,  // image compiled for a simulator platform
         HasCategoryClassProperties  = 1<<6,  // class properties in category_t
+        OptimizedByDyldClosure = 1 << 7, // dyld (not the shared cache) optimized this.
 
-        SwiftVersionMaskShift = 8,
-        SwiftVersionMask    = 0xff << SwiftVersionMaskShift  // Swift ABI version
+        // 1 byte Swift unstable ABI version number
+        SwiftUnstableVersionMaskShift = 8,
+        SwiftUnstableVersionMask = 0xff << SwiftUnstableVersionMaskShift,
 
+        // 2 byte Swift stable ABI version number
+        SwiftStableVersionMaskShift = 16,
+        SwiftStableVersionMask = 0xffffUL << SwiftStableVersionMaskShift
     };
-   public:
+  public:
     enum : uint32_t {
+        // Values for SwiftUnstableVersion
+        // All stable ABIs store SwiftVersion5 here.
         SwiftVersion1   = 1,
         SwiftVersion1_2 = 2,
         SwiftVersion2   = 3,
-        SwiftVersion3   = 4
+        SwiftVersion3   = 4,
+        SwiftVersion4   = 5,
+        SwiftVersion4_1 = 6,
+        SwiftVersion4_2 = 6,  // [sic]
+        SwiftVersion5   = 7
     };
 
   public:
@@ -87,8 +138,9 @@ typedef struct objc_image_info {
     bool requiresGC()      const { return flags & RequiresGC; }
     bool optimizedByDyld() const { return flags & OptimizedByDyld; }
     bool hasCategoryClassProperties() const { return flags & HasCategoryClassProperties; }
-    bool containsSwift()   const { return (flags & SwiftVersionMask) != 0; }
-    uint32_t swiftVersion() const { return (flags & SwiftVersionMask) >> SwiftVersionMaskShift; }
+    bool optimizedByDyldClosure() const { return flags & OptimizedByDyldClosure; }
+    bool containsSwift()   const { return (flags & SwiftUnstableVersionMask) != 0; }
+    uint32_t swiftUnstableVersion() const { return (flags & SwiftUnstableVersionMask) >> SwiftUnstableVersionMaskShift; }
 #endif
 } objc_image_info;
 
@@ -294,60 +346,45 @@ objc_msgLookup_fp2ret(void)
 
 #endif
 
-#if TARGET_OS_OSX  &&  defined(__x86_64__)
-// objc_msgSend_fixup() is used for vtable-dispatchable call sites.
+#if (TARGET_OS_OSX || TARGET_OS_SIMULATOR)  &&  defined(__x86_64__)
+// objc_msgSend_fixup() was used for vtable-dispatchable call sites.
+// The symbols remain exported on macOS for binary compatibility.
+// The symbols can probably be removed from iOS simulator but we haven't tried.
 OBJC_EXPORT void
 objc_msgSend_fixup(void)
-    __OSX_DEPRECATED(10.5, 10.8, "fixup dispatch is no longer optimized") 
-    __IOS_UNAVAILABLE __TVOS_UNAVAILABLE
-    __WATCHOS_UNAVAILABLE __BRIDGEOS_UNAVAILABLE;
+    __OSX_DEPRECATED(10.5, 10.8, "fixup dispatch is no longer optimized");
 
 OBJC_EXPORT void
 objc_msgSend_stret_fixup(void)
-    __OSX_DEPRECATED(10.5, 10.8, "fixup dispatch is no longer optimized") 
-    __IOS_UNAVAILABLE __TVOS_UNAVAILABLE
-    __WATCHOS_UNAVAILABLE __BRIDGEOS_UNAVAILABLE;
+    __OSX_DEPRECATED(10.5, 10.8, "fixup dispatch is no longer optimized");
 
 OBJC_EXPORT void
 objc_msgSendSuper2_fixup(void)
-    __OSX_DEPRECATED(10.5, 10.8, "fixup dispatch is no longer optimized") 
-    __IOS_UNAVAILABLE __TVOS_UNAVAILABLE
-    __WATCHOS_UNAVAILABLE __BRIDGEOS_UNAVAILABLE;
+    __OSX_DEPRECATED(10.5, 10.8, "fixup dispatch is no longer optimized");
 
 OBJC_EXPORT void
 objc_msgSendSuper2_stret_fixup(void)
-    __OSX_DEPRECATED(10.5, 10.8, "fixup dispatch is no longer optimized") 
-    __IOS_UNAVAILABLE __TVOS_UNAVAILABLE
-    __WATCHOS_UNAVAILABLE __BRIDGEOS_UNAVAILABLE;
+    __OSX_DEPRECATED(10.5, 10.8, "fixup dispatch is no longer optimized");
 
 OBJC_EXPORT void
 objc_msgSend_fpret_fixup(void)
-    __OSX_DEPRECATED(10.5, 10.8, "fixup dispatch is no longer optimized") 
-    __IOS_UNAVAILABLE __TVOS_UNAVAILABLE
-    __WATCHOS_UNAVAILABLE __BRIDGEOS_UNAVAILABLE;
+    __OSX_DEPRECATED(10.5, 10.8, "fixup dispatch is no longer optimized");
 
 OBJC_EXPORT void
 objc_msgSend_fp2ret_fixup(void)
-    __OSX_DEPRECATED(10.5, 10.8, "fixup dispatch is no longer optimized") 
-    __IOS_UNAVAILABLE __TVOS_UNAVAILABLE
-    __WATCHOS_UNAVAILABLE __BRIDGEOS_UNAVAILABLE;
+    __OSX_DEPRECATED(10.5, 10.8, "fixup dispatch is no longer optimized");
 #endif
 
 /* C++-compatible exception handling. */
 #if __OBJC2__
 
-// fixme these conflict with C++ compiler's internal definitions
-#if !defined(__cplusplus)
-
 // Vtable for C++ exception typeinfo for Objective-C types.
-OBJC_EXPORT const void * _Nullableobjc_ehtype_vtable[]
+OBJC_EXPORT const void * _Nullable objc_ehtype_vtable[]
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
 
 // C++ exception typeinfo for type `id`.
 OBJC_EXPORT struct objc_typeinfo OBJC_EHTYPE_id
     OBJC_AVAILABLE(10.5, 2.0, 9.0, 1.0, 2.0);
-
-#endif
 
 // Exception personality function for Objective-C and Objective-C++ code.
 struct _Unwind_Exception;
@@ -375,7 +412,7 @@ objc_retainBlock(id _Nullable)
 
 // Extract class pointer from an isa field.
     
-#if  TARGET_OS_SIMULATOR
+#if TARGET_OS_SIMULATOR && !TARGET_OS_IOSMAC
     // No simulators use nonpointer isa yet.
     
 #elif __LP64__
@@ -387,7 +424,7 @@ objc_retainBlock(id _Nullable)
 OBJC_EXPORT const struct { char c; } objc_absolute_packed_isa_class_mask
     OBJC_AVAILABLE(10.12, 10.0, 10.0, 3.0, 2.0);
 
-#elif __ARM_ARCH_7K__ >= 2
+#elif (__ARM_ARCH_7K__ >= 2  ||  (__arm64__ && !__LP64__))
 #   define OBJC_HAVE_NONPOINTER_ISA 1
 #   define OBJC_HAVE_INDEXED_NONPOINTER_ISA 1
 
@@ -409,8 +446,32 @@ OBJC_EXPORT const struct { char c; } objc_absolute_indexed_isa_index_shift
 
 #endif
 
-// OBJC2
 #endif
+
+
+/* Object class */
+
+// This symbol might be required for binary compatibility, so we
+// declare it here where TAPI will see it.
+#if __OBJC__  &&  __OBJC2__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-interface-ivars"
+#if !defined(OBJC_DECLARE_SYMBOLS)
+__OSX_AVAILABLE(10.0)
+__IOS_UNAVAILABLE __TVOS_UNAVAILABLE
+__WATCHOS_UNAVAILABLE
+#   ifndef __APPLE_BLEACH_SDK__
+__BRIDGEOS_UNAVAILABLE
+#   endif
+#endif
+OBJC_ROOT_CLASS
+@interface Object {
+    Class isa;
+}
+@end
+#pragma clang diagnostic pop
+#endif
+
 
 // _OBJC_ABI_H
 #endif

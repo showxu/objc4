@@ -36,8 +36,10 @@
 // and is enforced by lockdebug.
 
 extern monitor_t classInitLock;
-extern rwlock_t selLock;
+extern mutex_t selLock;
+#if CONFIG_USE_CACHE_LOCK
 extern mutex_t cacheUpdateLock;
+#endif
 extern recursive_mutex_t loadMethodLock;
 extern mutex_t crashlog_lock;
 extern spinlock_t objcMsgLogLock;

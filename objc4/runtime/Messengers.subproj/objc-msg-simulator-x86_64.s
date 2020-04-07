@@ -22,7 +22,7 @@
  */
 
 #include <TargetConditionals.h>
-#if __x86_64__  &&  TARGET_OS_SIMULATOR
+#if __x86_64__  &&  TARGET_OS_SIMULATOR  &&  !TARGET_OS_IOSMAC
 
 /********************************************************************
  ********************************************************************
@@ -34,104 +34,36 @@
 
 .data
 
-// _objc_entryPoints and _objc_exitPoints are used by objc
+// _objc_restartableRanges is used by method dispatch
 // to get the critical regions for which method caches 
 // cannot be garbage collected.
 
-.align 4
-.private_extern	_objc_entryPoints
-_objc_entryPoints:
-	.quad	_cache_getImp
-	.quad	_objc_msgSend
-	.quad	_objc_msgSend_fpret
-	.quad	_objc_msgSend_fp2ret
-	.quad	_objc_msgSend_stret
-	.quad	_objc_msgSendSuper
-	.quad	_objc_msgSendSuper_stret
-	.quad	_objc_msgSendSuper2
-	.quad	_objc_msgSendSuper2_stret
-	.quad	_objc_msgLookup
-	.quad	_objc_msgLookup_fpret
-	.quad	_objc_msgLookup_fp2ret
-	.quad	_objc_msgLookup_stret
-	.quad	_objc_msgLookupSuper2
-	.quad	_objc_msgLookupSuper2_stret
-	.quad	0
-
-.private_extern	_objc_exitPoints
-_objc_exitPoints:
-	.quad	LExit_cache_getImp
-	.quad	LExit_objc_msgSend
-	.quad	LExit_objc_msgSend_fpret
-	.quad	LExit_objc_msgSend_fp2ret
-	.quad	LExit_objc_msgSend_stret
-	.quad	LExit_objc_msgSendSuper
-	.quad	LExit_objc_msgSendSuper_stret
-	.quad	LExit_objc_msgSendSuper2
-	.quad	LExit_objc_msgSendSuper2_stret
-	.quad	LExit_objc_msgLookup
-	.quad	LExit_objc_msgLookup_fpret
-	.quad	LExit_objc_msgLookup_fp2ret
-	.quad	LExit_objc_msgLookup_stret
-	.quad	LExit_objc_msgLookupSuper2
-	.quad	LExit_objc_msgLookupSuper2_stret
-	.quad	0
-
-
-/********************************************************************
-* List every exit insn from every messenger for debugger use.
-* Format:
-* (
-*   1 word instruction's address
-*   1 word type (ENTER or FAST_EXIT or SLOW_EXIT or NIL_EXIT)
-* )
-* 1 word zero
-*
-* ENTER is the start of a dispatcher
-* FAST_EXIT is method dispatch
-* SLOW_EXIT is uncached method lookup
-* NIL_EXIT is returning zero from a message sent to nil
-* These must match objc-gdb.h.
-********************************************************************/
-	
-#define ENTER     1
-#define FAST_EXIT 2
-#define SLOW_EXIT 3
-#define NIL_EXIT  4
-
-.section __DATA,__objc_msg_break
-.globl _gdb_objc_messenger_breakpoints
-_gdb_objc_messenger_breakpoints:
-// contents populated by the macros below
-
-.macro MESSENGER_START
-4:
-	.section __DATA,__objc_msg_break
-	.quad 4b
-	.quad ENTER
-	.text
+.macro RestartableEntry
+	.quad	$0
+	.short	LExit$0 - $0
+	.short	0xffff // The simulator doesn't support kernel based recovery
+	.long	0
 .endmacro
-.macro MESSENGER_END_FAST
-4:
-	.section __DATA,__objc_msg_break
-	.quad 4b
-	.quad FAST_EXIT
-	.text
-.endmacro
-.macro MESSENGER_END_SLOW
-4:
-	.section __DATA,__objc_msg_break
-	.quad 4b
-	.quad SLOW_EXIT
-	.text
-.endmacro
-.macro MESSENGER_END_NIL
-4:
-	.section __DATA,__objc_msg_break
-	.quad 4b
-	.quad NIL_EXIT
-	.text
-.endmacro
+
+	.align 4
+	.private_extern _objc_restartableRanges
+_objc_restartableRanges:
+	RestartableEntry _cache_getImp
+	RestartableEntry _objc_msgSend
+	RestartableEntry _objc_msgSend_fpret
+	RestartableEntry _objc_msgSend_fp2ret
+	RestartableEntry _objc_msgSend_stret
+	RestartableEntry _objc_msgSendSuper
+	RestartableEntry _objc_msgSendSuper_stret
+	RestartableEntry _objc_msgSendSuper2
+	RestartableEntry _objc_msgSendSuper2_stret
+	RestartableEntry _objc_msgLookup
+	RestartableEntry _objc_msgLookup_fpret
+	RestartableEntry _objc_msgLookup_fp2ret
+	RestartableEntry _objc_msgLookup_stret
+	RestartableEntry _objc_msgLookupSuper2
+	RestartableEntry _objc_msgLookupSuper2_stret
+	.fill	16, 1, 0
 
 
 /********************************************************************
@@ -218,6 +150,10 @@ _gdb_objc_messenger_breakpoints:
 #define method_name 	0
 #define method_imp 	16
 
+// Method cache
+#define cached_sel 	0
+#define cached_imp 	8
+
 
 //////////////////////////////////////////////////////////////////////
 //
@@ -297,29 +233,30 @@ LExit$0:
 
 .macro CacheHit
 
-	// CacheHit must always be preceded by a not-taken `jne` instruction
-	// in order to set the correct flags for _objc_msgForward_impcache.
-
 	// r11 = found bucket
 	
 .if $1 == GETIMP
-	movq	8(%r11), %rax		// return imp
-	ret
+	movq	cached_imp(%r11), %rax	// return imp
+	cmpq	$$0, %rax
+ 	jz	9f			// don't xor a nil imp
+	xorq	%r10, %rax		// xor the isa with the imp
+9:	ret
 
 .else
-
-.if $0 != STRET
-	// eq already set for forwarding by `jne`
-.else
-	test	%r11, %r11		// set ne for stret forwarding
-.endif
 
 .if $1 == CALL
-	MESSENGER_END_FAST
-	jmp	*8(%r11)		// call imp
-	
+	movq	cached_imp(%r11), %r11	// load imp
+	xorq	%r10, %r11			// xor imp and isa
+.if $0 != STRET
+	// ne already set for forwarding by `xor`
+.else
+	cmp	%r11, %r11		// set eq for stret forwarding
+.endif
+	jmp	*%r11			// call imp
+
 .elseif $1 == LOOKUP
-	movq	8(%r11), %r11		// return imp
+	movq	cached_imp(%r11), %r11
+	xorq	%r10, %r11		// return imp ^ isa
 	ret
 	
 .else
@@ -342,35 +279,33 @@ LExit$0:
 	addq	16(%r10), %r11		// r11 = class->cache.buckets + offset
 
 .if $0 != STRET
-	cmpq	(%r11), %a2		// if (bucket->sel != _cmd)
+	cmpq	cached_sel(%r11), %a2	// if (bucket->sel != _cmd)
 .else
-	cmpq	(%r11), %a3		// if (bucket->sel != _cmd)
+	cmpq	cached_sel(%r11), %a3	// if (bucket->sel != _cmd)
 .endif
 	jne 	1f			//     scan more
-	// CacheHit must always be preceded by a not-taken `jne` instruction
 	CacheHit $0, $1			// call or return imp
 
 1:
 	// loop
-	cmpq	$$1, (%r11)
+	cmpq	$$1, cached_sel(%r11)
 	jbe	3f			// if (bucket->sel <= 1) wrap or miss
 
 	addq	$$16, %r11		// bucket++
 2:	
 .if $0 != STRET
-	cmpq	(%r11), %a2		// if (bucket->sel != _cmd)
+	cmpq	cached_sel(%r11), %a2	// if (bucket->sel != _cmd)
 .else
-	cmpq	(%r11), %a3		// if (bucket->sel != _cmd)
+	cmpq	cached_sel(%r11), %a3	// if (bucket->sel != _cmd)
 .endif
 	jne 	1b			//     scan more
-	// CacheHit must always be preceded by a not-taken `jne` instruction
 	CacheHit $0, $1			// call or return imp
 
 3:
 	// wrap or miss
 	jb	LCacheMiss_f		// if (bucket->sel < 1) cache miss
 	// wrap
-	movq	8(%r11), %r11		// bucket->imp is really first bucket
+	movq	cached_imp(%r11), %r11	// bucket->imp is really first bucket
 	jmp 	2f
 
 	// Clone scanning loop to miss instead of hang when cache is corrupt.
@@ -378,18 +313,17 @@ LExit$0:
 
 1:
 	// loop
-	cmpq	$$1, (%r11)
+	cmpq	$$1, cached_sel(%r11)
 	jbe	3f			// if (bucket->sel <= 1) wrap or miss
 
 	addq	$$16, %r11		// bucket++
 2:	
 .if $0 != STRET
-	cmpq	(%r11), %a2		// if (bucket->sel != _cmd)
+	cmpq	cached_sel(%r11), %a2	// if (bucket->sel != _cmd)
 .else
-	cmpq	(%r11), %a3		// if (bucket->sel != _cmd)
+	cmpq	cached_sel(%r11), %a3	// if (bucket->sel != _cmd)
 .endif
 	jne 	1b			//     scan more
-	// CacheHit must always be preceded by a not-taken `jne` instruction
 	CacheHit $0, $1			// call or return imp
 
 3:
@@ -434,8 +368,7 @@ LExit$0:
 	push	%a6
 	movdqa	%xmm7, -0x10(%rbp)
 
-	// _class_lookupMethodAndLoadCache3(receiver, selector, class)
-
+	// lookUpImpOrForward(obj, sel, cls, LOOKUP_INITIALIZE | LOOKUP_RESOLVER)
 .if $0 == NORMAL
 	// receiver already in a1
 	// selector already in a2
@@ -444,7 +377,8 @@ LExit$0:
 	movq	%a3, %a2
 .endif
 	movq	%r10, %a3
-	call	__class_lookupMethodAndLoadCache3
+	movl	$$3, %a4d
+	call	_lookUpImpOrForward
 
 	// IMP is now in %rax
 	movq	%rax, %r11
@@ -466,9 +400,9 @@ LExit$0:
 	movdqa	-0x10(%rbp), %xmm7
 
 .if $0 == NORMAL
-	cmp	%r11, %r11		// set eq for nonstret forwarding
-.else
 	test	%r11, %r11		// set ne for stret forwarding
+.else
+	cmp	%r11, %r11		// set eq for nonstret forwarding
 .endif
 	
 	leave
@@ -567,14 +501,13 @@ LNilOrTagged:
 .else
 	movq	%a2, %r11
 .endif
-	shrq	$$60, %r11
-	cmpl	$$0xf, %r11d
-	je	1f
 	// basic tagged
+	shrq	$$60, %r11
 	leaq	_objc_debug_taggedpointer_classes(%rip), %r10
 	movq	(%r10, %r11, 8), %r10	// read isa from table
-	jmp	LGetIsaDone_b
-1:
+	leaq    _OBJC_CLASS_$___NSUnrecognizedTaggedPointer(%rip), %r11
+	cmp    %r10, %r11
+	jne	LGetIsaDone_b
 	// ext tagged
 .if $0 != STRET
 	movq	%a1, %r11
@@ -602,7 +535,6 @@ LNil:
 .else
 .abort oops
 .endif
-	MESSENGER_END_NIL
 	ret
 .endmacro
 
@@ -671,7 +603,6 @@ _objc_debug_taggedpointer_ext_classes:
 
 	ENTRY _objc_msgSend
 	UNWIND _objc_msgSend, NoFrame
-	MESSENGER_START
 
 	GetIsaCheckNil NORMAL		// r10 = self->isa, or return zero
 	CacheLookup NORMAL, CALL	// calls IMP on success
@@ -682,7 +613,6 @@ _objc_debug_taggedpointer_ext_classes:
 // cache miss: go search the method lists
 LCacheMiss:
 	// isa still in r10
-	MESSENGER_END_SLOW
 	jmp	__objc_msgSend_uncached
 
 	END_ENTRY _objc_msgSend
@@ -728,7 +658,6 @@ LCacheMiss:
 	
 	ENTRY _objc_msgSendSuper
 	UNWIND _objc_msgSendSuper, NoFrame
-	MESSENGER_START
 	
 // search the cache (objc_super in %a1)
 	movq	class(%a1), %r10	// class = objc_super->class
@@ -738,7 +667,6 @@ LCacheMiss:
 // cache miss: go search the method lists
 LCacheMiss:
 	// class still in r10
-	MESSENGER_END_SLOW
 	jmp	__objc_msgSend_uncached
 	
 	END_ENTRY _objc_msgSendSuper
@@ -750,7 +678,6 @@ LCacheMiss:
 
 	ENTRY _objc_msgSendSuper2
 	UNWIND _objc_msgSendSuper2, NoFrame
-	MESSENGER_START
 	
 	// objc_super->class is superclass of class to search
 	
@@ -763,7 +690,6 @@ LCacheMiss:
 // cache miss: go search the method lists
 LCacheMiss:
 	// superclass still in r10
-	MESSENGER_END_SLOW
 	jmp	__objc_msgSend_uncached
 	
 	END_ENTRY _objc_msgSendSuper2
@@ -808,7 +734,6 @@ LCacheMiss:
 
 	ENTRY _objc_msgSend_fpret
 	UNWIND _objc_msgSend_fpret, NoFrame
-	MESSENGER_START
 	
 	GetIsaCheckNil FPRET		// r10 = self->isa, or return zero
 	CacheLookup FPRET, CALL		// calls IMP on success
@@ -819,7 +744,6 @@ LCacheMiss:
 // cache miss: go search the method lists
 LCacheMiss:
 	// isa still in r10
-	MESSENGER_END_SLOW
 	jmp	__objc_msgSend_uncached
 
 	END_ENTRY _objc_msgSend_fpret
@@ -862,7 +786,6 @@ LCacheMiss:
 
 	ENTRY _objc_msgSend_fp2ret
 	UNWIND _objc_msgSend_fp2ret, NoFrame
-	MESSENGER_START
 	
 	GetIsaCheckNil FP2RET		// r10 = self->isa, or return zero
 	CacheLookup FP2RET, CALL	// calls IMP on success
@@ -873,7 +796,6 @@ LCacheMiss:
 // cache miss: go search the method lists
 LCacheMiss:
 	// isa still in r10
-	MESSENGER_END_SLOW
 	jmp	__objc_msgSend_uncached
 
 	END_ENTRY _objc_msgSend_fp2ret
@@ -922,7 +844,6 @@ LCacheMiss:
 
 	ENTRY _objc_msgSend_stret
 	UNWIND _objc_msgSend_stret, NoFrame
-	MESSENGER_START
 
 	GetIsaCheckNil STRET		// r10 = self->isa, or return zero
 	CacheLookup STRET, CALL		// calls IMP on success
@@ -933,7 +854,6 @@ LCacheMiss:
 // cache miss: go search the method lists
 LCacheMiss:
 	// isa still in r10
-	MESSENGER_END_SLOW
 	jmp	__objc_msgSend_stret_uncached
 
 	END_ENTRY _objc_msgSend_stret
@@ -988,7 +908,6 @@ LCacheMiss:
 
 	ENTRY _objc_msgSendSuper_stret
 	UNWIND _objc_msgSendSuper_stret, NoFrame
-	MESSENGER_START
 	
 // search the cache (objc_super in %a2)
 	movq	class(%a2), %r10	// class = objc_super->class
@@ -998,7 +917,6 @@ LCacheMiss:
 // cache miss: go search the method lists
 LCacheMiss:
 	// class still in r10
-	MESSENGER_END_SLOW
 	jmp	__objc_msgSend_stret_uncached
 	
 	END_ENTRY _objc_msgSendSuper_stret
@@ -1010,7 +928,6 @@ LCacheMiss:
 
 	ENTRY _objc_msgSendSuper2_stret
 	UNWIND _objc_msgSendSuper2_stret, NoFrame
-	MESSENGER_START
 	
 // search the cache (objc_super in %a2)
 	movq	class(%a2), %r10	// class = objc_super->class
@@ -1021,7 +938,6 @@ LCacheMiss:
 // cache miss: go search the method lists
 LCacheMiss:
 	// superclass still in r10
-	MESSENGER_END_SLOW
 	jmp	__objc_msgSend_stret_uncached
 
 	END_ENTRY _objc_msgSendSuper2_stret
@@ -1132,11 +1048,7 @@ LCacheMiss:
 	// THIS IS NOT A CALLABLE C FUNCTION
 	// Out-of-band condition register is NE for stret, EQ otherwise.
 
-	MESSENGER_START
-	nop
-	MESSENGER_END_SLOW
-	
-	jne	__objc_msgForward_stret
+	je	__objc_msgForward_stret
 	jmp	__objc_msgForward
 
 	END_ENTRY __objc_msgForward_impcache
