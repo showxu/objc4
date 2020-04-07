@@ -53,9 +53,7 @@
 #include <sys/cdefs.h>
 #include <TargetConditionals.h>
 #include <Availability.h>
-#warning resolve missing header /xnu-4570.1.46/libsyscall/os/tsd.h
 #include <os/tsd.h>
-#warning resolve missing header /libpthread-301.1.6/private/spinlock_private.h
 #include <pthread/spinlock_private.h>
 
 #ifndef __TSD_MACH_THREAD_SELF
@@ -68,6 +66,10 @@
 
 #ifndef __TSD_RETURN_TO_KERNEL
 #define __TSD_RETURN_TO_KERNEL 5
+#endif
+
+#ifndef __TSD_PTR_MUNGE
+#define __TSD_PTR_MUNGE 7
 #endif
 
 #ifndef __TSD_MACH_SPECIAL_REPLY
@@ -83,6 +85,7 @@
 #define _PTHREAD_TSD_SLOT_MACH_THREAD_SELF __TSD_MACH_THREAD_SELF
 #define _PTHREAD_TSD_SLOT_PTHREAD_QOS_CLASS	__TSD_THREAD_QOS_CLASS
 #define _PTHREAD_TSD_SLOT_RETURN_TO_KERNEL __TSD_RETURN_TO_KERNEL
+#define _PTHREAD_TSD_SLOT_PTR_MUNGE __TSD_PTR_MUNGE
 #define _PTHREAD_TSD_SLOT_MACH_SPECIAL_REPLY __TSD_MACH_SPECIAL_REPLY
 //#define _PTHREAD_TSD_SLOT_SEMAPHORE_CACHE __TSD_SEMAPHORE_CACHE
 
@@ -90,6 +93,12 @@
  * Windows 64-bit ABI bakes %gs relative accesses into its code in the same
  * range as our TSD keys.  To allow some limited interoperability for code
  * targeting that ABI, we leave slots 6 and 11 unused.
+ *
+ * The Go runtime on x86_64 also uses this because their ABI doesn't reserve a
+ * register for the TSD base.  They were previously using an arbitrarily chosen
+ * dynamic key and relying on being able to get it at runtime, but switched to
+ * this slot to avoid issues with that approach.  It's assumed that Go and
+ * Windows code won't run in the same address space.
  */
 //#define _PTHREAD_TSD_SLOT_RESERVED_WIN64 6
 
@@ -204,6 +213,25 @@
 /* Keys 95 for CoreText */
 #define __PTK_FRAMEWORK_CORETEXT_KEY0			95
 
+/* Keys 100-109 are for the Swift runtime */
+#define __PTK_FRAMEWORK_SWIFT_KEY0		100
+#define __PTK_FRAMEWORK_SWIFT_KEY1		101
+#define __PTK_FRAMEWORK_SWIFT_KEY2		102
+#define __PTK_FRAMEWORK_SWIFT_KEY3		103
+#define __PTK_FRAMEWORK_SWIFT_KEY4		104
+#define __PTK_FRAMEWORK_SWIFT_KEY5		105
+#define __PTK_FRAMEWORK_SWIFT_KEY6		106
+#define __PTK_FRAMEWORK_SWIFT_KEY7		107
+#define __PTK_FRAMEWORK_SWIFT_KEY8		108
+#define __PTK_FRAMEWORK_SWIFT_KEY9		109
+
+/* Keys 190 - 194 are for the use of PerfUtils */
+#define __PTK_PERF_UTILS_KEY0		190
+#define __PTK_PERF_UTILS_KEY1		191
+#define __PTK_PERF_UTILS_KEY2		192
+#define __PTK_PERF_UTILS_KEY3		193
+#define __PTK_PERF_UTILS_KEY4		194
+
 /* Keys 210 - 229 are for libSystem usage within the iOS Simulator */
 /* They are offset from their corresponding libSystem keys by 200 */
 #define __PTK_LIBC_SIM_LOCALE_KEY	210
@@ -252,8 +280,6 @@ _pthread_has_direct_tsd(void)
 }
 
 /* To be used with static constant keys only */
-#warning resolve /System/Library/Frameworks/System.framework/PrivateHeaders/pthread/tsd_private.h:254:1: Redefinition of '_pthread_getspecific_direct'
-/*
 __header_always_inline void *
 _pthread_getspecific_direct(unsigned long slot)
 {
@@ -263,7 +289,6 @@ _pthread_getspecific_direct(unsigned long slot)
 	return _os_tsd_get_direct(slot);
 #endif
 }
- */
 
 /* To be used with static constant keys only, assumes destructor is
  * already setup (with pthread_key_init_np) */
@@ -276,7 +301,6 @@ _pthread_setspecific_direct(unsigned long slot, void * val)
 	return _os_tsd_set_direct(slot, val);
 #endif
 }
-
 
 __END_DECLS
 

@@ -35,6 +35,6 @@
  * system responsiveness for the user.
  * This is SPI for use by Spotlight and Time Machine only.
  */
-#define QOS_CLASS_MAINTENANCE	0x05
+#define QOS_CLASS_MAINTENANCE	((qos_class_t)0x05)
 
 #endif //_QOS_SYS_PRIVATE_H

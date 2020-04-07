@@ -51,7 +51,7 @@ Download zip or clone repo and integrate into your project manually.
 | objc-os.h | `#include <System/pthread_machdep.h>` | /Libc-825.24/pthreads/pthread_machdep.h |
 | pthread_machdep.h | `#include <System/machine/cpu_capabilities.h>` | /xnu-6153.41.3/osfmk/machine/cpu_capabilities.h |
 | objc-os.h | `#include <CrashReporterClient.h>` | /Libc-825.24/include/CrashReporterClient.h | 
-| objc-os.h | `#include <pthread/workqueue_private.h>` | /libpthread-301.1.6/private/workqueue_private.h | 
+| objc-os.h | `#include <pthread/workqueue_private.h>` | /libpthread-416.40.3/private/workqueue_private.h | 
 | objc-os.h | `#include <objc-shared-cache.h>` | /dyld-733.6/include/objc-shared-cache.h | 
 | objc-errors.mm | `#include <_simple.h>` | /Libc-825.24/gen/_simple.h | 
 | objc-block-trampolines.mm | `#include <Block_private.h>` | /libclosure-67/Block_private.h |
