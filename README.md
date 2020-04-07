@@ -54,7 +54,7 @@ Download zip or clone repo and integrate into your project manually.
 | objc-os.h | `#include <pthread/workqueue_private.h>` | /libpthread-416.40.3/private/workqueue_private.h | 
 | objc-os.h | `#include <objc-shared-cache.h>` | /dyld-733.6/include/objc-shared-cache.h | 
 | objc-errors.mm | `#include <_simple.h>` | /Libc-825.24/gen/_simple.h | 
-| objc-block-trampolines.mm | `#include <Block_private.h>` | /libclosure-67/Block_private.h |
+| objc-block-trampolines.mm | `#include <Block_private.h>` | /libclosure-74/Block_private.h |
 | objc-os.h | `#include <crt_externs.h>` (iOS exclusive) | /Libc-825.24/include/crt_externs.h |
 | objc-runtime-new.mm | `#include <mach/shared_region.h>` (iOS exclusive) | /xnu-6153.41.3/osfmk/mach/shared_region.h |
 
@@ -63,10 +63,10 @@ Download zip or clone repo and integrate into your project manually.
 | file | header | tarball |
 |------|--------|---------|
 | tsd_private.h | `#include <os/tsd.h>` | /xnu-6153.41.3/libsyscall/os/tsd.h |
-| tsd_private.h | `#include <pthread/spinlock_private.h>` | /libpthread-301.1.6/private/spinlock_private.h |
-| objc-os.h | `#include <pthread/tsd_private.h>` | /libpthread/libpthread-301.1.6/private/tsd_private.h |
-| objc-os.h | `#include <pthread/qos_private.h>` | /libpthread/libpthread-301.1.6/private/qos_private.h |
-| qos_private.h | `#include <sys/qos_private.h>`  | /libpthread-301.1.6/sys/qos_private.h |
+| tsd_private.h | `#include <pthread/spinlock_private.h>` | /libpthread-416.40.3/private/spinlock_private.h |
+| objc-os.h | `#include <pthread/tsd_private.h>` | /libpthread-416.40.3/private/tsd_private.h |
+| objc-os.h | `#include <pthread/qos_private.h>` | /llibpthread-416.40.3/private/qos_private.h |
+| qos_private.h | `#include <sys/qos_private.h>`  | /libpthread-416.40.3/sys/qos_private.h |
 
 
 ## Build Setting

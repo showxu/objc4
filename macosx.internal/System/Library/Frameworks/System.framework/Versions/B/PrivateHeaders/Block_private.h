@@ -22,8 +22,179 @@
 
 #include <Block.h>
 
-#if __cplusplus
-extern "C" {
+#if __has_include(<ptrauth.h>)
+#include <ptrauth.h>
+#endif
+
+#if __has_feature(ptrauth_calls) &&  __cplusplus < 201103L
+
+// C ptrauth or old C++ ptrauth
+
+#define _Block_set_function_pointer(field, value)                       \
+    ((value)                                                            \
+     ? ((field) =                                                       \
+        (__typeof__(field))                                             \
+        ptrauth_auth_and_resign((void*)(value),                         \
+                                ptrauth_key_function_pointer, 0,        \
+                                ptrauth_key_block_function, &(field)))  \
+     : ((field) = 0))
+
+#define _Block_get_function_pointer(field)                              \
+    ((field)                                                            \
+     ? (__typeof__(field))                                              \
+       ptrauth_auth_function((void*)(field),                            \
+                             ptrauth_key_block_function, &(field))      \
+     : (__typeof__(field))0)
+
+#else
+
+// C++11 ptrauth or no ptrauth
+
+#define _Block_set_function_pointer(field, value)       \
+    (field) = (value)
+
+#define _Block_get_function_pointer(field)      \
+    (field)
+
+#endif
+
+
+#if __has_feature(ptrauth_calls)  &&  __cplusplus >= 201103L
+
+// StorageSignedFunctionPointer<Key, Fn> stores a function pointer of type
+// Fn but signed with the given ptrauth key and with the address of its
+// storage as extra data.
+// Function pointers inside block objects are signed this way.
+template <typename Fn, ptrauth_key Key>
+class StorageSignedFunctionPointer {
+    uintptr_t bits;
+
+ public:
+
+    // Authenticate function pointer fn as a C function pointer.
+    // Re-sign it with our key and the storage address as extra data.
+    // DOES NOT actually write to our storage.
+    uintptr_t prepareWrite(Fn fn) const
+    {
+        if (fn == nullptr) {
+            return 0;
+        } else {
+            return (uintptr_t)
+                ptrauth_auth_and_resign(fn, ptrauth_key_function_pointer, 0,
+                                        Key, &bits);
+        }
+    }
+
+    // Authenticate otherBits at otherStorage.
+    // Re-sign it with our storage address.
+    // DOES NOT actually write to our storage.
+    uintptr_t prepareWrite(const StorageSignedFunctionPointer& other) const
+    {
+        if (other.bits == 0) {
+            return 0;
+        } else {
+            return (uintptr_t)
+                ptrauth_auth_and_resign((void*)other.bits, Key, &other.bits,
+                                        Key, &bits);
+        }
+    }
+
+    // Authenticate ptr as if it were stored at our storage address.
+    // Re-sign it as a C function pointer.
+    // DOES NOT actually read from our storage.
+    Fn completeReadFn(uintptr_t ptr) const
+    {
+        if (ptr == 0) {
+            return nullptr;
+        } else {
+            return ptrauth_auth_function((Fn)ptr, Key, &bits);
+        }
+    }
+
+    // Authenticate ptr as if it were at our storage address.
+    // Return it as a dereferenceable pointer.
+    // DOES NOT actually read from our storage.
+    void* completeReadRaw(uintptr_t ptr) const
+    {
+        if (ptr == 0) {
+            return nullptr;
+        } else {
+            return ptrauth_auth_data((void*)ptr, Key, &bits);
+        }
+    }
+
+    StorageSignedFunctionPointer() { }
+
+    StorageSignedFunctionPointer(Fn value)
+        : bits(prepareWrite(value)) { }
+
+    StorageSignedFunctionPointer(const StorageSignedFunctionPointer& value)
+        : bits(prepareWrite(value)) { }
+
+    StorageSignedFunctionPointer&
+    operator = (Fn rhs) {
+        bits = prepareWrite(rhs);
+        return *this;
+    }
+
+    StorageSignedFunctionPointer&
+    operator = (const StorageSignedFunctionPointer& rhs) {
+        bits = prepareWrite(rhs);
+        return *this;
+    }
+
+    operator Fn () const {
+        return completeReadFn(bits);
+    }
+
+    explicit operator void* () const {
+        return completeReadRaw(bits);
+    }
+
+    explicit operator bool () const {
+        return completeReadRaw(bits) != nullptr;
+    }
+};
+
+using BlockCopyFunction = StorageSignedFunctionPointer
+    <void(*)(void *, const void *),
+     ptrauth_key_block_function>;
+
+using BlockDisposeFunction = StorageSignedFunctionPointer
+    <void(*)(const void *),
+     ptrauth_key_block_function>;
+
+using BlockInvokeFunction = StorageSignedFunctionPointer
+    <void(*)(void *, ...),
+     ptrauth_key_block_function>;
+
+using BlockByrefKeepFunction = StorageSignedFunctionPointer
+    <void(*)(struct Block_byref *, struct Block_byref *),
+     ptrauth_key_block_function>;
+
+using BlockByrefDestroyFunction = StorageSignedFunctionPointer
+    <void(*)(struct Block_byref *),
+     ptrauth_key_block_function>;
+
+// c++11 and ptrauth_calls
+#elif !__has_feature(ptrauth_calls)
+// not ptrauth_calls
+
+typedef void(*BlockCopyFunction)(void *, const void *);
+typedef void(*BlockDisposeFunction)(const void *);
+typedef void(*BlockInvokeFunction)(void *, ...);
+typedef void(*BlockByrefKeepFunction)(struct Block_byref*, struct Block_byref*);
+typedef void(*BlockByrefDestroyFunction)(struct Block_byref *);
+
+#else
+// ptrauth_calls but not c++11
+
+typedef uintptr_t BlockCopyFunction;
+typedef uintptr_t BlockDisposeFunction;
+typedef uintptr_t BlockInvokeFunction;
+typedef uintptr_t BlockByrefKeepFunction;
+typedef uintptr_t BlockByrefDestroyFunction;
+
 #endif
 
 
@@ -50,8 +221,8 @@ struct Block_descriptor_1 {
 #define BLOCK_DESCRIPTOR_2 1
 struct Block_descriptor_2 {
     // requires BLOCK_HAS_COPY_DISPOSE
-    void (*copy)(void *dst, const void *src);
-    void (*dispose)(const void *);
+    BlockCopyFunction copy;
+    BlockDisposeFunction dispose;
 };
 
 #define BLOCK_DESCRIPTOR_3 1
@@ -64,8 +235,8 @@ struct Block_descriptor_3 {
 struct Block_layout {
     void *isa;
     volatile int32_t flags; // contains ref count
-    int32_t reserved; 
-    void (*invoke)(void *, ...);
+    int32_t reserved;
+    BlockInvokeFunction invoke;
     struct Block_descriptor_1 *descriptor;
     // imported variables
 };
@@ -99,8 +270,8 @@ struct Block_byref {
 
 struct Block_byref_2 {
     // requires BLOCK_BYREF_HAS_COPY_DISPOSE
-    void (*byref_keep)(struct Block_byref *dst, struct Block_byref *src);
-    void (*byref_destroy)(struct Block_byref *);
+    BlockByrefKeepFunction byref_keep;
+    BlockByrefDestroyFunction byref_destroy;
 };
 
 struct Block_byref_3 {
@@ -162,7 +333,51 @@ enum {
 };
 
 
+// Function pointer accessors
+
+static inline __typeof__(void (*)(void *, ...))
+_Block_get_invoke_fn(struct Block_layout *block)
+{
+    return (void (*)(void *, ...))_Block_get_function_pointer(block->invoke);
+}
+
+static inline void 
+_Block_set_invoke_fn(struct Block_layout *block, void (*fn)(void *, ...))
+{
+    _Block_set_function_pointer(block->invoke, fn);
+}
+
+
+static inline __typeof__(void (*)(void *, const void *))
+_Block_get_copy_fn(struct Block_descriptor_2 *desc)
+{
+    return (void (*)(void *, const void *))_Block_get_function_pointer(desc->copy);
+}
+
+static inline void 
+_Block_set_copy_fn(struct Block_descriptor_2 *desc,
+                   void (*fn)(void *, const void *))
+{
+    _Block_set_function_pointer(desc->copy, fn);
+}
+
+
+static inline __typeof__(void (*)(const void *))
+_Block_get_dispose_fn(struct Block_descriptor_2 *desc)
+{
+    return (void (*)(const void *))_Block_get_function_pointer(desc->dispose);
+}
+
+static inline void 
+_Block_set_dispose_fn(struct Block_descriptor_2 *desc,
+                      void (*fn)(const void *))
+{
+    _Block_set_function_pointer(desc->dispose, fn);
+}
+
+
 // Other support functions
+
 
 // runtime entry to get total size of a closure
 BLOCK_EXPORT size_t Block_size(void *aBlock);
@@ -226,11 +441,6 @@ struct Block_callbacks_RR {
 typedef struct Block_callbacks_RR Block_callbacks_RR;
 
 BLOCK_EXPORT void _Block_use_RR2(const Block_callbacks_RR *callbacks);
-
-
-#if __cplusplus
-}
-#endif
 
 
 #endif
