@@ -26,15 +26,15 @@ Download zip or clone repo and integrate into your project manually.
 
 ## Target dependencies tarballs
 
-- [Libc-825.24.tar.gz](https://opensource.apple.com/tarballs/Libc/Libc-825.24.tar.gz)
-- [dyld-519.2.1.tar.gz](https://opensource.apple.com/tarballs/dyld/dyld-519.2.1.tar.gz)
+- [Libc-1353.41.1](https://opensource.apple.com/tarballs/Libc/Libc-1353.41.1.tar.gz)
+- [dyld-733.6](https://opensource.apple.com/tarballs/dyld/dyld-733.6.tar.gz)
 - [libauto-187.tar.gz](https://opensource.apple.com/tarballs/libauto/libauto-187.tar.gz)
-- [libclosure-67.tar.gz](https://opensource.apple.com/tarballs/libclosure/libclosure-67.tar.gz)
-- [libdispatch-913.1.6.tar.gz](https://opensource.apple.com/tarballs/libdispatch/libdispatch-913.1.6.tar.gz)
-- [libplatform-220.tar.gz](https://opensource.apple.com/tarballs/libplatform/libplatform-220.tar.gz)
-- [libpthread-301.1.6.tar.gz](https://opensource.apple.com/tarballs/libpthread/libpthread-301.1.6.tar.gz)
-- [objc4-723.tar.gz](https://opensource.apple.com/tarballs/objc4/objc4-723.tar.gz)
-- [xnu-4570.1.46.tar.gz](https://opensource.apple.com/tarballs/xnu/xnu-4570.1.46.tar.gz)
+- [libclosure-74](https://opensource.apple.com/tarballs/libclosure/libclosure-74.tar.gz)
+- [libdispatch-1173.40.5](https://opensource.apple.com/tarballs/libdispatch/libdispatch-1173.40.5.tar.gz)
+- [libplatform-220](https://opensource.apple.com/tarballs/libplatform/libplatform-220.tar.gz)
+- [libpthread-416.40.3](https://opensource.apple.com/tarballs/libpthread/libpthread-416.40.3.tar.gz)
+- [objc4-781](https://opensource.apple.com/tarballs/objc4/objc4-781.tar.gz)
+- [xnu-6153.41.3](https://opensource.apple.com/tarballs/xnu/xnu-6153.41.3.tar.gz)
 
 
 ## Build Phases
