@@ -758,6 +758,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
 					"$(DSTROOT)/usr/include/**",
 					"$(DSTROOT)/usr/local/include/**",
 					"$(CONFIGURATION_BUILD_DIR)/usr/include/**",
@@ -835,6 +836,7 @@
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
 					"$(DSTROOT)/usr/include/**",
 					"$(DSTROOT)/usr/local/include/**",
 					"$(CONFIGURATION_BUILD_DIR)/usr/include/**",
