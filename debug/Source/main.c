@@ -6,7 +6,7 @@
 //  Copyright © 2017年 alchemistxxd. All rights reserved.
 //
 
-#include "base.h"
+#include "base_private.h"
 
 #include <CoreFoundation/CFRunLoop.h>
 #include <objc/objc-class.h>

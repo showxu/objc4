@@ -24,7 +24,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		330CB3961FEB7B5E001FD41C /* base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base.h; sourceTree = "<group>"; };
+		330CB3961FEB7B5E001FD41C /* base_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base_private.h; sourceTree = "<group>"; };
 		330CB39B1FEBFFFA001FD41C /* target.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = target.xcconfig; sourceTree = "<group>"; };
 		3310EAB71FE40B5E00A545A8 /* libobjc.A.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libobjc.A.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		338049DB1FE3CAAE003488DC /* debug */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = debug; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -65,7 +65,7 @@
 		33B571A51FE3A49100FCE649 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				330CB3961FEB7B5E001FD41C /* base.h */,
+				330CB3961FEB7B5E001FD41C /* base_private.h */,
 				33B571A61FE3A49100FCE649 /* main.c */,
 			);
 			path = Source;
