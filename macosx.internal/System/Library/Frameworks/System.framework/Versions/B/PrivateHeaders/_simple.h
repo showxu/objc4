@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006, 2010 Apple Inc. All rights reserved.
+ * Copyright (c) 2006, 2010, 2013 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
  * 
@@ -20,9 +20,14 @@
  * 
  * @APPLE_LICENSE_HEADER_END@
  */
+
+#ifndef _SYSTEM_SIMPLE_H_
+#define _SYSTEM_SIMPLE_H_
+
 #include <sys/cdefs.h>
 #include <stdarg.h>
-#include <asl.h>
+
+#include <Availability.h>
 
 typedef void *_SIMPLE_STRING;
 typedef const char *_esc_func(unsigned char);
@@ -33,14 +38,14 @@ __BEGIN_DECLS
  * arguments from the va_list, and the results are written to the given
  * file descriptor.
  */
-void _simple_vdprintf(int __fd, const char *__fmt, va_list __ap);
+void _simple_vdprintf(int __fd, const char *__fmt, va_list __ap) __printflike(2, 0);
 
 /*
  * A simplified fprintf variant.  The format string is interpreted with
  * arguments from the variable argument list, and the results are written
  * to the given file descriptor.
  */
-void _simple_dprintf(int __fd, const char *__fmt, ...);
+void _simple_dprintf(int __fd, const char *__fmt, ...) __printflike(2, 3);
 
 /*
  * A simplified string allocate routine.  Pass the opaque pointer to structure
@@ -57,7 +62,7 @@ _SIMPLE_STRING _simple_salloc(void);
  * returned by a previous call to _simple_salloc().  Non-zero is returned on
  * out-of-memory error.
  */
-int _simple_vsprintf(_SIMPLE_STRING __b, const char *__fmt, va_list __ap);
+int _simple_vsprintf(_SIMPLE_STRING __b, const char *__fmt, va_list __ap) __printflike(2, 0);
 
 /*
  * The format string is interpreted with arguments from the variable argument
@@ -65,21 +70,21 @@ int _simple_vsprintf(_SIMPLE_STRING __b, const char *__fmt, va_list __ap);
  * structure, as returned by a previous call to _simple_salloc().  Non-zero is
  * returned on out-of-memory error.
  */
-int _simple_sprintf(_SIMPLE_STRING __b, const char *__fmt, ...);
+int _simple_sprintf(_SIMPLE_STRING __b, const char *__fmt, ...) __printflike(2, 3);
 
 /*
  * Like _simple_vsprintf(), except __esc is a function to call on each
  * character; the function returns NULL if the character should be passed
  * as is, otherwise, the returned character string is used instead.
  */
-int _simple_vesprintf(_SIMPLE_STRING __b, _esc_func __esc, const char *__fmt, va_list __ap);
+int _simple_vesprintf(_SIMPLE_STRING __b, _esc_func __esc, const char *__fmt, va_list __ap) __printflike(3, 0);
 
 /*
  * Like _simple_sprintf(), except __esc is a function to call on each
  * character; the function returns NULL if the character should be passed
  * as is, otherwise, the returned character string is used instead.
  */
-int _simple_esprintf(_SIMPLE_STRING __b, _esc_func __esc, const char *__fmt, ...);
+int _simple_esprintf(_SIMPLE_STRING __b, _esc_func __esc, const char *__fmt, ...) __printflike(3, 4);
 
 /*
  * Return the null terminated string from the opaque structure, as returned
@@ -126,6 +131,32 @@ void _simple_sfree(_SIMPLE_STRING __b);
  * Simplified ASL log interface; does not use malloc.  Unfortunately, this
  * requires knowledge of the format used by ASL.
  */
+#ifndef ASL_LEVEL_DEBUG
+#define ASL_LEVEL_EMERG   0
+#define ASL_LEVEL_ALERT   1
+#define ASL_LEVEL_CRIT    2
+#define ASL_LEVEL_ERR     3
+#define ASL_LEVEL_WARNING 4
+#define ASL_LEVEL_NOTICE  5
+#define ASL_LEVEL_INFO    6
+#define ASL_LEVEL_DEBUG   7
+#endif
+
 void _simple_asl_log(int __level, const char *__facility, const char *__message);
 void _simple_asl_log_prog(int level, const char *facility, const char *message, const char *progname);
+
+__OSX_AVAILABLE_STARTING(__MAC_10_9,__IPHONE_7_0)
+_SIMPLE_STRING _simple_asl_msg_new(void);
+
+__OSX_AVAILABLE_STARTING(__MAC_10_9,__IPHONE_7_0)
+void _simple_asl_msg_set(_SIMPLE_STRING __b, const char *__key, const char *__val);
+
+__OSX_AVAILABLE_STARTING(__MAC_10_9,__IPHONE_7_0)
+void _simple_asl_send(_SIMPLE_STRING __b);
+
+__OSX_AVAILABLE_STARTING(__MAC_10_9,__IPHONE_7_0)
+const char *_simple_getenv(const char *envp[], const char *var);
+
 __END_DECLS
+
+#endif /* _SYSTEM_SIMPLE_H_ */
