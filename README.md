@@ -31,7 +31,7 @@ Download zip or clone repo and integrate into your project manually.
 - [libauto-187.tar.gz](https://opensource.apple.com/tarballs/libauto/libauto-187.tar.gz)
 - [libclosure-67.tar.gz](https://opensource.apple.com/tarballs/libclosure/libclosure-67.tar.gz)
 - [libdispatch-913.1.6.tar.gz](https://opensource.apple.com/tarballs/libdispatch/libdispatch-913.1.6.tar.gz)
-- [libplatform-161.tar.gz](https://opensource.apple.com/tarballs/libplatform/libplatform-161.tar.gz)
+- [libplatform-220.tar.gz](https://opensource.apple.com/tarballs/libplatform/libplatform-220.tar.gz)
 - [libpthread-301.1.6.tar.gz](https://opensource.apple.com/tarballs/libpthread/libpthread-301.1.6.tar.gz)
 - [objc4-723.tar.gz](https://opensource.apple.com/tarballs/objc4/objc4-723.tar.gz)
 - [xnu-4570.1.46.tar.gz](https://opensource.apple.com/tarballs/xnu/xnu-4570.1.46.tar.gz)
@@ -45,8 +45,8 @@ Download zip or clone repo and integrate into your project manually.
 |------|--------|---------|
 | objc-os.h | `#include <sys/reason.h>` | /xnu-4570.1.46/bsd/sys/reason.h |
 | objc-os.h | `#include <mach-o/dyld_priv.h>` | /dyld-519.2.1/include/mach-o/dyld_priv.h |
-| objc-os.h | `#include <os/lock_private.h>` | /libplatform-161/private/os/lock_private.h |
-| lock_private.h | `#include <os/base_private.h>` | /libplatform-161/private/os/base_private.h |
+| objc-os.h | `#include <os/lock_private.h>` | /libplatform-220/private/os/lock_private.h |
+| lock_private.h | `#include <os/base_private.h>` | /libplatform-220/private/os/base_private.h |
 | lock_private.h | `#include <System/pthread_machdep.h>` | /Libc-825.24/pthreads/pthread_machdep.h |
 | objc-os.h | `#include <System/pthread_machdep.h>` | /Libc-825.24/pthreads/pthread_machdep.h |
 | pthread_machdep.h | `#include <System/machine/cpu_capabilities.h>` | /xnu-4570.1.46/osfmk/machine/cpu_capabilities.h |
