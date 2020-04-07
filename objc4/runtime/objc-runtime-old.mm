@@ -365,7 +365,7 @@ objc_copyProtocolList(unsigned int *outCount)
     }
     
     result[i++] = nil;
-    assert(i == count+1);
+    ASSERT(i == count+1);
 
     if (outCount) *outCount = count;
     return result;
@@ -879,7 +879,7 @@ static void really_connect_class(Class cls,
         
         // No duplicate classes allowed. 
         // Duplicates should have been rejected by _objc_read_classes_from_image
-        assert(!oldCls);
+        ASSERT(!oldCls);
     }        
  
     // Fix up pended class refs to this class, if any
@@ -1337,7 +1337,7 @@ static inline void map_selrefs(SEL *sels, size_t count, bool copy)
 
     if (!sels) return;
 
-    sel_lock();
+    mutex_locker_t lock(selLock);
 
     // Process each selector
     for (index = 0; index < count; index += 1)
@@ -1353,8 +1353,6 @@ static inline void map_selrefs(SEL *sels, size_t count, bool copy)
             sels[index] = sel;
         }
     }
-    
-    sel_unlock();
 }
 
 
@@ -1371,7 +1369,7 @@ static void  map_method_descs (struct objc_method_description_list * methods, bo
 
     if (!methods) return;
 
-    sel_lock();
+    mutex_locker_t lock(selLock);
 
     // Process each method
     for (index = 0; index < methods->count; index += 1)
@@ -1390,8 +1388,6 @@ static void  map_method_descs (struct objc_method_description_list * methods, bo
         if (method->name != sel)
             method->name = sel;
     }
-
-    sel_unlock();
 }
 
 
@@ -1784,7 +1780,7 @@ Protocol *
 objc_allocateProtocol(const char *name)
 {
     Class cls = objc_getClass("__IncompleteProtocol");
-    assert(cls);
+    ASSERT(cls);
 
     mutex_locker_t lock(classLock);
 
@@ -2200,6 +2196,11 @@ void _read_images(header_info **hList, uint32_t hCount, int totalClasses, int un
 
     // Parts of this order are important for correctness or performance.
 
+    // Fix up selector refs from all images.
+    for (i = 0; i < hCount; i++) {
+        _objc_fixup_selector_refs(hList[i]);
+    }
+
     // Read classes from all images.
     for (i = 0; i < hCount; i++) {
         _objc_read_classes_from_image(hList[i]);
@@ -2222,10 +2223,9 @@ void _read_images(header_info **hList, uint32_t hCount, int totalClasses, int un
         _objc_connect_classes_from_image(hList[i]);
     }
 
-    // Fix up class refs, selector refs, and protocol objects from all images.
+    // Fix up class refs, and protocol objects from all images.
     for (i = 0; i < hCount; i++) {
         _objc_map_class_refs_for_image(hList[i]);
-        _objc_fixup_selector_refs(hList[i]);
         _objc_fixup_protocol_objects_for_image(hList[i]);
     }
 
@@ -3153,7 +3153,46 @@ static bool _objc_register_category(old_category *cat, int version)
 }
 
 
-const char **
+const char **objc_copyImageNames(unsigned int *outCount)
+{
+    header_info *hi;
+    int count = 0;
+    int max = 0;
+    for (hi = FirstHeader; hi != nil; hi = hi->getNext()) {
+        max++;
+    }
+#if TARGET_OS_WIN32
+    const TCHAR **names = (const TCHAR **)calloc(max+1, sizeof(TCHAR *));
+#else
+    const char **names = (const char **)calloc(max+1, sizeof(char *));
+#endif
+
+    for (hi = FirstHeader; hi != NULL && count < max; hi = hi->getNext()) {
+#if TARGET_OS_WIN32
+        if (hi->moduleName) {
+            names[count++] = hi->moduleName;
+        }
+#else
+        const char *fname = hi->fname();
+        if (fname) {
+            names[count++] = fname;
+        }
+#endif
+    }
+    names[count] = NULL;
+
+    if (count == 0) {
+        // Return NULL instead of empty list if there are no images
+        free((void *)names);
+        names = NULL;
+    }
+
+    if (outCount) *outCount = count;
+    return names;
+}
+
+
+static const char **
 _objc_copyClassNamesForImage(header_info *hi, unsigned int *outCount)
 {
     Module mods;
@@ -3200,6 +3239,66 @@ _objc_copyClassNamesForImage(header_info *hi, unsigned int *outCount)
     return list;
 }
 
+
+/**********************************************************************
+*
+**********************************************************************/
+const char **
+objc_copyClassNamesForImage(const char *image, unsigned int *outCount)
+{
+    header_info *hi;
+
+    if (!image) {
+        if (outCount) *outCount = 0;
+        return NULL;
+    }
+
+    // Find the image.
+    for (hi = FirstHeader; hi != NULL; hi = hi->getNext()) {
+#if TARGET_OS_WIN32
+        if (0 == wcscmp((TCHAR *)image, hi->moduleName)) break;
+#else
+        if (0 == strcmp(image, hi->fname())) break;
+#endif
+    }
+
+    if (!hi) {
+        if (outCount) *outCount = 0;
+        return NULL;
+    }
+
+    return _objc_copyClassNamesForImage(hi, outCount);
+}
+
+
+
+/**********************************************************************
+*
+**********************************************************************/
+const char **
+objc_copyClassNamesForImageHeader(const struct mach_header *mh, unsigned int *outCount)
+{
+    header_info *hi;
+
+    if (!mh) {
+        if (outCount) *outCount = 0;
+        return NULL;
+    }
+
+    // Find the image.
+    for (hi = FirstHeader; hi != NULL; hi = hi->getNext()) {
+        if (hi->mhdr() == (const headerType *)mh) break;
+    }
+
+    if (!hi) {
+        if (outCount) *outCount = 0;
+        return NULL;
+    }
+
+    return _objc_copyClassNamesForImage(hi, outCount);
+}
+
+
 Class gdb_class_getClass(Class cls)
 {
     const char *className = cls->name;
@@ -3217,15 +3316,26 @@ Class gdb_object_getClass(id obj)
 
 
 /***********************************************************************
+* objc_setMultithreaded.
+**********************************************************************/
+void objc_setMultithreaded (BOOL flag)
+{
+    OBJC_WARN_DEPRECATED;
+
+    // Nothing here. Thread synchronization in the runtime is always active.
+}
+
+
+/***********************************************************************
 * Lock management
 **********************************************************************/
-rwlock_t selLock;
+mutex_t selLock;
 mutex_t classLock;
 mutex_t methodListLock;
 mutex_t cacheUpdateLock;
 recursive_mutex_t loadMethodLock;
 
-void lock_init(void)
+void runtime_init(void)
 {
 }
 

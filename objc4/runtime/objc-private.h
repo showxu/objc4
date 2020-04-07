@@ -21,8 +21,8 @@
  * @APPLE_LICENSE_HEADER_END@
  */
 /*
- *	objc-private.h
- *	Copyright 1988-1996, NeXT Software, Inc.
+ *    objc-private.h
+ *    Copyright 1988-1996, NeXT Software, Inc.
  */
 
 #ifndef _OBJC_PRIVATE_H_
@@ -39,11 +39,19 @@
 #endif
 
 #define OBJC_TYPES_DEFINED 1
+#undef OBJC_OLD_DISPATCH_PROTOTYPES
 #define OBJC_OLD_DISPATCH_PROTOTYPES 0
 
 #include <cstddef>  // for nullptr_t
 #include <stdint.h>
 #include <assert.h>
+
+// An assert that's disabled for release builds but still ensures the expression compiles.
+#ifdef NDEBUG
+#define ASSERT(x) (void)sizeof(!(x))
+#else
+#define ASSERT(x) assert(x)
+#endif
 
 struct objc_class;
 struct objc_object;
@@ -55,113 +63,19 @@ namespace {
     struct SideTable;
 };
 
+#include "isa.h"
 
-#if (!SUPPORT_NONPOINTER_ISA && !SUPPORT_PACKED_ISA && !SUPPORT_INDEXED_ISA) ||\
-    ( SUPPORT_NONPOINTER_ISA &&  SUPPORT_PACKED_ISA && !SUPPORT_INDEXED_ISA) ||\
-    ( SUPPORT_NONPOINTER_ISA && !SUPPORT_PACKED_ISA &&  SUPPORT_INDEXED_ISA)
-    // good config
-#else
-#   error bad config
-#endif
-
-
-union isa_t 
-{
+union isa_t {
     isa_t() { }
     isa_t(uintptr_t value) : bits(value) { }
 
     Class cls;
     uintptr_t bits;
-
-#if SUPPORT_PACKED_ISA
-
-    // extra_rc must be the MSB-most field (so it matches carry/overflow flags)
-    // nonpointer must be the LSB (fixme or get rid of it)
-    // shiftcls must occupy the same bits that a real class pointer would
-    // bits + RC_ONE is equivalent to extra_rc + 1
-    // RC_HALF is the high bit of extra_rc (i.e. half of its range)
-
-    // future expansion:
-    // uintptr_t fast_rr : 1;     // no r/r overrides
-    // uintptr_t lock : 2;        // lock for atomic property, @synch
-    // uintptr_t extraBytes : 1;  // allocated with extra bytes
-
-# if __arm64__
-#   define ISA_MASK        0x0000000ffffffff8ULL
-#   define ISA_MAGIC_MASK  0x000003f000000001ULL
-#   define ISA_MAGIC_VALUE 0x000001a000000001ULL
+#if defined(ISA_BITFIELD)
     struct {
-        uintptr_t nonpointer        : 1;
-        uintptr_t has_assoc         : 1;
-        uintptr_t has_cxx_dtor      : 1;
-        uintptr_t shiftcls          : 33; // MACH_VM_MAX_ADDRESS 0x1000000000
-        uintptr_t magic             : 6;
-        uintptr_t weakly_referenced : 1;
-        uintptr_t deallocating      : 1;
-        uintptr_t has_sidetable_rc  : 1;
-        uintptr_t extra_rc          : 19;
-#       define RC_ONE   (1ULL<<45)
-#       define RC_HALF  (1ULL<<18)
+        ISA_BITFIELD;  // defined in isa.h
     };
-
-# elif __x86_64__
-#   define ISA_MASK        0x00007ffffffffff8ULL
-#   define ISA_MAGIC_MASK  0x001f800000000001ULL
-#   define ISA_MAGIC_VALUE 0x001d800000000001ULL
-    struct {
-        uintptr_t nonpointer        : 1;
-        uintptr_t has_assoc         : 1;
-        uintptr_t has_cxx_dtor      : 1;
-        uintptr_t shiftcls          : 44; // MACH_VM_MAX_ADDRESS 0x7fffffe00000
-        uintptr_t magic             : 6;
-        uintptr_t weakly_referenced : 1;
-        uintptr_t deallocating      : 1;
-        uintptr_t has_sidetable_rc  : 1;
-        uintptr_t extra_rc          : 8;
-#       define RC_ONE   (1ULL<<56)
-#       define RC_HALF  (1ULL<<7)
-    };
-
-# else
-#   error unknown architecture for packed isa
-# endif
-
-// SUPPORT_PACKED_ISA
 #endif
-
-
-#if SUPPORT_INDEXED_ISA
-
-# if  __ARM_ARCH_7K__ >= 2
-
-#   define ISA_INDEX_IS_NPI      1
-#   define ISA_INDEX_MASK        0x0001FFFC
-#   define ISA_INDEX_SHIFT       2
-#   define ISA_INDEX_BITS        15
-#   define ISA_INDEX_COUNT       (1 << ISA_INDEX_BITS)
-#   define ISA_INDEX_MAGIC_MASK  0x001E0001
-#   define ISA_INDEX_MAGIC_VALUE 0x001C0001
-    struct {
-        uintptr_t nonpointer        : 1;
-        uintptr_t has_assoc         : 1;
-        uintptr_t indexcls          : 15;
-        uintptr_t magic             : 4;
-        uintptr_t has_cxx_dtor      : 1;
-        uintptr_t weakly_referenced : 1;
-        uintptr_t deallocating      : 1;
-        uintptr_t has_sidetable_rc  : 1;
-        uintptr_t extra_rc          : 7;
-#       define RC_ONE   (1ULL<<25)
-#       define RC_HALF  (1ULL<<6)
-    };
-
-# else
-#   error unknown architecture for indexed isa
-# endif
-
-// SUPPORT_INDEXED_ISA
-#endif
-
 };
 
 
@@ -174,8 +88,13 @@ public:
     // ISA() assumes this is NOT a tagged pointer object
     Class ISA();
 
+    // rawISA() assumes this is NOT a tagged pointer object or a non pointer ISA
+    Class rawISA();
+
     // getIsa() allows this to be a tagged pointer object
     Class getIsa();
+    
+    uintptr_t isaBits() const;
 
     // initIsa() should be used to init the isa of new objects only.
     // If this object already has an isa, use changeIsa() for correctness.
@@ -232,14 +151,14 @@ private:
 
     // Slow paths for inline control
     id rootAutorelease2();
-    bool overrelease_error();
+    uintptr_t overrelease_error();
 
 #if SUPPORT_NONPOINTER_ISA
     // Unified retain count manipulation for nonpointer isa
     id rootRetain(bool tryRetain, bool handleOverflow);
     bool rootRelease(bool performDealloc, bool handleUnderflow);
     id rootRetain_overflow(bool tryRetain);
-    bool rootRelease_underflow(bool performDealloc);
+    uintptr_t rootRelease_underflow(bool performDealloc);
 
     void clearDeallocating_slow();
 
@@ -309,6 +228,8 @@ typedef struct old_property *objc_property_t;
 
 // Private headers
 
+#include "objc-ptrauth.h"
+
 #if __OBJC2__
 #include "objc-runtime-new.h"
 #else
@@ -321,7 +242,6 @@ typedef struct old_property *objc_property_t;
 
 
 #if SUPPORT_PREOPT  &&  __cplusplus
-#warning resolve missing header /dyld-519.2.1/include/objc-shared-cache.h
 #include <objc-shared-cache.h>
 using objc_selopt_t = const objc_opt::objc_selopt_t;
 #else
@@ -333,6 +253,55 @@ struct objc_selopt_t;
 #define STRINGIFY2(x) STRINGIFY(x)
 
 __BEGIN_DECLS
+
+namespace objc {
+
+struct SafeRanges {
+private:
+    struct Range {
+        uintptr_t start;
+        uintptr_t end;
+
+        inline bool contains(uintptr_t ptr) const {
+            uintptr_t m_start, m_end;
+#if __arm64__
+            // <rdar://problem/48304934> Force the compiler to use ldp
+            // we really don't want 2 loads and 2 jumps.
+            __asm__(
+# if __LP64__
+                    "ldp %x[one], %x[two], [%x[src]]"
+# else
+                    "ldp %w[one], %w[two], [%x[src]]"
+# endif
+                    : [one] "=r" (m_start), [two] "=r" (m_end)
+                    : [src] "r" (this)
+            );
+#else
+            m_start = start;
+            m_end = end;
+#endif
+            return m_start <= ptr && ptr < m_end;
+        }
+    };
+
+    struct Range *ranges;
+    uint32_t count;
+    uint32_t size : 31;
+    uint32_t sorted : 1;
+
+public:
+    inline bool contains(uint16_t witness, uintptr_t ptr) const {
+        return witness < count && ranges[witness].contains(ptr);
+    }
+
+    bool find(uintptr_t ptr, uint32_t &pos);
+    void add(uintptr_t start, uintptr_t end);
+    void remove(uintptr_t start, uintptr_t end);
+};
+
+extern struct SafeRanges dataSegmentsRanges;
+
+} // objc
 
 struct header_info;
 
@@ -449,6 +418,12 @@ public:
 
     bool isPreoptimized() const;
 
+    bool hasPreoptimizedSelectors() const;
+
+    bool hasPreoptimizedClasses() const;
+
+    bool hasPreoptimizedProtocols() const;
+
 #if !__OBJC2__
     struct old_protocol **proto_refs;
     struct objc_module *mod_ptr;
@@ -476,7 +451,6 @@ private:
 
 extern header_info *FirstHeader;
 extern header_info *LastHeader;
-extern int HeaderCount;
 
 extern void appendHeader(header_info *hi);
 extern void removeHeader(header_info *hi);
@@ -504,32 +478,17 @@ static inline bool sectnameStartsWith(const char *sectname, const char *prefix){
 }
 
 
+#if __OBJC2__
+extern bool didCallDyldNotifyRegister;
+#endif
+
+
 /* selectors */
 extern void sel_init(size_t selrefCount);
 extern SEL sel_registerNameNoLock(const char *str, bool copy);
-extern void sel_lock(void);
-extern void sel_unlock(void);
 
-extern SEL SEL_load;
-extern SEL SEL_initialize;
-extern SEL SEL_resolveClassMethod;
-extern SEL SEL_resolveInstanceMethod;
 extern SEL SEL_cxx_construct;
 extern SEL SEL_cxx_destruct;
-extern SEL SEL_retain;
-extern SEL SEL_release;
-extern SEL SEL_autorelease;
-extern SEL SEL_retainCount;
-extern SEL SEL_alloc;
-extern SEL SEL_allocWithZone;
-extern SEL SEL_dealloc;
-extern SEL SEL_copy;
-extern SEL SEL_new;
-extern SEL SEL_forwardInvocation;
-extern SEL SEL_tryRetain;
-extern SEL SEL_isDeallocating;
-extern SEL SEL_retainWeakReference;
-extern SEL SEL_allowsWeakReference;
 
 /* preoptimization */
 extern void preopt_init(void);
@@ -540,7 +499,9 @@ extern header_info *preoptimizedHinfoForHeader(const headerType *mhdr);
 
 extern objc_selopt_t *preoptimizedSelectors(void);
 
+extern bool sharedCacheSupportsProtocolRoots(void);
 extern Protocol *getPreoptimizedProtocol(const char *name);
+extern Protocol *getSharedCachePreoptimizedProtocol(const char *name);
 
 extern unsigned getPreoptimizedClassUnreasonableCount();
 extern Class getPreoptimizedClass(const char *name);
@@ -549,11 +510,23 @@ extern Class* copyPreoptimizedClasses(const char *name, int *outCount);
 extern Class _calloc_class(size_t size);
 
 /* method lookup */
-extern IMP lookUpImpOrNil(Class, SEL, id obj, bool initialize, bool cache, bool resolver);
-extern IMP lookUpImpOrForward(Class, SEL, id obj, bool initialize, bool cache, bool resolver);
+enum {
+    LOOKUP_INITIALIZE = 1,
+    LOOKUP_RESOLVER = 2,
+    LOOKUP_CACHE = 4,
+    LOOKUP_NIL = 8,
+};
+extern IMP lookUpImpOrForward(id obj, SEL, Class cls, int behavior);
+
+static inline IMP
+lookUpImpOrNil(id obj, SEL sel, Class cls, int behavior = 0)
+{
+    return lookUpImpOrForward(obj, sel, cls, behavior | LOOKUP_CACHE | LOOKUP_NIL);
+}
 
 extern IMP lookupMethodInClassAndLoadCache(Class cls, SEL sel);
-extern bool class_respondsToSelector_inst(Class cls, SEL sel, id inst);
+extern BOOL class_respondsToSelector_inst(id inst, SEL sel, Class cls);
+extern Class class_initialize(Class cls, id inst);
 
 extern bool objcMsgLogEnabled;
 extern bool logMessageSend(bool isClassMethod,
@@ -562,7 +535,6 @@ extern bool logMessageSend(bool isClassMethod,
                     SEL selector);
 
 /* message dispatcher */
-extern IMP _class_lookupMethodAndLoadCache3(id, SEL, Class);
 
 #if !OBJC_OLD_DISPATCH_PROTOTYPES
 extern void _objc_msgForward_impcache(void);
@@ -571,11 +543,13 @@ extern id _objc_msgForward_impcache(id, SEL, ...);
 #endif
 
 /* errors */
-extern void __objc_error(id, const char *, ...) __attribute__((format (printf, 2, 3), noreturn));
-extern void _objc_inform(const char *fmt, ...) __attribute__((format (printf, 1, 2)));
-extern void _objc_inform_on_crash(const char *fmt, ...) __attribute__((format (printf, 1, 2)));
-extern void _objc_inform_now_and_on_crash(const char *fmt, ...) __attribute__((format (printf, 1, 2)));
-extern void _objc_inform_deprecated(const char *oldname, const char *newname) __attribute__((noinline));
+extern id(*badAllocHandler)(Class);
+extern id _objc_callBadAllocHandler(Class cls) __attribute__((cold, noinline));
+extern void __objc_error(id, const char *, ...) __attribute__((cold, format (printf, 2, 3), noreturn));
+extern void _objc_inform(const char *fmt, ...) __attribute__((cold, format(printf, 1, 2)));
+extern void _objc_inform_on_crash(const char *fmt, ...) __attribute__((cold, format (printf, 1, 2)));
+extern void _objc_inform_now_and_on_crash(const char *fmt, ...) __attribute__((cold, format (printf, 1, 2)));
+extern void _objc_inform_deprecated(const char *oldname, const char *newname) __attribute__((cold, noinline));
 extern void inform_duplicate(const char *name, Class oldCls, Class cls);
 
 /* magic */
@@ -595,7 +569,6 @@ extern objc_property_attribute_t *copyPropertyAttributeList(const char *attrs, u
 extern char *copyPropertyAttributeValue(const char *attrs, const char *name);
 
 /* locking */
-extern void lock_init(void);
 
 class monitor_locker_t : nocopy_t {
     monitor_t& lock;
@@ -610,20 +583,6 @@ class recursive_mutex_locker_t : nocopy_t {
     recursive_mutex_locker_t(recursive_mutex_t& newLock) 
         : lock(newLock) { lock.lock(); }
     ~recursive_mutex_locker_t() { lock.unlock(); }
-};
-
-class rwlock_reader_t : nocopy_t {
-    rwlock_t& lock;
-  public:
-    rwlock_reader_t(rwlock_t& newLock) : lock(newLock) { lock.read(); }
-    ~rwlock_reader_t() { lock.unlockRead(); }
-};
-
-class rwlock_writer_t : nocopy_t {
-    rwlock_t& lock;
-  public:
-    rwlock_writer_t(rwlock_t& newLock) : lock(newLock) { lock.write(); }
-    ~rwlock_writer_t() { lock.unlockWrite(); }
 };
 
 
@@ -647,6 +606,7 @@ extern void gdb_objc_class_changed(Class cls, unsigned long changes, const char 
 #undef OPTION
 
 extern void environ_init(void);
+extern void runtime_init(void);
 
 extern void logReplacedMethod(const char *className, SEL s, bool isMeta, const char *catName, IMP oldImp, IMP newImp);
 
@@ -657,6 +617,9 @@ typedef struct {
     struct SyncCache *syncCache;  // for @synchronize
     struct alt_handler_list *handlerList;  // for exception alt handlers
     char *printableNames[4];  // temporary demangled names for logging
+    const char **classNameLookups;  // for objc_getClass() hooks
+    unsigned classNameLookupsAllocated;
+    unsigned classNameLookupsUsed;
 
     // If you add new fields here, don't forget to update 
     // _objc_pthread_destroyspecific()
@@ -683,6 +646,7 @@ extern void arr_init(void);
 extern id objc_autoreleaseReturnValue(id obj);
 
 // block trampolines
+extern void _imp_implementationWithBlock_init(void);
 extern IMP _imp_implementationWithBlockNoCopy(id block);
 
 // layout.h
@@ -720,27 +684,26 @@ extern void unmap_image(const char *path, const struct mach_header *mh);
 extern void unmap_image_nolock(const struct mach_header *mh);
 extern void _read_images(header_info **hList, uint32_t hCount, int totalClasses, int unoptimizedTotalClass);
 extern void _unload_image(header_info *hi);
-extern const char ** _objc_copyClassNamesForImage(header_info *hi, unsigned int *outCount);
-
 
 extern const header_info *_headerForClass(Class cls);
 
 extern Class _class_remap(Class cls);
-extern Class _class_getNonMetaClass(Class cls, id obj);
 extern Ivar _class_getVariable(Class cls, const char *name);
 
 extern unsigned _class_createInstancesFromZone(Class cls, size_t extraBytes, void *zone, id *results, unsigned num_requested);
-extern id _objc_constructOrFree(id bytes, Class cls);
 
 extern const char *_category_getName(Category cat);
 extern const char *_category_getClassName(Category cat);
 extern Class _category_getClass(Category cat);
 extern IMP _category_getLoadMethod(Category cat);
 
-extern id object_cxxConstructFromClass(id obj, Class cls);
+enum {
+    OBJECT_CONSTRUCT_NONE = 0,
+    OBJECT_CONSTRUCT_FREE_ONFAILURE = 1,
+    OBJECT_CONSTRUCT_CALL_BADALLOC = 2,
+};
+extern id object_cxxConstructFromClass(id obj, Class cls, int flags);
 extern void object_cxxDestruct(id obj);
-
-extern void _class_resolveMethod(Class cls, SEL sel, id inst);
 
 extern void fixupCopiedIvars(id newObject, id oldObject);
 extern Class _class_getClassForIvar(Class cls, Ivar ivar);
@@ -773,9 +736,9 @@ __END_DECLS
 static __inline uint32_t _objc_strhash(const char *s) {
     uint32_t hash = 0;
     for (;;) {
-	int a = *s++;
-	if (0 == a) break;
-	hash += (hash << 8) + a;
+    int a = *s++;
+    if (0 == a) break;
+    hash += (hash << 8) + a;
     }
     return hash;
 }
@@ -846,6 +809,7 @@ class TimeLogger {
     }
 };
 
+enum { CacheLineSize = 64 };
 
 // StripedMap<T> is a map of void* -> T, sized appropriately 
 // for cache-friendly lock striping. 
@@ -853,10 +817,7 @@ class TimeLogger {
 // or as StripedMap<SomeStruct> where SomeStruct stores a spin lock.
 template<typename T>
 class StripedMap {
-
-    enum { CacheLineSize = 64 };
-
-#if TARGET_OS_EMBEDDED
+#if TARGET_OS_IPHONE && !TARGET_OS_SIMULATOR
     enum { StripeCount = 8 };
 #else
     enum { StripeCount = 64 };
@@ -926,9 +887,11 @@ class StripedMap {
         // Verify alignment expectations.
         uintptr_t base = (uintptr_t)&array[0].value;
         uintptr_t delta = (uintptr_t)&array[1].value - base;
-        assert(delta % CacheLineSize == 0);
-        assert(base % CacheLineSize == 0);
+        ASSERT(delta % CacheLineSize == 0);
+        ASSERT(base % CacheLineSize == 0);
     }
+#else
+    constexpr StripedMap() {}
 #endif
 };
 
@@ -991,6 +954,109 @@ static inline bool operator != (DisguisedPtr<objc_object> lhs, id rhs) {
     return lhs != (objc_object *)rhs;
 }
 
+
+// Storage for a thread-safe chained hook function.
+// get() returns the value for calling.
+// set() installs a new function and returns the old one for chaining.
+// More precisely, set() writes the old value to a variable supplied by
+// the caller. get() and set() use appropriate barriers so that the
+// old value is safely written to the variable before the new value is
+// called to use it.
+//
+// T1: store to old variable; store-release to hook variable
+// T2: load-acquire from hook variable; call it; called hook loads old variable
+
+template <typename Fn>
+class ChainedHookFunction {
+    std::atomic<Fn> hook{nil};
+
+public:
+    ChainedHookFunction(Fn f) : hook{f} { };
+
+    Fn get() {
+        return hook.load(std::memory_order_acquire);
+    }
+
+    void set(Fn newValue, Fn *oldVariable)
+    {
+        Fn oldValue = hook.load(std::memory_order_relaxed);
+        do {
+            *oldVariable = oldValue;
+        } while (!hook.compare_exchange_weak(oldValue, newValue,
+                                             std::memory_order_release,
+                                             std::memory_order_relaxed));
+    }
+};
+
+
+// A small vector for use as a global variable. Only supports appending and
+// iteration. Stores a single element inline, and multiple elements in a heap
+// allocation. There is no attempt to amortize reallocation cost; this is
+// intended to be used in situation where zero or one element is common, two
+// might happen, and three or more is very rare.
+//
+// This does not clean up its allocation, and thus cannot be used as a local
+// variable or member of something with limited lifetime.
+
+template <typename T, unsigned InlineCount>
+class GlobalSmallVector {
+    static_assert(std::is_pod<T>::value, "SmallVector requires POD types");
+    
+protected:
+    unsigned count{0};
+    union {
+        T inlineElements[InlineCount];
+        T *elements;
+    };
+    
+public:
+    void append(const T &val) {
+        if (count < InlineCount) {
+            // We have space. Store the new value inline.
+            inlineElements[count] = val;
+        } else if (count == InlineCount) {
+            // Inline storage is full. Switch to a heap allocation.
+            T *newElements = (T *)malloc((count + 1) * sizeof(T));
+            memcpy(newElements, inlineElements, count * sizeof(T));
+            newElements[count] = val;
+            elements = newElements;
+        } else {
+            // Resize the heap allocation and append.
+            elements = (T *)realloc(elements, (count + 1) * sizeof(T));
+            elements[count] = val;
+        }
+        count++;
+    }
+    
+    const T *begin() const {
+        return count <= InlineCount ? inlineElements : elements;
+    }
+    
+    const T *end() const {
+        return begin() + count;
+    }
+};
+
+// A small vector that cleans up its internal memory allocation when destroyed.
+template <typename T, unsigned InlineCount>
+class SmallVector: public GlobalSmallVector<T, InlineCount> {
+public:
+    ~SmallVector() {
+        if (this->count > InlineCount)
+            free(this->elements);
+    }
+
+    template <unsigned OtherCount>
+    void initFrom(const GlobalSmallVector<T, OtherCount> &other) {
+        ASSERT(this->count == 0);
+        this->count = (unsigned)(other.end() - other.begin());
+        if (this->count > InlineCount) {
+            this->elements = (T *)memdup(other.begin(), this->count * sizeof(T));
+        } else {
+            memcpy(this->inlineElements, other.begin(), this->count * sizeof(T));
+        }
+    }
+};
 
 // Pointer hash function.
 // This is not a terrific hash, but it is fast 

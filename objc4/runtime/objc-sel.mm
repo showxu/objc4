@@ -25,16 +25,15 @@
 
 #include "objc-private.h"
 #include "objc-cache.h"
+#include "DenseMapExtras.h"
 
 #if SUPPORT_PREOPT
 static const objc_selopt_t *builtins = NULL;
+static bool useDyldSelectorLookup = false;
 #endif
 
 
-static size_t SelrefCount = 0;
-
-static NXMapTable *namedSelectors;
-
+static objc::ExplicitInitDenseSet<const char *> namedSelectors;
 static SEL search_builtins(const char *key);
 
 
@@ -44,11 +43,17 @@ static SEL search_builtins(const char *key);
 **********************************************************************/
 void sel_init(size_t selrefCount)
 {
-    // save this value for later
-    SelrefCount = selrefCount;
-
 #if SUPPORT_PREOPT
-    builtins = preoptimizedSelectors();
+    // If dyld finds a known shared cache selector, then it must be also looking
+    // in the shared cache table.
+    if (_dyld_get_objc_selector("retain") != nil)
+        useDyldSelectorLookup = true;
+    else
+        builtins = preoptimizedSelectors();
+
+    if (PrintPreopt && useDyldSelectorLookup) {
+        _objc_inform("PREOPTIMIZATION: using dyld selector opt");
+    }
 
     if (PrintPreopt  &&  builtins) {
         uint32_t occupied = builtins->occupied;
@@ -59,47 +64,24 @@ void sel_init(size_t selrefCount)
         _objc_inform("PREOPTIMIZATION: %u/%u (%u%%) hash table occupancy",
                      occupied, capacity,
                      (unsigned)(occupied/(double)capacity*100));
-        }
+    }
+	namedSelectors.init(useDyldSelectorLookup ? 0 : (unsigned)selrefCount);
+#else
+	namedSelectors.init((unsigned)selrefCount);
 #endif
 
     // Register selectors used by libobjc
 
-#define s(x) SEL_##x = sel_registerNameNoLock(#x, NO)
-#define t(x,y) SEL_##y = sel_registerNameNoLock(#x, NO)
+    mutex_locker_t lock(selLock);
 
-    sel_lock();
-
-    s(load);
-    s(initialize);
-    t(resolveInstanceMethod:, resolveInstanceMethod);
-    t(resolveClassMethod:, resolveClassMethod);
-    t(.cxx_construct, cxx_construct);
-    t(.cxx_destruct, cxx_destruct);
-    s(retain);
-    s(release);
-    s(autorelease);
-    s(retainCount);
-    s(alloc);
-    t(allocWithZone:, allocWithZone);
-    s(dealloc);
-    s(copy);
-    s(new);
-    t(forwardInvocation:, forwardInvocation);
-    t(_tryRetain, tryRetain);
-    t(_isDeallocating, isDeallocating);
-    s(retainWeakReference);
-    s(allowsWeakReference);
-
-    sel_unlock();
-
-#undef s
-#undef t
+    SEL_cxx_construct = sel_registerNameNoLock(".cxx_construct", NO);
+    SEL_cxx_destruct = sel_registerNameNoLock(".cxx_destruct", NO);
 }
 
 
 static SEL sel_alloc(const char *name, bool copy)
 {
-    selLock.assertWriting();
+    selLock.assertLocked();
     return (SEL)(copy ? strdupIfMutable(name) : name);    
 }
 
@@ -119,62 +101,50 @@ BOOL sel_isMapped(SEL sel)
 
     if (sel == search_builtins(name)) return YES;
 
-    rwlock_reader_t lock(selLock);
-    if (namedSelectors) {
-        return (sel == (SEL)NXMapGet(namedSelectors, name));
-    }
-    return false;
+    mutex_locker_t lock(selLock);
+    auto it = namedSelectors.get().find(name);
+    return it != namedSelectors.get().end() && (SEL)*it == sel;
 }
 
 
 static SEL search_builtins(const char *name) 
 {
 #if SUPPORT_PREOPT
-    if (builtins) return (SEL)builtins->get(name);
+  if (builtins) {
+      SEL result = 0;
+      if ((result = (SEL)builtins->get(name)))
+          return result;
+
+      if ((result = (SEL)_dyld_get_objc_selector(name)))
+          return result;
+  } else if (useDyldSelectorLookup) {
+      if (SEL result = (SEL)_dyld_get_objc_selector(name))
+          return result;
+  }
 #endif
     return nil;
 }
 
 
-static SEL __sel_registerName(const char *name, int lock, int copy) 
+static SEL __sel_registerName(const char *name, bool shouldLock, bool copy) 
 {
     SEL result = 0;
 
-    if (lock) selLock.assertUnlocked();
-    else selLock.assertWriting();
+    if (shouldLock) selLock.assertUnlocked();
+    else selLock.assertLocked();
 
     if (!name) return (SEL)0;
 
     result = search_builtins(name);
     if (result) return result;
     
-    if (lock) selLock.read();
-    if (namedSelectors) {
-        result = (SEL)NXMapGet(namedSelectors, name);
-    }
-    if (lock) selLock.unlockRead();
-    if (result) return result;
-
-    // No match. Insert.
-
-    if (lock) selLock.write();
-
-    if (!namedSelectors) {
-        namedSelectors = NXCreateMapTable(NXStrValueMapPrototype, 
-                                          (unsigned)SelrefCount);
-    }
-    if (lock) {
-        // Rescan in case it was added while we dropped the lock
-        result = (SEL)NXMapGet(namedSelectors, name);
-    }
-    if (!result) {
-        result = sel_alloc(name, copy);
-        // fixme choose a better container (hash not map for starters)
-        NXMapInsert(namedSelectors, sel_getName(result), result);
-    }
-
-    if (lock) selLock.unlockWrite();
-    return result;
+    conditional_mutex_locker_t lock(selLock, shouldLock);
+	auto it = namedSelectors.get().insert(name);
+	if (it.second) {
+		// No match. Insert.
+		*it.first = (const char *)sel_alloc(name, copy);
+	}
+	return (SEL)*it.first;
 }
 
 
@@ -184,16 +154,6 @@ SEL sel_registerName(const char *name) {
 
 SEL sel_registerNameNoLock(const char *name, bool copy) {
     return __sel_registerName(name, 0, copy);  // NO lock, maybe copy
-}
-
-void sel_lock(void)
-{
-    selLock.write();
-}
-
-void sel_unlock(void)
-{
-    selLock.unlockWrite();
 }
 
 

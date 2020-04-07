@@ -34,7 +34,9 @@
 
 #ifdef __APPLE_API_PRIVATE
 
-#define _OBJC_PRIVATE_H_
+#ifndef _OBJC_PRIVATE_H_
+#   define _OBJC_PRIVATE_H_
+#endif
 #include <stdint.h>
 #include <objc/hashtable.h>
 #include <objc/maptable.h>
@@ -59,6 +61,18 @@ gdb_class_getClass(Class _Nonnull cls)
 OBJC_EXPORT Class _Nonnull gdb_object_getClass(id _Nullable obj)
     OBJC_AVAILABLE(10.7, 4.3, 9.0, 1.0, 2.0);
 
+/***********************************************************************
+* Class inspection
+**********************************************************************/
+
+#if __OBJC2__
+
+// Return the raw, mangled name of cls.
+OBJC_EXPORT const char * _Nonnull
+objc_debug_class_getNameRaw(Class _Nullable cls)
+OBJC_AVAILABLE(10.15, 13.0, 13.0, 6.0, 5.0);
+
+#endif
 
 /***********************************************************************
 * Class lists for heap.
@@ -69,6 +83,15 @@ OBJC_EXPORT Class _Nonnull gdb_object_getClass(id _Nullable obj)
 // Maps class name to Class, for in-use classes only. NXStrValueMapPrototype.
 OBJC_EXPORT NXMapTable * _Nullable gdb_objc_realized_classes
     OBJC_AVAILABLE(10.6, 3.1, 9.0, 1.0, 2.0);
+
+// A generation count of realized classes. Increments when new classes
+// are realized. This is NOT an exact count of the number of classes.
+// It's not guaranteed by how much it increases when classes are
+// realized, only that it increases by something. When classes are
+// removed (unloading bundles or destroying dynamically allocated
+// classes) the number will also increase to signal that there has
+// been a change.
+OBJC_EXPORT uintptr_t objc_debug_realized_class_generation_count;
 
 #else
 
@@ -134,6 +157,49 @@ OBJC_EXPORT uintptr_t objc_indexed_classes_count;
 OBJC_EXPORT const uintptr_t objc_debug_class_rw_data_mask
     OBJC_AVAILABLE(10.13, 11.0, 11.0, 4.0, 2.0);
 
+// The ABI version for the internal runtime representations
+// lldb, CoreSymbolication and debugging tools need to know
+OBJC_EXTERN const uint32_t objc_class_abi_version
+	OBJC_AVAILABLE(10.15, 13.0, 13.0, 6.0, 5.0);
+
+// the maximum ABI version in existence for now
+#define OBJC_CLASS_ABI_VERSION_MAX 1
+
+// Used when objc_class_abi_version is absent or 0
+struct class_rw_v0_t {
+    uint32_t  flags;
+    uint32_t  version;
+    uintptr_t ro;                   // class_ro_t
+    uintptr_t methods;              // method_array_t
+    uintptr_t properties;           // property_array_t
+    uintptr_t protocols;            // protocol_array_t
+    Class _Nullable firstSubclass;
+    Class _Nullable nextSiblingClass;
+    char *_Nullable demangledName;
+
+    // uint32_t index;              // only when indexed-isa is used
+};
+
+// Used when objc_class_abi_version is 1
+struct class_rw_v1_t {
+    uint32_t  flags;
+    uint16_t  witness;
+    uint16_t  index;                // only when indexed-isa is used
+    uintptr_t ro_or_rw_ext;         // tagged union based on the low bit:
+                                    // 0: class_ro_t  1: class_rw_ext_t
+    Class _Nullable firstSubclass;
+    Class _Nullable nextSiblingClass;
+};
+
+struct class_rw_ext_v1_t {
+    uintptr_t ro;                   // class_ro_t
+    uintptr_t methods;              // method_array_t
+    uintptr_t properties;           // property_array_t
+    uintptr_t protocols;            // protocol_array_t
+    char *_Nullable demangledName;
+    uint32_t version;
+};
+
 #endif
 
 
@@ -148,6 +214,12 @@ OBJC_EXPORT const uintptr_t objc_debug_class_rw_data_mask
 OBJC_EXPORT uintptr_t objc_debug_taggedpointer_mask
     OBJC_AVAILABLE(10.9, 7.0, 9.0, 1.0, 2.0);
 
+// tagged pointers are obfuscated by XORing with a random value
+// decoded_obj = (obj ^ obfuscator)
+OBJC_EXPORT uintptr_t objc_debug_taggedpointer_obfuscator
+    OBJC_AVAILABLE(10.14, 12.0, 12.0, 5.0, 3.0);
+
+
 // tag_slot = (obj >> slot_shift) & slot_mask
 OBJC_EXPORT unsigned int objc_debug_taggedpointer_slot_shift
     OBJC_AVAILABLE(10.9, 7.0, 9.0, 1.0, 2.0);
@@ -158,7 +230,7 @@ OBJC_EXPORT uintptr_t objc_debug_taggedpointer_slot_mask
 OBJC_EXPORT Class _Nullable objc_debug_taggedpointer_classes[]
     OBJC_AVAILABLE(10.9, 7.0, 9.0, 1.0, 2.0);
 
-// payload = (obj << payload_lshift) >> payload_rshift
+// payload = (decoded_obj << payload_lshift) >> payload_rshift
 // Payload signedness is determined by the signedness of the right-shift.
 OBJC_EXPORT unsigned int objc_debug_taggedpointer_payload_lshift
     OBJC_AVAILABLE(10.9, 7.0, 9.0, 1.0, 2.0);
@@ -172,7 +244,7 @@ OBJC_EXPORT unsigned int objc_debug_taggedpointer_payload_rshift
 // tagged pointer scheme alone, it will appear to have an isa 
 // that is either nil or class __NSUnrecognizedTaggedPointer.
 
-// if (ext_mask != 0  &&  (obj & ext_mask) == ext_mask) 
+// if (ext_mask != 0  &&  (decoded_obj & ext_mask) == ext_mask)
 //   obj is a ext tagged pointer object
 OBJC_EXPORT uintptr_t objc_debug_taggedpointer_ext_mask
     OBJC_AVAILABLE(10.12, 10.0, 10.0, 3.0, 2.0);
@@ -187,7 +259,7 @@ OBJC_EXPORT uintptr_t objc_debug_taggedpointer_ext_slot_mask
 OBJC_EXPORT Class _Nullable objc_debug_taggedpointer_ext_classes[]
     OBJC_AVAILABLE(10.12, 10.0, 10.0, 3.0, 2.0);
 
-// payload = (obj << ext_payload_lshift) >> ext_payload_rshift
+// payload = (decoded_obj << ext_payload_lshift) >> ext_payload_rshift
 // Payload signedness is determined by the signedness of the right-shift.
 OBJC_EXPORT unsigned int objc_debug_taggedpointer_ext_payload_lshift
     OBJC_AVAILABLE(10.12, 10.0, 10.0, 3.0, 2.0);
@@ -198,42 +270,30 @@ OBJC_EXPORT unsigned int objc_debug_taggedpointer_ext_payload_rshift
 
 
 /***********************************************************************
-* Breakpoints in objc_msgSend for debugger stepping.
-* The array is a {0,0} terminated list of addresses. 
-* Each address is one of the following:
-* OBJC_MESSENGER_START:    Address is the start of a messenger function.
-* OBJC_MESSENGER_END_FAST: Address is a jump insn that calls an IMP.
-* OBJC_MESSENGER_END_SLOW: Address is some insn in the slow lookup path.
-* OBJC_MESSENGER_END_NIL:  Address is a return insn for messages to nil.
-* 
-* Every path from OBJC_MESSENGER_START should reach some OBJC_MESSENGER_END.
-* At all ENDs, the stack and parameter register state is the same as START.
-*
-* In some cases, the END_FAST case jumps to something other than the
-* method's implementation. In those cases the jump's destination will 
-* be another function that is marked OBJC_MESSENGER_START.
+* Swift marker bits
 **********************************************************************/
 #if __OBJC2__
-
-#define OBJC_MESSENGER_START    1
-#define OBJC_MESSENGER_END_FAST 2
-#define OBJC_MESSENGER_END_SLOW 3
-#define OBJC_MESSENGER_END_NIL  4
-
-struct objc_messenger_breakpoint {
-    uintptr_t address;
-    uintptr_t kind;
-};
-
-OBJC_EXPORT struct objc_messenger_breakpoint 
-gdb_objc_messenger_breakpoints[]
-    OBJC_AVAILABLE(10.9, 7.0, 9.0, 1.0, 2.0);
-
+OBJC_EXPORT const uintptr_t objc_debug_swift_stable_abi_bit
+OBJC_AVAILABLE(10.14.4, 12.2, 12.2, 5.2, 3.2);
 #endif
 
+
+
+/***********************************************************************
+* AutoreleasePoolPage
+**********************************************************************/
+OBJC_EXTERN const uint32_t objc_debug_autoreleasepoolpage_magic_offset  OBJC_AVAILABLE(10.15, 13.0, 13.0, 6.0, 5.0);
+OBJC_EXTERN const uint32_t objc_debug_autoreleasepoolpage_next_offset   OBJC_AVAILABLE(10.15, 13.0, 13.0, 6.0, 5.0);
+OBJC_EXTERN const uint32_t objc_debug_autoreleasepoolpage_thread_offset OBJC_AVAILABLE(10.15, 13.0, 13.0, 6.0, 5.0);
+OBJC_EXTERN const uint32_t objc_debug_autoreleasepoolpage_parent_offset OBJC_AVAILABLE(10.15, 13.0, 13.0, 6.0, 5.0);
+OBJC_EXTERN const uint32_t objc_debug_autoreleasepoolpage_child_offset  OBJC_AVAILABLE(10.15, 13.0, 13.0, 6.0, 5.0);
+OBJC_EXTERN const uint32_t objc_debug_autoreleasepoolpage_depth_offset  OBJC_AVAILABLE(10.15, 13.0, 13.0, 6.0, 5.0);
+OBJC_EXTERN const uint32_t objc_debug_autoreleasepoolpage_hiwat_offset  OBJC_AVAILABLE(10.15, 13.0, 13.0, 6.0, 5.0);
 
 __END_DECLS
 
+// APPLE_API_PRIVATE
 #endif
 
+// _OBJC_GDB_H
 #endif

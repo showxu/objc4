@@ -160,18 +160,6 @@
 #include "objc-abi.h"
 #include <objc/message.h>
 
-
-/* overriding the default object allocation and error handling routines */
-
-OBJC_EXPORT id	(*_alloc)(Class, size_t);
-OBJC_EXPORT id	(*_copy)(id, size_t);
-OBJC_EXPORT id	(*_realloc)(id, size_t);
-OBJC_EXPORT id	(*_dealloc)(id);
-OBJC_EXPORT id	(*_zoneAlloc)(Class, size_t, void *);
-OBJC_EXPORT id	(*_zoneRealloc)(id, size_t, void *);
-OBJC_EXPORT id	(*_zoneCopy)(id, size_t, void *);
-
-
 /***********************************************************************
 * Information about multi-thread support:
 *
@@ -207,7 +195,9 @@ Class object_setClass(id obj, Class cls)
     // weakly-referenced object has an un-+initialized isa.
     // Unresolved future classes are not so protected.
     if (!cls->isFuture()  &&  !cls->isInitialized()) {
-        _class_initialize(_class_getNonMetaClass(cls, nil));
+        // use lookUpImpOrNil to indirectly provoke +initialize
+        // to avoid duplicating the code to actually send +initialize
+        lookUpImpOrNil(nil, @selector(initialize), cls, LOOKUP_INITIALIZE);
     }
 
     return obj->changeIsa(cls);
@@ -494,9 +484,9 @@ void object_cxxDestruct(id obj)
 * return nil:  construction failed because a C++ constructor threw an exception
 **********************************************************************/
 id 
-object_cxxConstructFromClass(id obj, Class cls)
+object_cxxConstructFromClass(id obj, Class cls, int flags)
 {
-    assert(cls->hasCxxCtor());  // required for performance, not correctness
+    ASSERT(cls->hasCxxCtor());  // required for performance, not correctness
 
     id (*ctor)(id);
     Class supercls;
@@ -505,8 +495,8 @@ object_cxxConstructFromClass(id obj, Class cls)
 
     // Call superclasses' ctors first, if any.
     if (supercls  &&  supercls->hasCxxCtor()) {
-        bool ok = object_cxxConstructFromClass(obj, supercls);
-        if (!ok) return nil;  // some superclass's ctor failed - give up
+        bool ok = object_cxxConstructFromClass(obj, supercls, flags);
+        if (slowpath(!ok)) return nil;  // some superclass's ctor failed - give up
     }
 
     // Find this class's ctor, if any.
@@ -518,11 +508,17 @@ object_cxxConstructFromClass(id obj, Class cls)
         _objc_inform("CXX: calling C++ constructors for class %s", 
                      cls->nameForLogging());
     }
-    if ((*ctor)(obj)) return obj;  // ctor called and succeeded - ok
+    if (fastpath((*ctor)(obj))) return obj;  // ctor called and succeeded - ok
 
-    // This class's ctor was called and failed. 
+    supercls = cls->superclass; // this reload avoids a spill on the stack
+
+    // This class's ctor was called and failed.
     // Call superclasses's dtors to clean up.
     if (supercls) object_cxxDestructFromClass(obj, supercls);
+    if (flags & OBJECT_CONSTRUCT_FREE_ONFAILURE) free(obj);
+    if (flags & OBJECT_CONSTRUCT_CALL_BADALLOC) {
+        return _objc_callBadAllocHandler(cls);
+    }
     return nil;
 }
 
@@ -575,117 +571,6 @@ void fixupCopiedIvars(id newObject, id oldObject)
     }
 }
 
-
-/***********************************************************************
-* _class_resolveClassMethod
-* Call +resolveClassMethod, looking for a method to be added to class cls.
-* cls should be a metaclass.
-* Does not check if the method already exists.
-**********************************************************************/
-static void _class_resolveClassMethod(Class cls, SEL sel, id inst)
-{
-    assert(cls->isMetaClass());
-
-    if (! lookUpImpOrNil(cls, SEL_resolveClassMethod, inst, 
-                         NO/*initialize*/, YES/*cache*/, NO/*resolver*/)) 
-    {
-        // Resolver not implemented.
-        return;
-    }
-
-    BOOL (*msg)(Class, SEL, SEL) = (typeof(msg))objc_msgSend;
-    bool resolved = msg(_class_getNonMetaClass(cls, inst), 
-                        SEL_resolveClassMethod, sel);
-
-    // Cache the result (good or bad) so the resolver doesn't fire next time.
-    // +resolveClassMethod adds to self->ISA() a.k.a. cls
-    IMP imp = lookUpImpOrNil(cls, sel, inst, 
-                             NO/*initialize*/, YES/*cache*/, NO/*resolver*/);
-
-    if (resolved  &&  PrintResolving) {
-        if (imp) {
-            _objc_inform("RESOLVE: method %c[%s %s] "
-                         "dynamically resolved to %p", 
-                         cls->isMetaClass() ? '+' : '-', 
-                         cls->nameForLogging(), sel_getName(sel), imp);
-        }
-        else {
-            // Method resolver didn't add anything?
-            _objc_inform("RESOLVE: +[%s resolveClassMethod:%s] returned YES"
-                         ", but no new implementation of %c[%s %s] was found",
-                         cls->nameForLogging(), sel_getName(sel), 
-                         cls->isMetaClass() ? '+' : '-', 
-                         cls->nameForLogging(), sel_getName(sel));
-        }
-    }
-}
-
-
-/***********************************************************************
-* _class_resolveInstanceMethod
-* Call +resolveInstanceMethod, looking for a method to be added to class cls.
-* cls may be a metaclass or a non-meta class.
-* Does not check if the method already exists.
-**********************************************************************/
-static void _class_resolveInstanceMethod(Class cls, SEL sel, id inst)
-{
-    if (! lookUpImpOrNil(cls->ISA(), SEL_resolveInstanceMethod, cls, 
-                         NO/*initialize*/, YES/*cache*/, NO/*resolver*/)) 
-    {
-        // Resolver not implemented.
-        return;
-    }
-
-    BOOL (*msg)(Class, SEL, SEL) = (typeof(msg))objc_msgSend;
-    bool resolved = msg(cls, SEL_resolveInstanceMethod, sel);
-
-    // Cache the result (good or bad) so the resolver doesn't fire next time.
-    // +resolveInstanceMethod adds to self a.k.a. cls
-    IMP imp = lookUpImpOrNil(cls, sel, inst, 
-                             NO/*initialize*/, YES/*cache*/, NO/*resolver*/);
-
-    if (resolved  &&  PrintResolving) {
-        if (imp) {
-            _objc_inform("RESOLVE: method %c[%s %s] "
-                         "dynamically resolved to %p", 
-                         cls->isMetaClass() ? '+' : '-', 
-                         cls->nameForLogging(), sel_getName(sel), imp);
-        }
-        else {
-            // Method resolver didn't add anything?
-            _objc_inform("RESOLVE: +[%s resolveInstanceMethod:%s] returned YES"
-                         ", but no new implementation of %c[%s %s] was found",
-                         cls->nameForLogging(), sel_getName(sel), 
-                         cls->isMetaClass() ? '+' : '-', 
-                         cls->nameForLogging(), sel_getName(sel));
-        }
-    }
-}
-
-
-/***********************************************************************
-* _class_resolveMethod
-* Call +resolveClassMethod or +resolveInstanceMethod.
-* Returns nothing; any result would be potentially out-of-date already.
-* Does not check if the method already exists.
-**********************************************************************/
-void _class_resolveMethod(Class cls, SEL sel, id inst)
-{
-    if (! cls->isMetaClass()) {
-        // try [cls resolveInstanceMethod:sel]
-        _class_resolveInstanceMethod(cls, sel, inst);
-    } 
-    else {
-        // try [nonMetaClass resolveClassMethod:sel]
-        // and [cls resolveInstanceMethod:sel]
-        _class_resolveClassMethod(cls, sel, inst);
-        if (!lookUpImpOrNil(cls, sel, inst, 
-                            NO/*initialize*/, YES/*cache*/, NO/*resolver*/)) 
-        {
-            _class_resolveInstanceMethod(cls, sel, inst);
-        }
-    }
-}
 
 
 /***********************************************************************
@@ -745,23 +630,18 @@ BOOL class_respondsToMethod(Class cls, SEL sel)
 
 BOOL class_respondsToSelector(Class cls, SEL sel)
 {
-    return class_respondsToSelector_inst(cls, sel, nil);
+    return class_respondsToSelector_inst(nil, sel, cls);
 }
 
 
 // inst is an instance of cls or a subclass thereof, or nil if none is known.
 // Non-nil inst is faster in some cases. See lookUpImpOrForward() for details.
-bool class_respondsToSelector_inst(Class cls, SEL sel, id inst)
+NEVER_INLINE BOOL
+class_respondsToSelector_inst(id inst, SEL sel, Class cls)
 {
-    IMP imp;
-
-    if (!sel  ||  !cls) return NO;
-
     // Avoids +initialize because it historically did so.
     // We're not returning a callable IMP anyway.
-    imp = lookUpImpOrNil(cls, sel, inst, 
-                         NO/*initialize*/, YES/*cache*/, YES/*resolver*/);
-    return bool(imp);
+    return sel && cls && lookUpImpOrNil(inst, sel, cls, LOOKUP_RESOLVER);
 }
 
 
@@ -788,8 +668,7 @@ IMP class_getMethodImplementation(Class cls, SEL sel)
 
     if (!cls  ||  !sel) return nil;
 
-    imp = lookUpImpOrNil(cls, sel, nil, 
-                         YES/*initialize*/, YES/*cache*/, YES/*resolver*/);
+    imp = lookUpImpOrNil(nil, sel, cls, LOOKUP_INITIALIZE | LOOKUP_RESOLVER);
 
     // Translate forwarding function to C-callable external version
     if (!imp) {
@@ -948,26 +827,6 @@ char * method_copyArgumentType(Method m, unsigned int index)
     return encoding_copyArgumentType(method_getTypeEncoding(m), index);
 }
 
-
-/***********************************************************************
-* _objc_constructOrFree
-* Call C++ constructors, and free() if they fail.
-* bytes->isa must already be set.
-* cls must have cxx constructors.
-* Returns the object, or nil.
-**********************************************************************/
-id
-_objc_constructOrFree(id bytes, Class cls)
-{
-    assert(cls->hasCxxCtor());  // for performance, not correctness
-
-    id obj = object_cxxConstructFromClass(bytes, cls);
-    if (!obj) free(bytes);
-
-    return obj;
-}
-
-
 /***********************************************************************
 * _class_createInstancesFromZone
 * Batch-allocating version of _class_createInstanceFromZone.
@@ -998,8 +857,10 @@ _class_createInstancesFromZone(Class cls, size_t extraBytes, void *zone,
     for (unsigned i = 0; i < num_allocated; i++) {
         id obj = results[i];
         obj->initIsa(cls);    // fixme allow nonpointer
-        if (ctor) obj = _objc_constructOrFree(obj, cls);
-
+        if (ctor) {
+            obj = object_cxxConstructFromClass(obj, cls,
+                                               OBJECT_CONSTRUCT_FREE_ONFAILURE);
+        }
         if (obj) {
             results[i-shift] = obj;
         } else {
@@ -1045,11 +906,11 @@ copyPropertyAttributeString(const objc_property_attribute_t *attrs,
 #if DEBUG
     // debug build: sanitize input
     for (i = 0; i < count; i++) {
-        assert(attrs[i].name);
-        assert(strlen(attrs[i].name) > 0);
-        assert(! strchr(attrs[i].name, ','));
-        assert(! strchr(attrs[i].name, '"'));
-        if (attrs[i].value) assert(! strchr(attrs[i].value, ','));
+        ASSERT(attrs[i].name);
+        ASSERT(strlen(attrs[i].name) > 0);
+        ASSERT(! strchr(attrs[i].name, ','));
+        ASSERT(! strchr(attrs[i].name, '"'));
+        if (attrs[i].value) ASSERT(! strchr(attrs[i].value, ','));
     }
 #endif
 
@@ -1135,8 +996,8 @@ iteratePropertyAttributes(const char *attrs,
         const char *nameStart;
         const char *nameEnd;
 
-        assert(start < end);
-        assert(*start);
+        ASSERT(start < end);
+        ASSERT(*start);
         if (*start != '\"') {
             // single-char short name
             nameStart = start;
@@ -1156,7 +1017,7 @@ iteratePropertyAttributes(const char *attrs,
         const char *valueStart;
         const char *valueEnd;
 
-        assert(start <= end);
+        ASSERT(start <= end);
 
         valueStart = start;
         valueEnd = end;
@@ -1233,8 +1094,8 @@ copyPropertyAttributeList(const char *attrs, unsigned int *outCount)
 
     attrcount = iteratePropertyAttributes(attrs, copyOneAttribute, &ra, &rs);
 
-    assert((uint8_t *)(ra+1) <= (uint8_t *)result+size);
-    assert((uint8_t *)rs <= (uint8_t *)result+size);
+    ASSERT((uint8_t *)(ra+1) <= (uint8_t *)result+size);
+    ASSERT((uint8_t *)rs <= (uint8_t *)result+size);
 
     if (attrcount == 0) {
         free(result);

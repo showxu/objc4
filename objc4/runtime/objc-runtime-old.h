@@ -65,8 +65,8 @@
 #define CLS_LEAF                0x800000
 // class instances may have associative references
 #define CLS_INSTANCES_HAVE_ASSOCIATED_OBJECTS 0x1000000
-// class has instance-specific GC layout
-#define CLS_HAS_INSTANCE_SPECIFIC_LAYOUT 0x2000000
+// available for use; was CLS_HAS_INSTANCE_SPECIFIC_LAYOUT
+#define CLS_2000000 0x2000000
 // class compiled with ARC
 #define CLS_IS_ARC              0x4000000
 // class is not ARC but has ARC-style weak ivar layout
@@ -205,7 +205,7 @@ struct objc_class : objc_object {
 
     // set and clear must not overlap
     void changeInfo(uint32_t set, uint32_t clear) {
-        assert((set & clear) == 0);
+        ASSERT((set & clear) == 0);
 
         uint32_t oldf, newf;
         do {
@@ -234,20 +234,19 @@ struct objc_class : objc_object {
         return info & CLS_IS_ARC;
     }
 
-    bool hasCustomRR() { 
+    bool hasCustomRR() {
         return true;
     }
-    void setHasCustomRR(bool = false) { }
-    void setHasDefaultRR() { }
-    void printCustomRR(bool) { }
 
-    bool hasCustomAWZ() { 
+    bool hasCustomAWZ() {
         return true;
     }
-    void setHasCustomAWZ(bool = false) { }
-    void setHasDefaultAWZ() { }
-    void printCustomAWZ(bool) { }
 
+    bool forbidsAssociatedObjects() {
+        // Old runtime doesn't support forbidding associated objects.
+        return false;
+    }
+    
     bool instancesHaveAssociatedObjects() {
         return info & CLS_INSTANCES_HAVE_ASSOCIATED_OBJECTS;
     }
