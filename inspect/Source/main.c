@@ -1,19 +1,20 @@
 //
 //  main.c
-//  objc-debug
+//  objc-inspect
 //
-//  Created by Alchemist on 2017/12/15.
-//  Copyright © 2017年 alchemistxxd. All rights reserved.
+//  Created by 0xxd0 on 2017/12/15.
+//  Copyright © 2017年 0xxd0. All rights reserved.
 //
 
-#include "base.h"
-
+/// System Headers
 #include <CoreFoundation/CFRunLoop.h>
 #include <objc/objc-class.h>
 #include <Block.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+/// Private Headers
+#include "base.h"
 
 static inline void run_objc_inspect(void);
 
@@ -24,18 +25,18 @@ static inline void runLoop_source_perform(void *info) {
 }
 
 static let runLoop_get_source = ^(id perform_block) {
-    static var src0 = (CFRunLoopSourceRef)nil;
+    static var src_0 = (CFRunLoopSourceRef)nil;
     var src_ctx = (CFRunLoopSourceContext) {
         0, perform_block, nil, nil, nil, nil, nil, nil, nil, runLoop_source_perform
     };
-    if (src0 != nil) {
-        CFRunLoopSourceGetContext(src0, &src_ctx);
+    if (src_0 != nil) {
+        CFRunLoopSourceGetContext(src_0, &src_ctx);
         src_ctx.info = perform_block;
         goto done;
     }
-    src0 = CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &src_ctx);
+    src_0 = CFRunLoopSourceCreate(kCFAllocatorDefault, 0, &src_ctx);
 done:
-    return src0;
+    return src_0;
 };
 
 let objc_inspect = ^{
@@ -52,16 +53,16 @@ let objc_inspect = ^{
  
     printf("Please specify which Class to be inspect: ");
     let buf_size = (size_t)100;
-    var c_str = (char *)malloc(sizeof(char) * buf_size);
+    let c_str = (char *)malloc(sizeof(char) * buf_size);
     defer {
         free(c_str);
     };
     fgets(c_str, buf_size, stdin);
-    var cls = objc_getClass(strtok(c_str, "\n"));
+    let cls = objc_getClass(strtok(c_str, "\n"));
     
     printf("Class Method list: \n");
     var cls_mtd_c = (uint)0;
-    var cls_mtd_ls = class_copyMethodList(object_getClass((id)cls), &cls_mtd_c);
+    let cls_mtd_ls = class_copyMethodList(object_getClass((id)cls), &cls_mtd_c);
     defer {
         free(cls_mtd_ls);
     };
@@ -72,7 +73,7 @@ let objc_inspect = ^{
     
     printf("Instance Method list: \n");
     var ins_mtd_c = (uint)0;
-    var ins_mtd_ls = class_copyMethodList(cls, &ins_mtd_c);
+    let ins_mtd_ls = class_copyMethodList(cls, &ins_mtd_c);
     defer {
         free(ins_mtd_ls);
     };
@@ -81,7 +82,7 @@ let objc_inspect = ^{
         printf("%d. -%s\n", i, sel_getName(method_getName(method)));
     }
     
-    var sel_str = (char *)malloc(sizeof(char) *buf_size);
+    let sel_str = (char *)malloc(sizeof(char) *buf_size);
     defer {
         free(sel_str);
     };
@@ -104,13 +105,13 @@ input:
 
 static inline void run_objc_inspect(void) {
     let copyed_blk = _Block_copy((id)objc_inspect);
-    var src0 = runLoop_get_source(copyed_blk);
-    if (CFRunLoopContainsSource(CFRunLoopGetCurrent(), src0, kCFRunLoopDefaultMode)){
+    let src_0 = runLoop_get_source(copyed_blk);
+    if (CFRunLoopContainsSource(CFRunLoopGetCurrent(), src_0, kCFRunLoopDefaultMode)) {
         goto done;
     }
-    CFRunLoopAddSource(CFRunLoopGetCurrent(), src0, kCFRunLoopDefaultMode);
+    CFRunLoopAddSource(CFRunLoopGetCurrent(), src_0, kCFRunLoopDefaultMode);
 done:
-    CFRunLoopSourceSignal(src0);
+    CFRunLoopSourceSignal(src_0);
     CFRunLoopWakeUp(CFRunLoopGetCurrent());
 }
 

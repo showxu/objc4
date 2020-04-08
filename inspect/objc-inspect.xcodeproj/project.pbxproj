@@ -149,6 +149,7 @@
 /* Begin XCBuildConfiguration section */
 		335562BB1FE3A17F00BD601B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 330CB39B1FEBFFFA001FD41C /* objc-inspect.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -205,6 +206,7 @@
 		};
 		335562BC1FE3A17F00BD601B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 330CB39B1FEBFFFA001FD41C /* objc-inspect.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -254,7 +256,6 @@
 		};
 		33B571A91FE3A49100FCE649 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 330CB39B1FEBFFFA001FD41C /* objc-inspect.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
@@ -266,7 +267,6 @@
 		};
 		33B571AA1FE3A49100FCE649 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 330CB39B1FEBFFFA001FD41C /* objc-inspect.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
