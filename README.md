@@ -82,7 +82,6 @@ In latest dyld-733.6 (aka. dyld-421.2 later), apple use this [ruby script](https
 `<kern/restartable.h>` is generated form `restartable.defs` in xnu tarball during building xun kernel, which is a littel different from the one that shipped with public sdk that located in `/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/kern/restartable.h`.
 
 ## Build Setting
-
 | Declaration | Value |
 |-------------|-------|
 | HEADER_SEARCH_PATHS | $(SRCROOT)/../macosx.internal/System/Library/Frameworks/System.framework/PrivateHeaders |
@@ -93,10 +92,9 @@ In latest dyld-733.6 (aka. dyld-421.2 later), apple use this [ruby script](https
 | OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*] | -lc++abi -Xlinker -interposable_list -Xlinker interposable.txt |
 
 ### Run Script
+Evidently public macosx sdk is our only choice, we need to update value of parameter `-sdk` from `macosx.internal` to `macosx` in run script of objc target. 
 
-
-## License 
-
+## License
 This project is released under the **Apache License 2.0**. The objc4 project is released under the **APPLE PUBLIC SOURCE LICENSE Version 2.0**.
 
 [![license](https://img.shields.io/github/license/0xxd0/objc4.svg?colorA=24292e&colorB=24292e&style=flat)](https://github.com/0xxd0/objc4/blob/master/LICENSE)
