@@ -1,29 +1,35 @@
-# objc4 
- 
-[![VSTS Build](https://alchemistxxd.visualstudio.com/_apis/public/build/definitions/e0656143-5484-4af8-8aa3-01f9baba5da1/1/badge)](https://alchemistxxd.visualstudio.com/Apple%20Open%20Source/_git/objc4) [![Travis](https://img.shields.io/travis/0xxd0/objc4.svg?style=flat)](https://www.travis-ci.org/0xxd0/objc4) [![Join the chat at https://gitter.im/0xxd0/objc4](https://badges.gitter.im/0xxd0/objc4.svg)](https://gitter.im/0xxd0/objc4?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![support](https://img.shields.io/badge/support-macOS%20%7C%20iOS-orange.svg) ![GitHub top language](https://img.shields.io/github/languages/top/0xxd0/objc4.svg?colorB=6866fb) ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/0xxd0/objc4.svg?colorA=24292e&colorB=24292e&style=flat)
+# **objc4** 
+[![Travis](https://img.shields.io/travis/0xxd0/objc4.svg?style=flat)](https://www.travis-ci.org/0xxd0/objc4) 
+[![Join the chat at https://gitter.im/0xxd0/objc4](https://badges.gitter.im/0xxd0/objc4.svg)](https://gitter.im/0xxd0/objc4?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
+![support](https://img.shields.io/badge/support-macOS%20%7C%20iOS-orange.svg)
 
-This project is a buildable version of Objective-C runtime (latest objc 723) on [Apple Open Source](https://opensource.apple.com/tarballs/objc4/)
+This project is a buildable and debuggable version of latest Objective-C runtime (**objc4-781**) on [Apple Open Source](https://opensource.apple.com/tarballs/objc4/)
 
-- [Requirement](#requirement)
-- [Installation](#installation)
-- [Target dependencies tarballs](#target-dependencies-tarballs)
-- [Build Phases](#build-phases)
-    - **Header** - [Missing Private Header](#missing-private-header), [Uninclude Private Header](#uninclude-private-header)
+- [Requirement](#Requirement)
+- [Installation](#Installation)
+- [Usage](#Usage)
+- [objc4 tarballs](#target-dependencies-tarballs)
+- [Build Phases](#Build-Phases)
 - [Build Setting](#build-setting)
 - [License](#license)
 
 
-## Requirement
+## **Requirement**
+[![Xcode 11.3](https://img.shields.io/badge/Xcode-11.3-blue?colorA=3caefc&colorB=24292e)](https://developer.apple.com/xcode/) 
+[![macOS 10.15](https://img.shields.io/badge/macOS-10.15-blue?colorA=blueviolet&colorB=24292e)](https://developer.apple.com/macos/)
 
-[![Xcode 9.0+](https://img.shields.io/badge/Xcode-9.0%2B-blue.svg?colorA=3caefc&colorB=24292e)](https://developer.apple.com/xcode/)
 
-## Installation
+## **Installation**
 
-### Manually
+#### Manually
+Download zip or clone this repo, select **objc scheme** and build.
 
-Download zip or clone repo and integrate into your project manually.
 
-## objc4 tarballs
+## **Usage**
+After building the **objc scheme**, manually integrate generated `libobjc.A.dylib` into your project manually. Or you can use **objc-inspect** scheme which is a preset inspector for debugging objc4 runtime.
+
+
+## **objc4 tarballs**
 - [objc4-781](https://opensource.apple.com/tarballs/objc4/objc4-781.tar.gz)
 - [xnu-6153.41.3](https://opensource.apple.com/tarballs/xnu/xnu-6153.41.3.tar.gz)
 - [Libc-825.24](https://opensource.apple.com/tarballs/Libc/Libc-825.24.tar.gz)
@@ -35,17 +41,17 @@ Download zip or clone repo and integrate into your project manually.
 - [libplatform-220](https://opensource.apple.com/tarballs/libplatform/libplatform-220.tar.gz)
 - [libpthread-416.40.3](https://opensource.apple.com/tarballs/libpthread/libpthread-416.40.3.tar.gz)
 
-## Build Phases
 
-### Private Header 
+## **Build Phases**
 
-| file | header | tarball | description |
-|------|--------|---------| ------------ |
+#### Private Header 
+| objc header | #include | tarball |
+|------|--------|---------|
 | objc-os.h | `#include <sys/reason.h>` | /xnu-6153.41.3/bsd/sys/reason.h |
 | objc-os.h | `#include <mach-o/dyld_priv.h>` | /dyld-733.6/include/mach-o/dyld_priv.h |
 | objc-os.h | `#include <os/lock_private.h>` | /libplatform-220/private/os/lock_private.h |
 | lock_private.h | `#include <os/base_private.h>` | /libplatform-220/private/os/base_private.h |
-| objc-os.h | `#include <System/pthread_machdep.h>` | removed in latest Libc tarball (Libc-1353.41.1) | this header should be commonented |
+| objc-os.h | `#include <System/pthread_machdep.h>` | removed in latest Libc tarball (Libc-1353.41.1), this header should be commented-out |
 | pthread_machdep.h | `#include <System/machine/cpu_capabilities.h>` | /xnu-6153.41.3/osfmk/machine/cpu_capabilities.h |
 | objc-os.h | `#include <pthread/workqueue_private.h>` | /libpthread-416.40.3/private/workqueue_private.h | 
 | objc-os.h | `#include <objc-shared-cache.h>` | /dyld-733.6/include/objc-shared-cache.h | 
@@ -53,11 +59,11 @@ Download zip or clone repo and integrate into your project manually.
 | objc-block-trampolines.mm | `#include <Block_private.h>` | /libclosure-74/Block_private.h |
 | objc-os.h | `#include <crt_externs.h>` | /Libc-1353.41.1/include/crt_externs.h |
 | objc-runtime-new.mm | `#include <mach/shared_region.h>` | /xnu-6153.41.3/osfmk/mach/shared_region.h |
-| objc-cache.mm  | `#include <kern/restartable.h>` | /xnu-6153.41.3/osfmk/mach/restartable.defs | build from xnu kernel |
+| objc-cache.mm  | `#include <kern/restartable.h>` | /xnu-6153.41.3/osfmk/mach/restartable.defs, build from xnu kernel |
 | objc-os.h | `#include <CrashReporterClient.h>` | /Libc-825.24/include/CrashReporterClient.h | 
 
 #### Private Header Included Header
-| file | header | tarball |
+| private header | #include | tarball |
 |------|--------|---------|
 | tsd_private.h | `#include <os/tsd.h>` | /xnu-6153.41.3/libsyscall/os/tsd.h |
 | tsd_private.h | `#include <pthread/spinlock_private.h>` | /libpthread-416.40.3/private/spinlock_private.h |
@@ -67,31 +73,28 @@ Download zip or clone repo and integrate into your project manually.
 
 #### Bridge OS
 
-On public macosx sdk (aka. Xcode 11.3.1), bridgeos (e.g. `__has_feature(attribute_availability_bridgeos)`) is unavailable, bridgeos availability should be removed.
+In public macosx sdk (latest Xcode 11.3.1), bridgeos (e.g. `__has_feature(attribute_availability_bridgeos)`) is unavailable, bridgeos availability should be removed or commented-out.
 
 #### dyld
 
-In latest dyld-733.6 (aka. dyld-421.2 later), apple use this [ruby script](https://opensource.apple.com/source/dyld/dyld-733.6/bin/expand.rb) to expand versions, platfrom versions from a versionSets which defined in a YAML file, code generated by this script will be inserted after `@PLATFORM_VERSION_DEFS@`, `@IOS_PLATFORM_VERSION_DEFS@`, blah blah  in `dyld_priv.h`. For more detail please refer to [dyld](https://opensource.apple.com/source/dyld).
+In latest dyld-733.6 (dyld-421.2 later), apple use this [ruby script](https://opensource.apple.com/source/dyld/dyld-733.6/bin/expand.rb) to expand versions, platfrom versions from a `versionSets` which defined in a YAML file, code generated by this script will be inserted after `@MAC_VERSION_DEFS@`, `@IOS_VERSION_DEFS@`, `@WATCHOS_VERSION_DEFS@`, `@TVOS_VERSION_DEFS@` and `@BRIDGEOS_VERSION_DEFS@` in `dyld_priv.h`. For more detail please refer to [dyld](https://opensource.apple.com/source/dyld).
 
 #### XNU
 
-`<kern/restartable.h>` is generated form `restartable.defs` in xnu tarball during building xun kernel, which is a littel different from the one that shipped with public sdk that located in `/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/kern/restartable.h`.
+`<kern/restartable.h>` is generated form `restartable.defs` in xnu tarball during building xun kernel, which is a little different from the one that shipped with public sdk that located in `/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/kern/restartable.h`.
 
-## Build Setting
+## **Build Setting**
 | Declaration | Value |
 |-------------|-------|
-| HEADER_SEARCH_PATHS | $(SRCROOT)/../macosx.internal/System/Library/Frameworks/System.framework/PrivateHeaders |
-| GCC_PREPROCESSOR_DEFINITIONS | LIBC_NO_LIBCRASHREPORTERCLIENT |
-| ORDER_FILE | $(SRCROOT)/libobjc.order |
-| OTHER_LDFLAGS[sdk=macosx*] | -lc++abi -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt |
-| OTHER_LDFLAGS[sdk=iphoneos*][arch=*] | -lc++abi -Wl,-segalign,0x4000 -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt -isystem -iframework |
-| OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*] | -lc++abi -Xlinker -interposable_list -Xlinker interposable.txt |
+| `HEADER_SEARCH_PATHS` | $(SRCROOT)/../macosx.internal/System/Library/Frameworks/System.framework/PrivateHeaders |
+| `GCC_PREPROCESSOR_DEFINITIONS` | LIBC_NO_LIBCRASHREPORTERCLIENT |
+| `ORDER_FILE` | $(SRCROOT)/libobjc.order |
+| `OTHER_LDFLAGS[sdk=macosx*]` | -lc++abi -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt |
+| `OTHER_LDFLAGS[sdk=iphoneos*][arch=*]` | -lc++abi -Wl,-segalign,0x4000 -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt -isystem -iframework |
+| `OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]` | -lc++abi -Xlinker -interposable_list -Xlinker interposable.txt |
 
 ### Run Script
 Evidently public macosx sdk is our only choice, we need to update value of parameter `-sdk` from `macosx.internal` to `macosx` in run script of objc target. 
 
 ## License
 This project is released under the **Apache License 2.0**. The objc4 project is released under the **APPLE PUBLIC SOURCE LICENSE Version 2.0**.
-
-[![license](https://img.shields.io/github/license/0xxd0/objc4.svg?colorA=24292e&colorB=24292e&style=flat)](https://github.com/0xxd0/objc4/blob/master/LICENSE)
-
