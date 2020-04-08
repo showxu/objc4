@@ -121,41 +121,93 @@ typedef struct {
 } dyld_build_version_t;
 
 // Returns the active platform of the process
-extern dyld_platform_t dyld_get_active_platform(void) __API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0), bridgeos(3.0));
+extern dyld_platform_t dyld_get_active_platform(void) __API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)/*, bridgeos(3.0)*/);
 
 // Base platforms are platforms that have version numbers (macOS, iOS, watchos, tvOS, bridgeOS)
 // All other platforms are mapped to a base platform for version checks
-extern dyld_platform_t dyld_get_base_platform(dyld_platform_t platform) __API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0), bridgeos(3.0));
+extern dyld_platform_t dyld_get_base_platform(dyld_platform_t platform) __API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)/*, bridgeos(3.0)*/);
 
 // SPI to ask if a platform is a simulation platform
-extern bool dyld_is_simulator_platform(dyld_platform_t platform) __API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0), bridgeos(3.0));
+extern bool dyld_is_simulator_platform(dyld_platform_t platform) __API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)/*, bridgeos(3.0)*/);
 
 // Takes a version and returns if the image was built againt that SDK or newer
 // In the case of multi_plaform mach-o's it tests against the active platform
-extern bool dyld_sdk_at_least(const struct mach_header* mh, dyld_build_version_t version) __API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0), bridgeos(3.0));
+extern bool dyld_sdk_at_least(const struct mach_header* mh, dyld_build_version_t version) __API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)/*, bridgeos(3.0)*/);
 
 // Takes a version and returns if the image was built with that minos version or newer
 // In the case of multi_plaform mach-o's it tests against the active platform
-extern bool dyld_minos_at_least(const struct mach_header* mh, dyld_build_version_t version) __API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0), bridgeos(3.0));
+extern bool dyld_minos_at_least(const struct mach_header* mh, dyld_build_version_t version) __API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)/*, bridgeos(3.0)*/);
 
 // Convenience versions of the previous two functions that run against the the main executable
-extern bool dyld_program_sdk_at_least(dyld_build_version_t version) __API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0), bridgeos(3.0));
-extern bool dyld_program_minos_at_least(dyld_build_version_t version) __API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0), bridgeos(3.0));
+extern bool dyld_program_sdk_at_least(dyld_build_version_t version) __API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)/*, bridgeos(3.0)*/);
+extern bool dyld_program_minos_at_least(dyld_build_version_t version) __API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)/*, bridgeos(3.0)*/);
 
 // Function that walks through the load commands and calls the internal block for every version found
 // Intended as a fallback for very complex (and rare) version checks, or for tools that need to
 // print our everything for diagnostic reasons
-extern void dyld_get_image_versions(const struct mach_header* mh, void (^callback)(dyld_platform_t platform, uint32_t sdk_version, uint32_t min_version)) __API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0), bridgeos(3.0));
+extern void dyld_get_image_versions(const struct mach_header* mh, void (^callback)(dyld_platform_t platform, uint32_t sdk_version, uint32_t min_version)) __API_AVAILABLE(macos(10.14), ios(12.0), watchos(5.0), tvos(12.0)/*, bridgeos(3.0)*/);
 
 // Convienence constants for dyld version SPIs.
 
 //@VERSION_SET_DEFS@
 
 //@MACOS_PLATFORM_VERSION_DEFS@
+/// resolve missing Macro. These Macro only available in lower dyld(e.g. dyld-421.1),
+#define DYLD_MACOSX_VERSION_10_4        0x000A0400
+#define DYLD_MACOSX_VERSION_10_5        0x000A0500
+#define DYLD_MACOSX_VERSION_10_6        0x000A0600
+#define DYLD_MACOSX_VERSION_10_7        0x000A0700
+#define DYLD_MACOSX_VERSION_10_8        0x000A0800
+#define DYLD_MACOSX_VERSION_10_9        0x000A0900
+#define DYLD_MACOSX_VERSION_10_10        0x000A0A00
+#define DYLD_MACOSX_VERSION_10_11        0x000A0B00
+#define DYLD_MACOSX_VERSION_10_12        0x000A0C00
+/// resolve missing Macro. These Macro is not available in all current dyld release
+#define DYLD_MACOSX_VERSION_10_13        0x000A0D00
+#define DYLD_MACOSX_VERSION_10_14        0x000A0E00
 
 //@IOS_PLATFORM_VERSION_DEFS@
+/// resolve missing Macro. These Macro only available in lower dyld(e.g. dyld-421.1)
+#define DYLD_IOS_VERSION_2_0        0x00020000
+#define DYLD_IOS_VERSION_2_1        0x00020100
+#define DYLD_IOS_VERSION_2_2        0x00020200
+#define DYLD_IOS_VERSION_3_0        0x00030000
+#define DYLD_IOS_VERSION_3_1        0x00030100
+#define DYLD_IOS_VERSION_3_2        0x00030200
+#define DYLD_IOS_VERSION_4_0        0x00040000
+#define DYLD_IOS_VERSION_4_1        0x00040100
+#define DYLD_IOS_VERSION_4_2        0x00040200
+#define DYLD_IOS_VERSION_4_3        0x00040300
+#define DYLD_IOS_VERSION_5_0        0x00050000
+#define DYLD_IOS_VERSION_5_1        0x00050100
+#define DYLD_IOS_VERSION_6_0        0x00060000
+#define DYLD_IOS_VERSION_6_1        0x00060100
+#define DYLD_IOS_VERSION_7_0        0x00070000
+#define DYLD_IOS_VERSION_7_1        0x00070100
+#define DYLD_IOS_VERSION_8_0        0x00080000
+#define DYLD_IOS_VERSION_8_1        0x00080100
+#define DYLD_IOS_VERSION_8_2        0x00080200
+#define DYLD_IOS_VERSION_8_3        0x00080300
+#define DYLD_IOS_VERSION_8_4        0x00080400
+#define DYLD_IOS_VERSION_9_0        0x00090000
+#define DYLD_IOS_VERSION_9_1        0x00090100
+#define DYLD_IOS_VERSION_9_2        0x00090200
+#define DYLD_IOS_VERSION_9_3        0x00090300
+#define DYLD_IOS_VERSION_10_0        0x000A0000
+/// resolve missing Macro. These Macro is not available in all current dyld release
+#define DYLD_IOS_VERSION_11_0        0x000B0000
+#define DYLD_IOS_VERSION_12_0        0x000C0000
 
 //@WATCHOS_PLATFORM_VERSION_DEFS@
+/// resolve missing Macro. These Macro only available in lower dyld(e.g. dyld-421.1)
+#define DYLD_WATCHOS_VERSION_1_0    0x00010000
+#define DYLD_WATCHOS_VERSION_2_0    0x00020000
+#define DYLD_WATCHOS_VERSION_2_1    0x00020100
+#define DYLD_WATCHOS_VERSION_2_2    0x00020200
+#define DYLD_WATCHOS_VERSION_3_0    0x00030000
+/// resolve missing Macro. These Macro is not available in all current dyld release
+#define DYLD_WATCHOS_VERSION_4_0    0x00040000
+#define DYLD_WATCHOS_VERSION_5_0    0x00050000
 
 //@TVOS_PLATFORM_VERSION_DEFS@
 
