@@ -70,9 +70,6 @@
             <Group
                location = "group:System"
                name = "System">
-               <FileRef
-                  location = "group:pthread_machdep.h">
-               </FileRef>
                <Group
                   location = "group:machine"
                   name = "machine">
