@@ -6,7 +6,7 @@
 //  Copyright © 2017年 alchemistxxd. All rights reserved.
 //
 
-#include "base_private.h"
+#include "base.h"
 
 #include <CoreFoundation/CFRunLoop.h>
 #include <objc/objc-class.h>
@@ -90,7 +90,9 @@ let objc_inspect = ^{
     do {
         let sel = sel_getUid(sel_str);
         let is_cls = object_isClass(obj);
-        obj = objc_msgSend(obj, sel) ?: obj;
+        
+        let msgSend = (id (*)(id, SEL))objc_msgSend;
+        obj = msgSend(obj, sel) ?: obj;
         printf("Message: %c[%s %s] \n\n", is_cls ? '+' : '-', class_getName(object_getClass(obj)), sel_getName(sel));
 input:
         printf("Please specify sel, type enter for terminate: ");

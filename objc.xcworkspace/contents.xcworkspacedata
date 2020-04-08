@@ -125,6 +125,6 @@
       location = "group:objc4/objc.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:debug/debug.xcodeproj">
+      location = "group:objc4/../inspect/objc-inspect.xcodeproj">
    </FileRef>
 </Workspace>

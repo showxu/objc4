@@ -2,7 +2,7 @@
 //  base.h
 //  Magicians
 //
-//  Created by Alchemist on 2016/12/2.
+//  Created by showxu on 2016/12/2.
 //  Copyright © 2016年 alchemistxxd. All rights reserved.
 //
 
@@ -52,4 +52,3 @@ _Pragma("clang diagnostic pop")
 #if defined(__cplusplus)
 }
 #endif
-

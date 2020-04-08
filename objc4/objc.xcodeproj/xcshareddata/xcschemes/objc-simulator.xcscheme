@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0930"
+   LastUpgradeVersion = "1130"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "33B571A31FE3A49100FCE649"
-               BuildableName = "debug"
-               BlueprintName = "debug"
-               ReferencedContainer = "container:debug.xcodeproj">
+               BlueprintIdentifier = "837F67A81A771F63004D34FA"
+               BuildableName = "objc-simulator"
+               BlueprintName = "objc-simulator"
+               ReferencedContainer = "container:objc.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -29,17 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "33B571A31FE3A49100FCE649"
-            BuildableName = "debug"
-            BlueprintName = "debug"
-            ReferencedContainer = "container:debug.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
@@ -51,18 +40,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "33B571A31FE3A49100FCE649"
-            BuildableName = "debug"
-            BlueprintName = "debug"
-            ReferencedContainer = "container:debug.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
-      <AdditionalOptions>
-      </AdditionalOptions>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -70,16 +47,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "33B571A31FE3A49100FCE649"
-            BuildableName = "debug"
-            BlueprintName = "debug"
-            ReferencedContainer = "container:debug.xcodeproj">
+            BlueprintIdentifier = "837F67A81A771F63004D34FA"
+            BuildableName = "objc-simulator"
+            BlueprintName = "objc-simulator"
+            ReferencedContainer = "container:objc.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
