@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		33B571A71FE3A49100FCE649 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 33B571A61FE3A49100FCE649 /* main.c */; };
-		840B53C2208CA2EF00FAAA28 /* libobjc.A.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 840B53C1208CA2EF00FAAA28 /* libobjc.A.dylib */; };
+		C1F83156243DDC4400E16D08 /* libobjc.A.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C1F83155243DDC4400E16D08 /* libobjc.A.dylib */; };
+		C1F83157243DDC4400E16D08 /* libobjc.A.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = C1F83155243DDC4400E16D08 /* libobjc.A.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -21,15 +22,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
+		C1F83158243DDC4400E16D08 /* Embed Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				C1F83157243DDC4400E16D08 /* libobjc.A.dylib in Embed Libraries */,
+			);
+			name = "Embed Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		330CB3961FEB7B5E001FD41C /* base_private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base_private.h; sourceTree = "<group>"; };
-		330CB39B1FEBFFFA001FD41C /* target.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = target.xcconfig; sourceTree = "<group>"; };
-		3310EAB71FE40B5E00A545A8 /* libobjc.A.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libobjc.A.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		338049DB1FE3CAAE003488DC /* debug */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = debug; sourceTree = BUILT_PRODUCTS_DIR; };
+		330CB3961FEB7B5E001FD41C /* base.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = base.h; sourceTree = "<group>"; };
+		330CB39B1FEBFFFA001FD41C /* objc-inspect.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "objc-inspect.xcconfig"; sourceTree = "<group>"; };
+		338049DB1FE3CAAE003488DC /* objc-inspect */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "objc-inspect"; sourceTree = BUILT_PRODUCTS_DIR; };
 		33B571A61FE3A49100FCE649 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		840B53C1208CA2EF00FAAA28 /* libobjc.A.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libobjc.A.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		C1F83155243DDC4400E16D08 /* libobjc.A.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; path = libobjc.A.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,35 +48,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				840B53C2208CA2EF00FAAA28 /* libobjc.A.dylib in Frameworks */,
+				C1F83156243DDC4400E16D08 /* libobjc.A.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		330CB39A1FEBFFE9001FD41C /* Config */ = {
-			isa = PBXGroup;
-			children = (
-				330CB39B1FEBFFFA001FD41C /* target.xcconfig */,
-			);
-			name = Config;
-			sourceTree = "<group>";
-		};
 		335562AD1FE3A17F00BD601B = {
 			isa = PBXGroup;
 			children = (
-				330CB39A1FEBFFE9001FD41C /* Config */,
+				330CB39B1FEBFFFA001FD41C /* objc-inspect.xcconfig */,
 				33B571A51FE3A49100FCE649 /* Source */,
 				33B571AB1FE3A4E200FCE649 /* Frameworks */,
-				338049DB1FE3CAAE003488DC /* debug */,
+				338049DB1FE3CAAE003488DC /* objc-inspect */,
 			);
 			sourceTree = "<group>";
 		};
 		33B571A51FE3A49100FCE649 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				330CB3961FEB7B5E001FD41C /* base_private.h */,
+				330CB3961FEB7B5E001FD41C /* base.h */,
 				33B571A61FE3A49100FCE649 /* main.c */,
 			);
 			path = Source;
@@ -74,8 +77,7 @@
 		33B571AB1FE3A4E200FCE649 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				840B53C1208CA2EF00FAAA28 /* libobjc.A.dylib */,
-				3310EAB71FE40B5E00A545A8 /* libobjc.A.dylib */,
+				C1F83155243DDC4400E16D08 /* libobjc.A.dylib */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -83,21 +85,22 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		33B571A31FE3A49100FCE649 /* debug */ = {
+		33B571A31FE3A49100FCE649 /* objc-inspect */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 33B571A81FE3A49100FCE649 /* Build configuration list for PBXNativeTarget "debug" */;
+			buildConfigurationList = 33B571A81FE3A49100FCE649 /* Build configuration list for PBXNativeTarget "objc-inspect" */;
 			buildPhases = (
 				33B571A01FE3A49100FCE649 /* Sources */,
 				33B571A11FE3A49100FCE649 /* Frameworks */,
 				33B571A21FE3A49100FCE649 /* CopyFiles */,
+				C1F83158243DDC4400E16D08 /* Embed Libraries */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = debug;
+			name = "objc-inspect";
 			productName = "objc-debug";
-			productReference = 338049DB1FE3CAAE003488DC /* debug */;
+			productReference = 338049DB1FE3CAAE003488DC /* objc-inspect */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -115,7 +118,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 335562B11FE3A17F00BD601B /* Build configuration list for PBXProject "debug" */;
+			buildConfigurationList = 335562B11FE3A17F00BD601B /* Build configuration list for PBXProject "objc-inspect" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -127,7 +130,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				33B571A31FE3A49100FCE649 /* debug */,
+				33B571A31FE3A49100FCE649 /* objc-inspect */,
 			);
 		};
 /* End PBXProject section */
@@ -251,7 +254,7 @@
 		};
 		33B571A91FE3A49100FCE649 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 330CB39B1FEBFFFA001FD41C /* target.xcconfig */;
+			baseConfigurationReference = 330CB39B1FEBFFFA001FD41C /* objc-inspect.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
@@ -263,7 +266,7 @@
 		};
 		33B571AA1FE3A49100FCE649 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 330CB39B1FEBFFFA001FD41C /* target.xcconfig */;
+			baseConfigurationReference = 330CB39B1FEBFFFA001FD41C /* objc-inspect.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
@@ -276,7 +279,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		335562B11FE3A17F00BD601B /* Build configuration list for PBXProject "debug" */ = {
+		335562B11FE3A17F00BD601B /* Build configuration list for PBXProject "objc-inspect" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				335562BB1FE3A17F00BD601B /* Debug */,
@@ -285,7 +288,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		33B571A81FE3A49100FCE649 /* Build configuration list for PBXNativeTarget "debug" */ = {
+		33B571A81FE3A49100FCE649 /* Build configuration list for PBXNativeTarget "objc-inspect" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				33B571A91FE3A49100FCE649 /* Debug */,
