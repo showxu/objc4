@@ -32,7 +32,6 @@ After building the **objc scheme**, manually integrate generated `libobjc.A.dyli
 ## **objc4 tarballs**
 - [objc4-781](https://opensource.apple.com/tarballs/objc4/objc4-781.tar.gz)
 - [xnu-6153.41.3](https://opensource.apple.com/tarballs/xnu/xnu-6153.41.3.tar.gz)
-- [Libc-825.24](https://opensource.apple.com/tarballs/Libc/Libc-825.24.tar.gz)
 - [Libc-1353.41.1](https://opensource.apple.com/tarballs/Libc/Libc-1353.41.1.tar.gz)
 - [dyld-733.6](https://opensource.apple.com/tarballs/dyld/dyld-733.6.tar.gz)
 - [libauto-187.tar.gz](https://opensource.apple.com/tarballs/libauto/libauto-187.tar.gz)
@@ -83,6 +82,7 @@ In latest dyld-733.6 (dyld-421.2 later), apple use this [ruby script](https://op
 
 `<kern/restartable.h>` is generated form `restartable.defs` in xnu tarball during building xun kernel, which is a little different from the one that shipped with public sdk that located in `/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/kern/restartable.h`.
 
+
 ## **Build Setting**
 | Declaration | Value |
 |-------------|-------|
@@ -95,6 +95,7 @@ In latest dyld-733.6 (dyld-421.2 later), apple use this [ruby script](https://op
 
 ### Run Script
 Evidently public macosx sdk is our only choice, we need to update value of parameter `-sdk` from `macosx.internal` to `macosx` in run script of objc target. 
+
 
 ## License
 This project is released under the **Apache License 2.0**. The objc4 project is released under the **APPLE PUBLIC SOURCE LICENSE Version 2.0**.
