@@ -152,6 +152,18 @@ extern void dyld_get_image_versions(const struct mach_header* mh, void (^callbac
 //@VERSION_SET_DEFS@
 
 //@MACOS_PLATFORM_VERSION_DEFS@
+
+//@IOS_PLATFORM_VERSION_DEFS@
+
+//@WATCHOS_PLATFORM_VERSION_DEFS@
+
+//@TVOS_PLATFORM_VERSION_DEFS@
+
+//@BRIDGEOS_PLATFORM_VERSION_DEFS@
+
+// Convienence constants for return values from dyld_get_sdk_version() and friends.
+
+//@MAC_VERSION_DEFS@
 /// resolve missing Macro. These Macro only available in lower dyld(e.g. dyld-421.1),
 #define DYLD_MACOSX_VERSION_10_4        0x000A0400
 #define DYLD_MACOSX_VERSION_10_5        0x000A0500
@@ -162,11 +174,10 @@ extern void dyld_get_image_versions(const struct mach_header* mh, void (^callbac
 #define DYLD_MACOSX_VERSION_10_10        0x000A0A00
 #define DYLD_MACOSX_VERSION_10_11        0x000A0B00
 #define DYLD_MACOSX_VERSION_10_12        0x000A0C00
-/// resolve missing Macro. These Macro is not available in all current dyld release
 #define DYLD_MACOSX_VERSION_10_13        0x000A0D00
 #define DYLD_MACOSX_VERSION_10_14        0x000A0E00
 
-//@IOS_PLATFORM_VERSION_DEFS@
+//@IOS_VERSION_DEFS@
 /// resolve missing Macro. These Macro only available in lower dyld(e.g. dyld-421.1)
 #define DYLD_IOS_VERSION_2_0        0x00020000
 #define DYLD_IOS_VERSION_2_1        0x00020100
@@ -194,32 +205,18 @@ extern void dyld_get_image_versions(const struct mach_header* mh, void (^callbac
 #define DYLD_IOS_VERSION_9_2        0x00090200
 #define DYLD_IOS_VERSION_9_3        0x00090300
 #define DYLD_IOS_VERSION_10_0        0x000A0000
-/// resolve missing Macro. These Macro is not available in all current dyld release
 #define DYLD_IOS_VERSION_11_0        0x000B0000
 #define DYLD_IOS_VERSION_12_0        0x000C0000
 
-//@WATCHOS_PLATFORM_VERSION_DEFS@
+//@WATCHOS_VERSION_DEFS@
 /// resolve missing Macro. These Macro only available in lower dyld(e.g. dyld-421.1)
 #define DYLD_WATCHOS_VERSION_1_0    0x00010000
 #define DYLD_WATCHOS_VERSION_2_0    0x00020000
 #define DYLD_WATCHOS_VERSION_2_1    0x00020100
 #define DYLD_WATCHOS_VERSION_2_2    0x00020200
 #define DYLD_WATCHOS_VERSION_3_0    0x00030000
-/// resolve missing Macro. These Macro is not available in all current dyld release
 #define DYLD_WATCHOS_VERSION_4_0    0x00040000
 #define DYLD_WATCHOS_VERSION_5_0    0x00050000
-
-//@TVOS_PLATFORM_VERSION_DEFS@
-
-//@BRIDGEOS_PLATFORM_VERSION_DEFS@
-
-// Convienence constants for return values from dyld_get_sdk_version() and friends.
-
-//@MAC_VERSION_DEFS@
-
-//@IOS_VERSION_DEFS@
-
-//@WATCHOS_VERSION_DEFS@
 
 //@TVOS_VERSION_DEFS@
 
