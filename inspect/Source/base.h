@@ -1,9 +1,9 @@
 //
 //  base.h
-//  Magicians
+//  objc-inspect
 //
 //  Created by showxu on 2016/12/2.
-//  Copyright © 2016年 alchemistxxd. All rights reserved.
+//  Copyright © 2016年 showxu. All rights reserved.
 //
 
 _Pragma("once")
