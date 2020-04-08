@@ -1,4 +1,3 @@
-
 # objc4 
  
 [![VSTS Build](https://alchemistxxd.visualstudio.com/_apis/public/build/definitions/e0656143-5484-4af8-8aa3-01f9baba5da1/1/badge)](https://alchemistxxd.visualstudio.com/Apple%20Open%20Source/_git/objc4) [![Travis](https://img.shields.io/travis/showxu/objc4.svg?style=flat)](https://www.travis-ci.org/showxu/objc4) [![Join the chat at https://gitter.im/showxu/objc4](https://badges.gitter.im/showxu/objc4.svg)](https://gitter.im/showxu/objc4?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) ![support](https://img.shields.io/badge/support-macOS%20%7C%20iOS-orange.svg) ![GitHub top language](https://img.shields.io/github/languages/top/showxu/objc4.svg?colorB=6866fb) ![GitHub repo size in bytes](https://img.shields.io/github/repo-size/showxu/objc4.svg?colorA=24292e&colorB=24292e&style=flat)
@@ -24,8 +23,10 @@ This project is a buildable version of Objective-C runtime (latest objc 723) on 
 
 Download zip or clone repo and integrate into your project manually.
 
-## Target dependencies tarballs
-
+## objc4 tarballs
+- [objc4-781](https://opensource.apple.com/tarballs/objc4/objc4-781.tar.gz)
+- [xnu-6153.41.3](https://opensource.apple.com/tarballs/xnu/xnu-6153.41.3.tar.gz)
+- [Libc-825.24](https://opensource.apple.com/tarballs/Libc/Libc-825.24.tar.gz)
 - [Libc-1353.41.1](https://opensource.apple.com/tarballs/Libc/Libc-1353.41.1.tar.gz)
 - [dyld-733.6](https://opensource.apple.com/tarballs/dyld/dyld-733.6.tar.gz)
 - [libauto-187.tar.gz](https://opensource.apple.com/tarballs/libauto/libauto-187.tar.gz)
@@ -33,13 +34,10 @@ Download zip or clone repo and integrate into your project manually.
 - [libdispatch-1173.40.5](https://opensource.apple.com/tarballs/libdispatch/libdispatch-1173.40.5.tar.gz)
 - [libplatform-220](https://opensource.apple.com/tarballs/libplatform/libplatform-220.tar.gz)
 - [libpthread-416.40.3](https://opensource.apple.com/tarballs/libpthread/libpthread-416.40.3.tar.gz)
-- [objc4-781](https://opensource.apple.com/tarballs/objc4/objc4-781.tar.gz)
-- [xnu-6153.41.3](https://opensource.apple.com/tarballs/xnu/xnu-6153.41.3.tar.gz)
-
 
 ## Build Phases
 
-### Missing Private Header 
+### Private Header 
 
 | file | header | tarball | description |
 |------|--------|---------| ------------ |
@@ -47,10 +45,8 @@ Download zip or clone repo and integrate into your project manually.
 | objc-os.h | `#include <mach-o/dyld_priv.h>` | /dyld-733.6/include/mach-o/dyld_priv.h |
 | objc-os.h | `#include <os/lock_private.h>` | /libplatform-220/private/os/lock_private.h |
 | lock_private.h | `#include <os/base_private.h>` | /libplatform-220/private/os/base_private.h |
-| lock_private.h | `#include <System/pthread_machdep.h>` | /Libc-825.24/pthreads/pthread_machdep.h |
-| objc-os.h | `#include <System/pthread_machdep.h>` | /Libc-825.24/pthreads/pthread_machdep.h |
+| objc-os.h | `#include <System/pthread_machdep.h>` | removed in latest Libc tarball (Libc-1353.41.1) | this header should be commonented |
 | pthread_machdep.h | `#include <System/machine/cpu_capabilities.h>` | /xnu-6153.41.3/osfmk/machine/cpu_capabilities.h |
-| objc-os.h | `#include <CrashReporterClient.h>` | /Libc-825.24/include/CrashReporterClient.h | 
 | objc-os.h | `#include <pthread/workqueue_private.h>` | /libpthread-416.40.3/private/workqueue_private.h | 
 | objc-os.h | `#include <objc-shared-cache.h>` | /dyld-733.6/include/objc-shared-cache.h | 
 | objc-errors.mm | `#include <_simple.h>` | /libplatform-220/private/_simple.h | 
@@ -58,15 +54,15 @@ Download zip or clone repo and integrate into your project manually.
 | objc-os.h | `#include <crt_externs.h>` | /Libc-1353.41.1/include/crt_externs.h |
 | objc-runtime-new.mm | `#include <mach/shared_region.h>` | /xnu-6153.41.3/osfmk/mach/shared_region.h |
 | objc-cache.mm  | `#include <kern/restartable.h>` | /xnu-6153.41.3/osfmk/mach/restartable.defs | build from xnu kernel |
+| objc-os.h | `#include <CrashReporterClient.h>` | /Libc-825.24/include/CrashReporterClient.h | 
 
-### Uninclude Private Header 
-
+#### Private Header Included Header
 | file | header | tarball |
 |------|--------|---------|
 | tsd_private.h | `#include <os/tsd.h>` | /xnu-6153.41.3/libsyscall/os/tsd.h |
 | tsd_private.h | `#include <pthread/spinlock_private.h>` | /libpthread-416.40.3/private/spinlock_private.h |
-| objc-os.h | `#include <pthread/tsd_private.h>` | /libpthread-416.40.3/private/tsd_private.h |
-| objc-os.h | `#include <pthread/qos_private.h>` | /llibpthread-416.40.3/private/qos_private.h |
+| lock_private.h | `#include <pthread/tsd_private.h>` | /libpthread-416.40.3/private/tsd_private.h |
+| workqueue_private.h | `#include <pthread/qos_private.h>` | /llibpthread-416.40.3/private/qos_private.h |
 | qos_private.h | `#include <sys/qos_private.h>`  | /libpthread-416.40.3/sys/qos_private.h |
 
 #### Bridge OS
