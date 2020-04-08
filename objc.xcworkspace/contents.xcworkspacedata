@@ -16,104 +16,110 @@
             <Group
                location = "group:Frameworks"
                name = "Frameworks">
+               <FileRef
+                  location = "group:System.framework">
+               </FileRef>
+            </Group>
+         </Group>
+      </Group>
+   </Group>
+   <Group
+      location = "group:macosx.internal/System/Library/Frameworks/System.framework/Versions"
+      name = "Versions">
+      <Group
+         location = "group:B"
+         name = "B">
+         <Group
+            location = "group:PrivateHeaders"
+            name = "PrivateHeaders">
+            <FileRef
+               location = "group:CrashReporterClient.h">
+            </FileRef>
+            <Group
+               location = "group:kern"
+               name = "kern">
+               <FileRef
+                  location = "group:restartable.h">
+               </FileRef>
+            </Group>
+            <FileRef
+               location = "group:Block_private.h">
+            </FileRef>
+            <FileRef
+               location = "group:_simple.h">
+            </FileRef>
+            <FileRef
+               location = "group:crt_externs.h">
+            </FileRef>
+            <Group
+               location = "group:pthread"
+               name = "pthread">
+               <FileRef
+                  location = "group:spinlock_private.h">
+               </FileRef>
+               <FileRef
+                  location = "group:tsd_private.h">
+               </FileRef>
+               <FileRef
+                  location = "group:qos_private.h">
+               </FileRef>
+               <FileRef
+                  location = "group:workqueue_private.h">
+               </FileRef>
+            </Group>
+            <Group
+               location = "group:System"
+               name = "System">
+               <FileRef
+                  location = "group:pthread_machdep.h">
+               </FileRef>
                <Group
-                  location = "group:System.framework"
-                  name = "System.framework">
-                  <Group
-                     location = "group:Versions"
-                     name = "Versions">
-                     <Group
-                        location = "group:B"
-                        name = "B">
-                        <Group
-                           location = "group:PrivateHeaders"
-                           name = "PrivateHeaders">
-                           <FileRef
-                              location = "group:CrashReporterClient.h">
-                           </FileRef>
-                           <FileRef
-                              location = "group:Block_private.h">
-                           </FileRef>
-                           <FileRef
-                              location = "group:_simple.h">
-                           </FileRef>
-                           <FileRef
-                              location = "group:crt_externs.h">
-                           </FileRef>
-                           <Group
-                              location = "group:pthread"
-                              name = "pthread">
-                              <FileRef
-                                 location = "group:spinlock_private.h">
-                              </FileRef>
-                              <FileRef
-                                 location = "group:tsd_private.h">
-                              </FileRef>
-                              <FileRef
-                                 location = "group:qos_private.h">
-                              </FileRef>
-                              <FileRef
-                                 location = "group:workqueue_private.h">
-                              </FileRef>
-                           </Group>
-                           <Group
-                              location = "group:System"
-                              name = "System">
-                              <FileRef
-                                 location = "group:pthread_machdep.h">
-                              </FileRef>
-                              <Group
-                                 location = "group:machine"
-                                 name = "machine">
-                                 <FileRef
-                                    location = "group:cpu_capabilities.h">
-                                 </FileRef>
-                              </Group>
-                           </Group>
-                           <Group
-                              location = "group:sys"
-                              name = "sys">
-                              <FileRef
-                                 location = "group:reason.h">
-                              </FileRef>
-                              <FileRef
-                                 location = "group:qos_private.h">
-                              </FileRef>
-                           </Group>
-                           <Group
-                              location = "group:mach"
-                              name = "mach">
-                              <FileRef
-                                 location = "group:shared_region.h">
-                              </FileRef>
-                           </Group>
-                           <Group
-                              location = "group:os"
-                              name = "os">
-                              <FileRef
-                                 location = "group:lock_private.h">
-                              </FileRef>
-                              <FileRef
-                                 location = "group:tsd.h">
-                              </FileRef>
-                              <FileRef
-                                 location = "group:base_private.h">
-                              </FileRef>
-                           </Group>
-                           <FileRef
-                              location = "group:objc-shared-cache.h">
-                           </FileRef>
-                           <Group
-                              location = "group:mach-o"
-                              name = "mach-o">
-                              <FileRef
-                                 location = "group:dyld_priv.h">
-                              </FileRef>
-                           </Group>
-                        </Group>
-                     </Group>
-                  </Group>
+                  location = "group:machine"
+                  name = "machine">
+                  <FileRef
+                     location = "group:cpu_capabilities.h">
+                  </FileRef>
                </Group>
+            </Group>
+            <Group
+               location = "group:sys"
+               name = "sys">
+               <FileRef
+                  location = "group:reason.h">
+               </FileRef>
+               <FileRef
+                  location = "group:qos_private.h">
+               </FileRef>
+            </Group>
+            <Group
+               location = "group:mach"
+               name = "mach">
+               <FileRef
+                  location = "group:shared_region.h">
+               </FileRef>
+            </Group>
+            <Group
+               location = "group:os"
+               name = "os">
+               <FileRef
+                  location = "group:lock_private.h">
+               </FileRef>
+               <FileRef
+                  location = "group:tsd.h">
+               </FileRef>
+               <FileRef
+                  location = "group:base_private.h">
+               </FileRef>
+            </Group>
+            <FileRef
+               location = "group:objc-shared-cache.h">
+            </FileRef>
+            <Group
+               location = "group:mach-o"
+               name = "mach-o">
+               <FileRef
+                  location = "group:dyld_priv.h">
+               </FileRef>
             </Group>
          </Group>
       </Group>

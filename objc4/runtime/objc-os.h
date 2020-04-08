@@ -136,7 +136,7 @@ struct explicit_atomic : public std::atomic<T> {
 #   include <os/lock_private.h>
 #   include <libkern/OSAtomic.h>
 #   include <libkern/OSCacheControl.h>
-#   include <System/pthread_machdep.h>
+//#   include <System/pthread_machdep.h>
 #   include "objc-probes.h"  // generated dtrace probe definitions.
 
 // Some libc functions call objc_msgSend() 
