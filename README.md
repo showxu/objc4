@@ -98,4 +98,4 @@ Evidently public macosx sdk is our only choice, we need to update value of param
 
 
 ## License
-This project is released under the **Apache License 2.0**. The objc4 project is released under the **APPLE PUBLIC SOURCE LICENSE Version 2.0**.
+This project is released under the **MIT License**. The objc4 project is released under the **APPLE PUBLIC SOURCE LICENSE Version 2.0**.
