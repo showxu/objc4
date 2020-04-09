@@ -1,5 +1,5 @@
 # **objc4** 
-[![Travis](https://img.shields.io/travis/0xxd0/objc4.svg?style=flat)](https://www.travis-ci.org/0xxd0/objc4) 
+![build_status](https://github.com/0xxd0/objc4/workflows/build/badge.svg) 
 [![Join the chat at https://gitter.im/0xxd0/objc4](https://badges.gitter.im/0xxd0/objc4.svg)](https://gitter.im/0xxd0/objc4?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
 ![support](https://img.shields.io/badge/support-macOS%20%7C%20iOS-orange.svg)
 
