@@ -1,0 +1,23 @@
+name: build_objc4
+on: 
+  push:
+    paths-ignore:
+    - 'README.md'
+    - 'LICENSE'
+jobs: 
+  build:
+    runs-on: macos-10.15
+    strategy:
+      max-parallel: 2
+      matrix:  
+        configuration: [debug, release]
+        scheme: [objc, objc-inspect]
+    steps:
+    - uses: actions/checkout@v2
+    - run: |
+        xcodebuild -workspace objc.xcworkspace \
+          -scheme ${{ matrix.scheme }} \
+          -configuration ${{ matrix.configuration }} \
+          -arch x86_64 -sdk macosx
+
+  
