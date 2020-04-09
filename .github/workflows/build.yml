@@ -21,6 +21,4 @@ jobs:
           -scheme ${{ matrix.scheme }} \
           -configuration ${{ matrix.configuration }} \
           -arch ${{ matrix.arch }} \
-          -sdk ${{ matrix.sdk }} 
-
-  
+          -sdk ${{ matrix.sdk }}
