@@ -32,7 +32,6 @@ After building the **objc scheme**, manually integrate generated `libobjc.A.dyli
 ## **objc4 tarballs**
 - [objc4-781](https://opensource.apple.com/tarballs/objc4/objc4-781.tar.gz)
 - [xnu-6153.41.3](https://opensource.apple.com/tarballs/xnu/xnu-6153.41.3.tar.gz)
-- [Libc-825.24](https://opensource.apple.com/tarballs/Libc/Libc-825.24.tar.gz)
 - [Libc-1353.41.1](https://opensource.apple.com/tarballs/Libc/Libc-1353.41.1.tar.gz)
 - [dyld-733.6](https://opensource.apple.com/tarballs/dyld/dyld-733.6.tar.gz)
 - [libauto-187.tar.gz](https://opensource.apple.com/tarballs/libauto/libauto-187.tar.gz)
