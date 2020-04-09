@@ -1,4 +1,4 @@
-name: build_objc4
+name: build
 on: 
   push:
     paths-ignore:
@@ -12,12 +12,15 @@ jobs:
       matrix:  
         configuration: [debug, release]
         scheme: [objc, objc-inspect]
+        arch: [x86_64] 
+        sdk: [macosx]
     steps:
     - uses: actions/checkout@v2
     - run: |
         xcodebuild -workspace objc.xcworkspace \
           -scheme ${{ matrix.scheme }} \
           -configuration ${{ matrix.configuration }} \
-          -arch x86_64 -sdk macosx
+          -arch ${{ matrix.arch }} \
+          -sdk ${{ matrix.sdk }} 
 
   
