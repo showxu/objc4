@@ -16,7 +16,7 @@ This project is a buildable and debuggable version of latest Objective-C runtime
 
 ## **Requirement**
 [![Xcode 11.3](https://img.shields.io/badge/Xcode-11.3-blue?colorA=3caefc&colorB=24292e)](https://developer.apple.com/xcode/) 
-[![macOS 10.15](https://img.shields.io/badge/macOS-10.15-blue?colorA=blueviolet&colorB=24292e)](https://developer.apple.com/macos/)
+[![macOS Catalina](https://img.shields.io/badge/macOS-Catalina-blue?colorA=blueviolet&colorB=24292e)](https://developer.apple.com/macos/)
 
 
 ## **Installation**
