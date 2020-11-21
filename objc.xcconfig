@@ -17,5 +17,5 @@ ORDER_FILE = $(SRCROOT)/libobjc.order
 // resolve ld: library not found for -lCrashReporterClient clang: error: linker command failed with exit code 1 (use -v to see invocation)
 // OTHER_LDFLAGS[sdk=macosx*] = -lCrashReporterClient -lc++abi -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt
 OTHER_LDFLAGS[sdk=macosx*] = -lc++abi -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt
-OTHER_LDFLAGS[sdk=iphoneos*][arch=*] = -lc++abi -Wl,-segalign,0x4000 -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt -isystem -iframework
+OTHER_LDFLAGS[sdk=iphoneos*][arch=*] = -lc++abi -Wl,-segalign,0x4000 -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt
 OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*] = -lc++abi -Xlinker -interposable_list -Xlinker interposable.txt
