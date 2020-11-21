@@ -69,6 +69,8 @@ After building the **objc scheme**, manually integrate generated `libobjc.A.dyli
 | lock_private.h | `#include <pthread/tsd_private.h>` | /libpthread-416.40.3/private/tsd_private.h |
 | workqueue_private.h | `#include <pthread/qos_private.h>` | /llibpthread-416.40.3/private/qos_private.h |
 | qos_private.h | `#include <sys/qos_private.h>`  | /libpthread-416.40.3/sys/qos_private.h |
+| objc-exception.mm | `#include <objc/objc-abi.h>` | removed |
+| objc-gdb.h | `#include <objc/maptable.h>` | removed |
 
 #### Bridge OS
 
