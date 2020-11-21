@@ -3,7 +3,7 @@
 [![Join the chat at https://gitter.im/0xxd0/objc4](https://badges.gitter.im/0xxd0/objc4.svg)](https://gitter.im/0xxd0/objc4?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
 ![support](https://img.shields.io/badge/support-macOS%20%7C%20iOS-orange.svg)
 
-This project is a buildable and debuggable version of latest Objective-C runtime (**objc4-781**) on [Apple Open Source](https://opensource.apple.com/tarballs/objc4/)
+This project is a buildable and debuggable version of latest Objective-C runtime (**objc4-787.1**) on [Apple Open Source](https://opensource.apple.com/tarballs/objc4/)
 
 - [Requirement](#Requirement)
 - [Installation](#Installation)
@@ -15,8 +15,8 @@ This project is a buildable and debuggable version of latest Objective-C runtime
 
 
 ## **Requirement**
-[![Xcode 12](https://img.shields.io/badge/Xcode-12-blue?colorA=3caefc&colorB=24292e)](https://developer.apple.com/xcode/) 
-[![macOS Catalina](https://img.shields.io/badge/macOS-Catalina-blue?colorA=blueviolet&colorB=24292e)](https://developer.apple.com/macos/)
+[![Xcode 12](https://img.shields.io/badge/Xcode-12-blue?colorA=1A5DE3&colorB=2A2C3A)](https://developer.apple.com/xcode/) 
+[![macOS Catalina](https://img.shields.io/badge/macOS-Catalina-blue?colorA=314C78&colorB=181B2D)](https://developer.apple.com/macos/)
 
 
 ## **Installation**
@@ -30,7 +30,7 @@ After building the **objc scheme**, manually integrate generated `libobjc.A.dyli
 
 
 ## **objc4 tarballs**
-- [objc4-781](https://opensource.apple.com/tarballs/objc4/objc4-781.tar.gz)
+- [objc4-787.1](https://opensource.apple.com/tarballs/objc4/objc4-787.1.tar.gz)
 - [xnu-6153.41.3](https://opensource.apple.com/tarballs/xnu/xnu-6153.41.3.tar.gz)
 - [Libc-1353.41.1](https://opensource.apple.com/tarballs/Libc/Libc-1353.41.1.tar.gz)
 - [dyld-733.6](https://opensource.apple.com/tarballs/dyld/dyld-733.6.tar.gz)
@@ -74,7 +74,7 @@ After building the **objc scheme**, manually integrate generated `libobjc.A.dyli
 
 #### Bridge OS
 
-In public macosx sdk (latest Xcode 11.3.1), bridgeos (e.g. `__has_feature(attribute_availability_bridgeos)`) is unavailable, bridgeos availability should be removed or commented-out.
+In public macosx sdk (latest Xcode 12.2), bridgeos (e.g. `__has_feature(attribute_availability_bridgeos)`) is unavailable, bridgeos availability should be removed or commented-out.
 
 #### dyld
 
