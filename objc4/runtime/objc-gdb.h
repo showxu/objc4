@@ -39,7 +39,7 @@
 #endif
 #include <stdint.h>
 #include <objc/hashtable.h>
-#include <objc/maptable.h>
+//#include <objc/maptable.h>
 
 __BEGIN_DECLS
 

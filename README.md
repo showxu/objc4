@@ -3,7 +3,7 @@
 [![Join the chat at https://gitter.im/showxu/objc4](https://badges.gitter.im/showxu/objc4.svg)](https://gitter.im/showxu/objc4?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
 ![support](https://img.shields.io/badge/support-macOS%20%7C%20iOS-orange.svg)
 
-This project is a buildable and debuggable version of latest Objective-C runtime (**objc4-781**) on [Apple Open Source](https://opensource.apple.com/tarballs/objc4/)
+This project is a buildable and debuggable version of latest Objective-C runtime (**objc4-787.1**) on [Apple Open Source](https://opensource.apple.com/tarballs/objc4/)
 
 - [Requirement](#Requirement)
 - [Installation](#Installation)
@@ -15,8 +15,8 @@ This project is a buildable and debuggable version of latest Objective-C runtime
 
 
 ## **Requirement**
-[![Xcode 11.3](https://img.shields.io/badge/Xcode-11.3-blue?colorA=3caefc&colorB=24292e)](https://developer.apple.com/xcode/) 
-[![macOS Catalina](https://img.shields.io/badge/macOS-Catalina-blue?colorA=blueviolet&colorB=24292e)](https://developer.apple.com/macos/)
+[![Xcode 12](https://img.shields.io/badge/Xcode-12-blue?colorA=1A5DE3&colorB=2A2C3A)](https://developer.apple.com/xcode/) 
+[![macOS Catalina](https://img.shields.io/badge/macOS-Catalina-blue?colorA=314C78&colorB=181B2D)](https://developer.apple.com/macos/)
 
 
 ## **Installation**
@@ -30,7 +30,7 @@ After building the **objc scheme**, manually integrate generated `libobjc.A.dyli
 
 
 ## **objc4 tarballs**
-- [objc4-781](https://opensource.apple.com/tarballs/objc4/objc4-781.tar.gz)
+- [objc4-787.1](https://opensource.apple.com/tarballs/objc4/objc4-787.1.tar.gz)
 - [xnu-6153.41.3](https://opensource.apple.com/tarballs/xnu/xnu-6153.41.3.tar.gz)
 - [Libc-1353.41.1](https://opensource.apple.com/tarballs/Libc/Libc-1353.41.1.tar.gz)
 - [dyld-733.6](https://opensource.apple.com/tarballs/dyld/dyld-733.6.tar.gz)
@@ -59,7 +59,7 @@ After building the **objc scheme**, manually integrate generated `libobjc.A.dyli
 | objc-os.h | `#include <crt_externs.h>` | /Libc-1353.41.1/include/crt_externs.h |
 | objc-runtime-new.mm | `#include <mach/shared_region.h>` | /xnu-6153.41.3/osfmk/mach/shared_region.h |
 | objc-cache.mm  | `#include <kern/restartable.h>` | /xnu-6153.41.3/osfmk/mach/restartable.defs, build from xnu kernel |
-| objc-os.h | `#include <CrashReporterClient.h>` | /Libc-825.24/include/CrashReporterClient.h | 
+| objc-os.h | `#include_next <CrashReporterClient.h>` => `#include <CrashReporterClient.h>` | /Libc-825.24/include/CrashReporterClient.h | 
 
 #### Private Header Included Header
 | private header | #include | tarball |
@@ -69,10 +69,12 @@ After building the **objc scheme**, manually integrate generated `libobjc.A.dyli
 | lock_private.h | `#include <pthread/tsd_private.h>` | /libpthread-416.40.3/private/tsd_private.h |
 | workqueue_private.h | `#include <pthread/qos_private.h>` | /llibpthread-416.40.3/private/qos_private.h |
 | qos_private.h | `#include <sys/qos_private.h>`  | /libpthread-416.40.3/sys/qos_private.h |
+| objc-exception.mm | `#include <objc/objc-abi.h>` | removed |
+| objc-gdb.h | `#include <objc/maptable.h>` | removed |
 
 #### Bridge OS
 
-In public macosx sdk (latest Xcode 11.3.1), bridgeos (e.g. `__has_feature(attribute_availability_bridgeos)`) is unavailable, bridgeos availability should be removed or commented-out.
+In public macosx sdk (latest Xcode 12.2), bridgeos (e.g. `__has_feature(attribute_availability_bridgeos)`) is unavailable, bridgeos availability should be removed or commented-out.
 
 #### dyld
 
@@ -86,12 +88,12 @@ In latest dyld-733.6 (dyld-421.2 later), apple use this [ruby script](https://op
 ## **Build Setting**
 | Declaration | Value |
 |-------------|-------|
-| `HEADER_SEARCH_PATHS` | $(SRCROOT)/../macosx.internal/System/Library/Frameworks/System.framework/PrivateHeaders |
-| `GCC_PREPROCESSOR_DEFINITIONS` | LIBC_NO_LIBCRASHREPORTERCLIENT |
+| `HEADER_SEARCH_PATHS` | $(SRCROOT)/../macosx.internal/System/Library/Frameworks/System.framework/PrivateHeaders, also append `$(inherited)` to target objc |
+| `GCC_PREPROCESSOR_DEFINITIONS` | LIBC_NO_LIBCRASHREPORTERCLIENT, also append `$(inherited)` to target objc |
 | `ORDER_FILE` | $(SRCROOT)/libobjc.order |
-| `OTHER_LDFLAGS[sdk=macosx*]` | -lc++abi -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt |
-| `OTHER_LDFLAGS[sdk=iphoneos*][arch=*]` | -lc++abi -Wl,-segalign,0x4000 -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt -isystem -iframework |
-| `OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]` | -lc++abi -Xlinker -interposable_list -Xlinker interposable.txt |
+| `OTHER_LDFLAGS[sdk=macosx*]` | -lc++abi -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt, remove build setting in target objc |
+| `OTHER_LDFLAGS[sdk=iphoneos*][arch=*]` | -lc++abi -Wl,-segalign,0x4000 -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt, remove build setting in target objc |
+| `OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]` | -lc++abi -Xlinker -interposable_list -Xlinker interposable.txt, remove build setting in target objc |
 
 ### Run Script
 Evidently public macosx sdk is our only choice, we need to update value of parameter `-sdk` from `macosx.internal` to `macosx` in run script of objc target. 
