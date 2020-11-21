@@ -86,12 +86,14 @@ In latest dyld-733.6 (dyld-421.2 later), apple use this [ruby script](https://op
 ## **Build Setting**
 | Declaration | Value |
 |-------------|-------|
-| `HEADER_SEARCH_PATHS` | $(SRCROOT)/../macosx.internal/System/Library/Frameworks/System.framework/PrivateHeaders |
-| `GCC_PREPROCESSOR_DEFINITIONS` | LIBC_NO_LIBCRASHREPORTERCLIENT |
+| `HEADER_SEARCH_PATHS` | $(SRCROOT)/../macosx.internal/System/Library/Frameworks/System.framework/PrivateHeaders, also append `$(inherited)` to target objc |
+| `GCC_PREPROCESSOR_DEFINITIONS` | LIBC_NO_LIBCRASHREPORTERCLIENT, also append `$(inherited)` to target objc |
 | `ORDER_FILE` | $(SRCROOT)/libobjc.order |
-| `OTHER_LDFLAGS[sdk=macosx*]` | -lc++abi -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt |
-| `OTHER_LDFLAGS[sdk=iphoneos*][arch=*]` | -lc++abi -Wl,-segalign,0x4000 -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt -isystem -iframework |
-| `OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]` | -lc++abi -Xlinker -interposable_list -Xlinker interposable.txt |
+| `OTHER_LDFLAGS[sdk=macosx*]` | -lc++abi -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt, remove build setting in target objc |
+| `OTHER_LDFLAGS[sdk=iphoneos*][arch=*]` | -lc++abi -Wl,-segalign,0x4000 -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt -isystem -iframework, remove build setting in target objc |
+| `OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]` | -lc++abi -Xlinker -interposable_list -Xlinker interposable.txt, remove build setting in target objc |
+| `OTHER_TAPI_FLAGS` | redirect $(DSTROOT)/usr/include/objc/ObjectiveC.apinotes => $(SRCROOT)/runtime/Module/ObjectiveC.apinotes |
+| `OTHER_TAPI_FLAGS` | redirect $(DSTROOT)/usr/include/objc/module.modulemap => $(SRCROOT)/runtime/Module/module.modulemap |
 
 ### Run Script
 Evidently public macosx sdk is our only choice, we need to update value of parameter `-sdk` from `macosx.internal` to `macosx` in run script of objc target. 
