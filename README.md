@@ -15,7 +15,7 @@ This project is a buildable and debuggable version of latest Objective-C runtime
 
 
 ## **Requirement**
-[![Xcode 11.3](https://img.shields.io/badge/Xcode-11.3-blue?colorA=3caefc&colorB=24292e)](https://developer.apple.com/xcode/) 
+[![Xcode 12](https://img.shields.io/badge/Xcode-12-blue?colorA=3caefc&colorB=24292e)](https://developer.apple.com/xcode/) 
 [![macOS Catalina](https://img.shields.io/badge/macOS-Catalina-blue?colorA=blueviolet&colorB=24292e)](https://developer.apple.com/macos/)
 
 
@@ -92,10 +92,8 @@ In latest dyld-733.6 (dyld-421.2 later), apple use this [ruby script](https://op
 | `GCC_PREPROCESSOR_DEFINITIONS` | LIBC_NO_LIBCRASHREPORTERCLIENT, also append `$(inherited)` to target objc |
 | `ORDER_FILE` | $(SRCROOT)/libobjc.order |
 | `OTHER_LDFLAGS[sdk=macosx*]` | -lc++abi -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt, remove build setting in target objc |
-| `OTHER_LDFLAGS[sdk=iphoneos*][arch=*]` | -lc++abi -Wl,-segalign,0x4000 -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt -isystem -iframework, remove build setting in target objc |
+| `OTHER_LDFLAGS[sdk=iphoneos*][arch=*]` | -lc++abi -Wl,-segalign,0x4000 -Xlinker -sectalign -Xlinker __DATA -Xlinker __objc_data -Xlinker 0x1000 -Xlinker -interposable_list -Xlinker interposable.txt, remove build setting in target objc |
 | `OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]` | -lc++abi -Xlinker -interposable_list -Xlinker interposable.txt, remove build setting in target objc |
-| `OTHER_TAPI_FLAGS` | redirect $(DSTROOT)/usr/include/objc/ObjectiveC.apinotes => $(SRCROOT)/runtime/Module/ObjectiveC.apinotes |
-| `OTHER_TAPI_FLAGS` | redirect $(DSTROOT)/usr/include/objc/module.modulemap => $(SRCROOT)/runtime/Module/module.modulemap |
 
 ### Run Script
 Evidently public macosx sdk is our only choice, we need to update value of parameter `-sdk` from `macosx.internal` to `macosx` in run script of objc target. 
