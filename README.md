@@ -59,7 +59,7 @@ After building the **objc scheme**, manually integrate generated `libobjc.A.dyli
 | objc-os.h | `#include <crt_externs.h>` | /Libc-1353.41.1/include/crt_externs.h |
 | objc-runtime-new.mm | `#include <mach/shared_region.h>` | /xnu-6153.41.3/osfmk/mach/shared_region.h |
 | objc-cache.mm  | `#include <kern/restartable.h>` | /xnu-6153.41.3/osfmk/mach/restartable.defs, build from xnu kernel |
-| objc-os.h | `#include <CrashReporterClient.h>` | /Libc-825.24/include/CrashReporterClient.h | 
+| objc-os.h | `#include_next <CrashReporterClient.h>` => `#include <CrashReporterClient.h>` | /Libc-825.24/include/CrashReporterClient.h | 
 
 #### Private Header Included Header
 | private header | #include | tarball |

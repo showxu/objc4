@@ -37,7 +37,7 @@
 #else /* !LIBC_NO_LIBCRASHREPORTERCLIENT */
 
 /* Include the real CrashReporterClient.h */
-#include_next <CrashReporterClient.h>
+#include <CrashReporterClient.h>
 
 #endif /* !LIBC_NO_LIBCRASHREPORTERCLIENT */
 

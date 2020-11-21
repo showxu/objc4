@@ -430,7 +430,7 @@ class_setSuperclass(Class _Nonnull cls, Class _Nonnull newSuper)
     __TVOS_DEPRECATED(9.0, 9.0, "not recommended")
     __WATCHOS_DEPRECATED(1.0, 1.0, "not recommended")
 #ifndef __APPLE_BLEACH_SDK__
-    __BRIDGEOS_DEPRECATED(2.0, 2.0, "not recommended")
+//    __BRIDGEOS_DEPRECATED(2.0, 2.0, "not recommended")
 #endif
 ;
 
@@ -2041,7 +2041,7 @@ class_lookupMethod(Class _Nullable cls, SEL _Nonnull sel)
     __TVOS_DEPRECATED(9.0, 9.0, "use class_getMethodImplementation instead")
     __WATCHOS_DEPRECATED(1.0, 1.0, "use class_getMethodImplementation instead")
 #ifndef __APPLE_BLEACH_SDK__
-    __BRIDGEOS_DEPRECATED(2.0, 2.0, "use class_getMethodImplementation instead")
+//    __BRIDGEOS_DEPRECATED(2.0, 2.0, "use class_getMethodImplementation instead")
 #endif
 ;
 OBJC_EXPORT BOOL
@@ -2051,7 +2051,7 @@ class_respondsToMethod(Class _Nullable cls, SEL _Nonnull sel)
     __TVOS_DEPRECATED(9.0, 9.0, "use class_respondsToSelector instead")
     __WATCHOS_DEPRECATED(1.0, 1.0, "use class_respondsToSelector instead")
 #ifndef __APPLE_BLEACH_SDK__
-    __BRIDGEOS_DEPRECATED(2.0, 2.0, "use class_respondsToSelector instead")
+//    __BRIDGEOS_DEPRECATED(2.0, 2.0, "use class_respondsToSelector instead")
 #endif
 ;
 
@@ -2062,7 +2062,7 @@ _objc_flush_caches(Class _Nullable cls)
     __TVOS_DEPRECATED(9.0, 9.0, "not recommended")
     __WATCHOS_DEPRECATED(1.0, 1.0, "not recommended")
 #ifndef __APPLE_BLEACH_SDK__
-    __BRIDGEOS_DEPRECATED(2.0, 2.0, "not recommended")
+//    __BRIDGEOS_DEPRECATED(2.0, 2.0, "not recommended")
 #endif
 ;
 
