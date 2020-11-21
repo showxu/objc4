@@ -238,7 +238,7 @@ void _destroyAltHandlerList(struct alt_handler_list *list)
 **********************************************************************/
 
 #include "objc-private.h"
-#include <objc/objc-abi.h>
+//#include <objc/objc-abi.h>
 #include <objc/objc-exception.h>
 #include <objc/NSObject.h>
 #include <execinfo.h>
