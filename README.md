@@ -18,6 +18,11 @@ This project is a buildable and debuggable version of latest Objective-C runtime
 [![Xcode 12](https://img.shields.io/badge/Xcode-12-blue?colorA=1A5DE3&colorB=2A2C3A)](https://developer.apple.com/xcode/) 
 [![macOS Catalina](https://img.shields.io/badge/macOS-Catalina-blue?colorA=314C78&colorB=181B2D)](https://developer.apple.com/macos/)
 
+| macOS | Version | objc4 tarball version |
+|------|--------| ---- |
+| [![macOS Catalina](https://img.shields.io/badge/macOS-Catalina-blue?colorA=314C78&colorB=181B2D)](https://developer.apple.com/macos/) | ![macOS Version](https://img.shields.io/badge/-10.15.4%20~%2010.15.6-181B2D) | [objc4-787.1](https://github.com/showxu/objc4/releases/tag/objc4-787.1) |
+| [![macOS Catalina](https://img.shields.io/badge/macOS-Catalina-blue?colorA=314C78&colorB=181B2D)](https://developer.apple.com/macos/) | ![macOS Version](https://img.shields.io/badge/-10.15.1-181B2D) | [objc4-781](https://github.com/showxu/objc4/releases/tag/objc4-781) | 
+| [![macOS High Sierra](https://img.shields.io/badge/macOS-High%20Sierra-blue?colorA=CC4027&colorB=181B2D)](https://developer.apple.com/macos/) | ![macOS Version](https://img.shields.io/badge/-10.13.x-181B2D) | [objc4-723](https://github.com/showxu/objc4/releases/tag/objc4-723) | 
 
 ## **Installation**
 
