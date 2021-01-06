@@ -3,7 +3,7 @@
 [![Join the chat at https://gitter.im/showxu/objc4](https://badges.gitter.im/showxu/objc4.svg)](https://gitter.im/showxu/objc4?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
 ![support](https://img.shields.io/badge/support-macOS%20%7C%20iOS-orange.svg)
 
-This project is a buildable and debuggable version of latest Objective-C runtime (**objc4-787.1**) on [Apple Open Source](https://opensource.apple.com/tarballs/objc4/)
+This project is a buildable and debuggable version of latest Objective-C runtime (**objc4-818.2**) on [Apple Open Source](https://opensource.apple.com/tarballs/objc4/)
 
 - [Requirement](#Requirement)
 - [Installation](#Installation)
@@ -15,11 +15,12 @@ This project is a buildable and debuggable version of latest Objective-C runtime
 
 
 ## **Requirement**
-[![Xcode 12](https://img.shields.io/badge/Xcode-12-blue?colorA=1A5DE3&colorB=2A2C3A)](https://developer.apple.com/xcode/) 
-[![macOS Catalina](https://img.shields.io/badge/macOS-Catalina-blue?colorA=314C78&colorB=181B2D)](https://developer.apple.com/macos/)
+[![Xcode 12.3](https://img.shields.io/badge/Xcode-12.3-blue?colorA=1A5DE3&colorB=2A2C3A)](https://developer.apple.com/xcode/) 
+[![macOS Big Sur](https://img.shields.io/badge/macOS-Big%20Sur-blue?colorA=d23a70&colorB=181B2D)](https://developer.apple.com/macos/)
 
 | macOS | Version | objc4 tarball version |
 |------|--------| ---- |
+| [![macOS Big Sur](https://img.shields.io/badge/macOS-Big%20Sur-blue?colorA=d23a70&colorB=181B2D)](https://developer.apple.com/macos/) | ![macOS Version](https://img.shields.io/badge/-11.0.1%20-181B2D) | [objc4-818.2](https://github.com/showxu/objc4/releases/tag/objc4-818.2) |
 | [![macOS Catalina](https://img.shields.io/badge/macOS-Catalina-blue?colorA=314C78&colorB=181B2D)](https://developer.apple.com/macos/) | ![macOS Version](https://img.shields.io/badge/-10.15.4%20~%2010.15.6-181B2D) | [objc4-787.1](https://github.com/showxu/objc4/releases/tag/objc4-787.1) |
 | [![macOS Catalina](https://img.shields.io/badge/macOS-Catalina-blue?colorA=314C78&colorB=181B2D)](https://developer.apple.com/macos/) | ![macOS Version](https://img.shields.io/badge/-10.15.1-181B2D) | [objc4-781](https://github.com/showxu/objc4/releases/tag/objc4-781) | 
 | [![macOS High Sierra](https://img.shields.io/badge/macOS-High%20Sierra-blue?colorA=CC4027&colorB=181B2D)](https://developer.apple.com/macos/) | ![macOS Version](https://img.shields.io/badge/-10.13.x-181B2D) | [objc4-723](https://github.com/showxu/objc4/releases/tag/objc4-723) | 
@@ -35,10 +36,10 @@ After building the **objc scheme**, manually integrate generated `libobjc.A.dyli
 
 
 ## **objc4 tarballs**
-- [objc4-787.1](https://opensource.apple.com/tarballs/objc4/objc4-787.1.tar.gz)
-- [xnu-6153.41.3](https://opensource.apple.com/tarballs/xnu/xnu-6153.41.3.tar.gz)
-- [Libc-1353.41.1](https://opensource.apple.com/tarballs/Libc/Libc-1353.41.1.tar.gz)
-- [dyld-733.6](https://opensource.apple.com/tarballs/dyld/dyld-733.6.tar.gz)
+- [objc4-818.2](https://opensource.apple.com/tarballs/objc4/objc4-818.2.tar.gz)
+- [xnu-7195.50.7.100.1](https://opensource.apple.com/tarballs/xnu/xnu-7195.50.7.100.1.tar.gz)
+- [Libc-1439.40.11](https://opensource.apple.com/tarballs/Libc/Libc-1439.40.11.tar.gz)
+- [dyld-832.7.1](https://opensource.apple.com/tarballs/dyld/dyld-832.7.1.tar.gz)
 - [libauto-187.tar.gz](https://opensource.apple.com/tarballs/libauto/libauto-187.tar.gz)
 - [libclosure-74](https://opensource.apple.com/tarballs/libclosure/libclosure-74.tar.gz)
 - [libdispatch-1173.40.5](https://opensource.apple.com/tarballs/libdispatch/libdispatch-1173.40.5.tar.gz)
@@ -56,6 +57,7 @@ After building the **objc scheme**, manually integrate generated `libobjc.A.dyli
 | objc-os.h | `#include <os/lock_private.h>` | /libplatform-220/private/os/lock_private.h |
 | lock_private.h | `#include <os/base_private.h>` | /libplatform-220/private/os/base_private.h |
 | objc-os.h | `#include <System/pthread_machdep.h>` | removed in latest Libc tarball (Libc-1353.41.1), this header should be commented-out |
+| objc-class.mm | `#include <os/linker_set.h>` | /xnu-7195.50.7.100.1/os/linker_set.h |
 | pthread_machdep.h | `#include <System/machine/cpu_capabilities.h>` | /xnu-6153.41.3/osfmk/machine/cpu_capabilities.h |
 | objc-os.h | `#include <pthread/workqueue_private.h>` | /libpthread-416.40.3/private/workqueue_private.h | 
 | objc-os.h | `#include <objc-shared-cache.h>` | /dyld-733.6/include/objc-shared-cache.h | 
@@ -65,6 +67,8 @@ After building the **objc scheme**, manually integrate generated `libobjc.A.dyli
 | objc-runtime-new.mm | `#include <mach/shared_region.h>` | /xnu-6153.41.3/osfmk/mach/shared_region.h |
 | objc-cache.mm  | `#include <kern/restartable.h>` | /xnu-6153.41.3/osfmk/mach/restartable.defs, build from xnu kernel |
 | objc-os.h | `#include_next <CrashReporterClient.h>` => `#include <CrashReporterClient.h>` | /Libc-825.24/include/CrashReporterClient.h | 
+| NSObject.mm | `#include <os/reason_private.h>` | /xnu-7195.50.7.100.1/os/reason_private |
+| NSObject.mm | `#include <os/variant_private.h>` | /xnu-7195.50.7.100.1/os/reason_private |
 | objc-exception.mm | `#include <objc/objc-abi.h>` | removed |
 | objc-gdb.h | `#include <objc/maptable.h>` | removed |
 
@@ -79,7 +83,7 @@ After building the **objc scheme**, manually integrate generated `libobjc.A.dyli
 
 #### Bridge OS
 
-In public macosx sdk (latest Xcode 12.2), bridgeos (e.g. `__has_feature(attribute_availability_bridgeos)`) is unavailable, bridgeos availability should be removed or commented-out.
+In public macosx sdk (latest Xcode 12.3), bridgeos (e.g. `__has_feature(attribute_availability_bridgeos)`) is unavailable, bridgeos availability should be removed or commented-out.
 
 #### dyld
 
@@ -88,6 +92,79 @@ In latest dyld-733.6 (dyld-421.2 later), apple use this [ruby script](https://op
 #### XNU
 
 `<kern/restartable.h>` is generated form `restartable.defs` in xnu tarball during building xun kernel, which is a little different from the one that shipped with public sdk that located in `/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/kern/restartable.h`.
+
+#### Cambria framework
+
+Have no idea about this framework so far, maybe related with `-loah` for lib `oah`. Related Code should be commented out for now.
+
+```objc
+// File objc-cache.mm
+// 
+// Line 87 ~ 88
+#include <Cambria/Traps.h>
+#include <Cambria/Cambria.h>
+// 
+// ···
+//
+// Line 1121 ～ 1128 
+if (oah_is_current_process_translated()) {
+    kern_return_t ret = objc_thread_get_rip(threads[count], (uint64_t*)&pc);
+    if (ret != KERN_SUCCESS) {
+        pc = PC_SENTINEL;
+    }
+} else {
+    pc = _get_pc_for_thread (threads[count]);
+}
+```
+
+#### `#include <os/feature_private.h>`
+
+Have no idea about this haeder so far. Related Code should be commented out for now.
+
+```objc
+// File objc-runtime.mm
+// 
+// Line 87 ~ 88
+#include <Cambria/Traps.h>
+#include <Cambria/Cambria.h>
+// 
+// ···
+//
+// Line 36
+#include <os/feature_private.h> // os_feature_enabled_simple()
+//
+// ···
+//
+// Line 444 ～ 446
+if (!os_feature_enabled_simple(objc4, preoptimizedCaches, true)) {
+    DisablePreoptCaches = true;
+}
+// 
+```
+
+#### `dyld_fall_2020_os_versions`, dyld_fall_2018_os_versions
+
+Found releated header in `xnu-7195.50.7.100.1/bsd/kern/kern_mman.c`. 
+
+```c
+static uint32_t
+proc_2020_fall_os_sdk(void)
+```
+
+Maybe these function is releated to dyld build-scripts. Comment out for now.
+
+#### `dyld_platform_version_macOS_`, `dyld_platform_version_iOS_`, `dyld_platform_version_tvOS_`, `dyld_platform_version_watchOS_`, `dyld_platform_version_bridgeOS_`
+
+This Marco is generated by [dyld build-scripts](https://opensource.apple.com/source/dyld/dyld-832.7.1/build-scripts/)，comment out for now.
+
+
+#### `STATIC_ASSERT`
+
+```bash
+objc4/runtime/objc-runtime-new.mm:176:1: '_static_assert' declared as an array with a negative size
+```
+
+Comment out for now.
 
 
 ## **Build Setting**

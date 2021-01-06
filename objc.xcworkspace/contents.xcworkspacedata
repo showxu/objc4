@@ -99,6 +99,9 @@
                location = "group:os"
                name = "os">
                <FileRef
+                  location = "group:linker_set.h">
+               </FileRef>
+               <FileRef
                   location = "group:lock_private.h">
                </FileRef>
                <FileRef
@@ -106,6 +109,12 @@
                </FileRef>
                <FileRef
                   location = "group:base_private.h">
+               </FileRef>
+               <FileRef
+                  location = "group:variant_private.h">
+               </FileRef>
+               <FileRef
+                  location = "group:reason_private.h">
                </FileRef>
             </Group>
             <FileRef

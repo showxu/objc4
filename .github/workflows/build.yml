@@ -6,7 +6,7 @@ on:
     - 'LICENSE'
 jobs: 
   build:
-    runs-on: macos-10.15
+    runs-on: macos-11.0
     strategy:
       max-parallel: 2
       matrix:  
