@@ -1,26 +1,24 @@
 
 
-[简体中文](https://github.com/showxu/objc4/raw/master/static/media/README_zh-CN.md)
-
 <!-- # **objc runtime**  -->
 ![build_status](https://github.com/showxu/objc4/workflows/build/badge.svg) 
 [![Join the chat at https://gitter.im/showxu/objc4](https://badges.gitter.im/showxu/objc4.svg)](https://gitter.im/showxu/objc4?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) 
 ![support](https://img.shields.io/badge/support-macOS%20%7C%20iOS-orange.svg)
 
-This project is a buildable and debuggable version of latest Objective-C runtime (**objc4-818.2**) on [Apple Open Source](https://opensource.apple.com/tarballs/objc4/)
+此项目为可调式版本的 `Objective-C` 运行时，当前最新版本为 `objc4-818.2`，原始版本的源码可以在苹果开源处[下载](https://opensource.apple.com/tarballs/objc4/)。
 
-- [Which version to use](#Which-Version-To-Use)
-- [Installation](#Installation)
-- [Usage](#Usage)
-- [objc4 tarballs](#objc4-tarballs)
-- [Build Phases](#Build-Phases)
-- [Build Setting](#build-setting)
-- [License](#license)
+- [版本选择](#版本选择)
+- [如何安装](#如何安装)
+- [如何使用](#如何使用)
+- [objc4 依赖](#objc4-依赖)
+- [编译问题解决](#编译问题解决)
+- [编译设置](#编译设置)
+- [许可协议](#许可协议)
 
 
-## **Which Version To Use**
+## **版本选择**
 
-| macOS | macOS Version | Xcode Version | objc4 tarball version |
+| macOS | macOS 版本 | Xcode 版本 | `objc4` 源码版本 |
 | - | - | - | - |
 | [![macOS Big Sur](https://img.shields.io/badge/macOS-Big%20Sur-blue?colorA=d23a70&colorB=181B2D)](https://developer.apple.com/macos/) | ![macOS Version](https://img.shields.io/badge/-11.0.1%20-181B2D) | [![Xcode 12.3](https://img.shields.io/badge/Xcode-12.3-blue?colorA=1A5DE3&colorB=2A2C3A)](https://developer.apple.com/xcode/) | [objc4-818.2](https://github.com/showxu/objc4/releases/tag/objc4-818.2) |
 | [![macOS Catalina](https://img.shields.io/badge/macOS-Catalina-blue?colorA=314C78&colorB=181B2D)](https://developer.apple.com/macos/) | ![macOS Version](https://img.shields.io/badge/-10.15.4%20~%2010.15.6-181B2D) | [![Xcode 12.0](https://img.shields.io/badge/Xcode-12.0-blue?colorA=1A5DE3&colorB=2A2C3A)](https://developer.apple.com/xcode/) | [objc4-787.1](https://github.com/showxu/objc4/releases/tag/objc4-787.1) |
@@ -28,20 +26,18 @@ This project is a buildable and debuggable version of latest Objective-C runtime
 | [![macOS High Sierra](https://img.shields.io/badge/macOS-High%20Sierra-blue?colorA=CC4027&colorB=181B2D)](https://developer.apple.com/macos/) | ![macOS Version](https://img.shields.io/badge/-10.13.x-181B2D) | [![Xcode 10.1](https://img.shields.io/badge/Xcode-10.1-blue?colorA=1A8DF8&colorB=2A2C3A)](https://developer.apple.com/xcode/) | [objc4-723](https://github.com/showxu/objc4/releases/tag/objc4-723) |
 
 
-## **Installation**
+## **如何安装**
 
-#### Manually
-
-Download zip or clone this repo, select **objc scheme** and build.
-
-
-## **Usage**
-
-After building the **objc scheme**, manually integrate generated `libobjc.A.dylib` into your project manually. Or you can use **objc-inspect** scheme which is a preset inspector for debugging objc4 runtime.
+#### 手动安装
+下载或者克隆仓库的代码，选择 **`objc scheme`** 并且编译。
 
 
-## **objc4 tarballs**
+## **如何使用**
 
+在编译完成之后，手动把编译产物 `libobjc.A.dylib` 集成进工程并链接，进行项目中的调试。或者直接使用内置的 **objc-inspect** 的 `scheme` 直接进行调试。
+
+
+## **objc4 依赖**
 - [objc4-818.2](https://opensource.apple.com/tarballs/objc4/objc4-818.2.tar.gz)
 - [xnu-7195.50.7.100.1](https://opensource.apple.com/tarballs/xnu/xnu-7195.50.7.100.1.tar.gz)
 - [Libc-1439.40.11](https://opensource.apple.com/tarballs/Libc/Libc-1439.40.11.tar.gz)
@@ -53,11 +49,11 @@ After building the **objc scheme**, manually integrate generated `libobjc.A.dyli
 - [libpthread-416.40.3](https://opensource.apple.com/tarballs/libpthread/libpthread-416.40.3.tar.gz)
 
 
-## **Build Phases**
+## **编译问题解决**
 
-#### Private Header 
+#### 私有头文件
 
-| objc header | #include | tarball |
+| `objc` 头文件 | 缺失的 `#include` 文件 | 在源代码中的位置 |
 |------|--------|---------|
 | objc-os.h | `#include <sys/reason.h>` | /xnu-6153.41.3/bsd/sys/reason.h |
 | objc-os.h | `#include <mach-o/dyld_priv.h>` | /dyld-733.6/include/mach-o/dyld_priv.h |
@@ -80,9 +76,9 @@ After building the **objc scheme**, manually integrate generated `libobjc.A.dyli
 | objc-gdb.h | `#include <objc/maptable.h>` | removed |
 
 
-#### Private Header Included Header
+#### 私有头文件中引用缺失的头文件
 
-| private header | #include | tarball |
+| 私有头文件 | 缺失的 `#include` 文件 | 在源代码中的位置 |
 |------|--------|---------|
 | tsd_private.h | `#include <os/tsd.h>` | /xnu-6153.41.3/libsyscall/os/tsd.h |
 | tsd_private.h | `#include <pthread/spinlock_private.h>` | /libpthread-416.40.3/private/spinlock_private.h |
@@ -93,22 +89,22 @@ After building the **objc scheme**, manually integrate generated `libobjc.A.dyli
 
 #### Bridge OS
 
-In public macosx sdk (latest Xcode 12.3), bridgeos (e.g. `__has_feature(attribute_availability_bridgeos)`) is unavailable, bridgeos availability should be removed or commented-out.
+在开发者使用的 macosx sdk 中，`bridgeos (e.g. __has_feature(attribute_availability_bridgeos))` 这个 `attribute` `无法使用，bridgeos availability` 相关的代码需要被移除。
 
 
 #### dyld
 
-In latest dyld-733.6 (dyld-421.2 later), apple use this [ruby script](https://opensource.apple.com/source/dyld/dyld-733.6/bin/expand.rb) to expand versions, platfrom versions from a `versionSets` which defined in a YAML file, code generated by this script will be inserted after `@MAC_VERSION_DEFS@`, `@IOS_VERSION_DEFS@`, `@WATCHOS_VERSION_DEFS@`, `@TVOS_VERSION_DEFS@` and `@BRIDGEOS_VERSION_DEFS@` in `dyld_priv.h`. For more detail please refer to [dyld](https://opensource.apple.com/source/dyld).
+在最新的 dyld-733.6 (dyld-421.2 later) 中，苹果使用使用这个脚本 [ruby script](https://opensource.apple.com/source/dyld/dyld-733.6/bin/expand.rb) 来生成并展开平台版本相关的 `Macro`，具体的平台版本定义在 YAML 文件中的 `versionSets`，生成之后的版本代码会插入在头文件 `dyld_priv.h` 中的 `@MAC_VERSION_DEFS@`, `@IOS_VERSION_DEFS@`, `@WATCHOS_VERSION_DEFS@`, `@TVOS_VERSION_DEFS@` · `@BRIDGEOS_VERSION_DEFS@`，进一步了解 [dyld](https://opensource.apple.com/source/dyld)。
 
 
 #### XNU
 
-`<kern/restartable.h>` is generated form `restartable.defs` in xnu tarball during building xun kernel, which is a little different from the one that shipped with public sdk that located in `/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/kern/restartable.h`.
+`<kern/restartable.h>` 这个头文件，是在编译 xun kernel 时，由脚本通过 `restartable.defs` 这个文件而生成，同时这个编译生成的头文件和提供给开发者的 sdk 中的 `/Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Kernel.framework/Versions/A/Headers/kern/restartable.h` 有所不同。
 
 
 #### Cambria framework
 
-Have no idea about this framework so far, maybe related with `-loah` for lib `oah`. Related Code should be commented out for now.
+暂时没找到这个 `framework` 的出处，相关代码先作注释处理。可能与 `link flag` 中的 `-loah` 和 `lib oah` 有关，相关代码先作注释处理。
 
 ```objc
 // File objc-cache.mm
@@ -133,7 +129,7 @@ if (oah_is_current_process_translated()) {
 
 #### `#include <os/feature_private.h>`
 
-Have no idea about this haeder so far. Related Code should be commented out for now.
+暂时没找到这个头文件的出处，相关代码先作注释处理。
 
 ```objc
 // File objc-runtime.mm
@@ -155,19 +151,19 @@ if (!os_feature_enabled_simple(objc4, preoptimizedCaches, true)) {
 
 #### `dyld_fall_2020_os_versions`, `dyld_fall_2018_os_versions`
 
-Found releated source in `xnu-7195.50.7.100.1/bsd/kern/kern_mman.c`. 
+在 `Apple Open Source` 中发现 `xnu-7195.50.7.100.1/bsd/kern/kern_mman.c` 中有这样一个函数。
 
 ```c
 static uint32_t
 proc_2020_fall_os_sdk(void)
 ```
 
-Maybe these function is releated to dyld build-scripts. Comment out for now.
+猜测 `dyld_xxxx_os_versions` 可能与这个函数以及 `dyld build-scripts` 有关，暂时作注释处理。
 
 
 #### `dyld_platform_version_macOS_`, `dyld_platform_version_iOS_`, `dyld_platform_version_tvOS_`, `dyld_platform_version_watchOS_`, `dyld_platform_version_bridgeOS_`
 
-This Marco is generated by [dyld build-scripts](https://opensource.apple.com/source/dyld/dyld-832.7.1/build-scripts/), comment out for now.
+这些 `Macro` 由此脚本 [dyld build-scripts](https://opensource.apple.com/source/dyld/dyld-832.7.1/build-scripts/) 生成，暂时作注释处理。
 
 
 #### `STATIC_ASSERT`
@@ -176,11 +172,11 @@ This Marco is generated by [dyld build-scripts](https://opensource.apple.com/sou
 objc4/runtime/objc-runtime-new.mm:176:1: '_static_assert' declared as an array with a negative size
 ```
 
-Comment out for now.
+暂时作注释处理。
 
 
-## **Build Setting**
-| Declaration | Value |
+## **编译设置**
+| XCCONFIG KEY | XCCONFIG VALUE |
 |-------------|-------|
 | `HEADER_SEARCH_PATHS` | $(SRCROOT)/../macosx.internal/System/Library/Frameworks/System.framework/PrivateHeaders, also append `$(inherited)` to target objc |
 | `GCC_PREPROCESSOR_DEFINITIONS` | LIBC_NO_LIBCRASHREPORTERCLIENT, also append `$(inherited)` to target objc |
@@ -190,9 +186,10 @@ Comment out for now.
 | `OTHER_LDFLAGS[sdk=iphonesimulator*][arch=*]` | -lc++abi -Xlinker -interposable_list -Xlinker interposable.txt, remove build setting in target objc |
 
 
-### Run Script
-Evidently public macosx sdk is our only choice, we need to update value of parameter `-sdk` from `macosx.internal` to `macosx` in run script of objc target. 
+### 运行脚本
+外部开发者的 `sdk` 并没有 `macosx.internal` 这个版本，因此 `objc target` 的 `Run Script` 中 `-sdk` 的参数需要从 `macosx.internal` 修改为 `macosx`。
 
 
-## License
-This project is released under the **MIT License**. The objc4 project is released under the **APPLE PUBLIC SOURCE LICENSE Version 2.0**.
+## 许可协议
+
+此项目遵守 **MIT** 许可协议。原始的 `objc4` 项目以及源代码遵守 **APPLE PUBLIC SOURCE LICENSE Version 2.0**.
