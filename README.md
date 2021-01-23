@@ -1,6 +1,6 @@
 
 
-[简体中文](https://github.com/showxu/objc4/raw/master/static/media/README_zh-CN.md)
+### [简体中文](README_zh-CN.md)
 
 <!-- # **objc runtime**  -->
 ![build_status](https://github.com/showxu/objc4/workflows/build/badge.svg) 

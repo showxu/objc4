@@ -89,7 +89,7 @@
 
 #### Bridge OS
 
-在开发者使用的 macosx sdk 中，`bridgeos (e.g. __has_feature(attribute_availability_bridgeos))` 这个 `attribute` `无法使用，bridgeos availability` 相关的代码需要被移除。
+在开发者使用的 macosx sdk 中，`bridgeos (e.g. __has_feature(attribute_availability_bridgeos))` 这个 `attribute` 无法使用，`bridgeos availability` 相关的代码需要被移除。
 
 
 #### dyld
