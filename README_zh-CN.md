@@ -38,6 +38,7 @@
 
 
 ## **objc4 依赖**
+
 - [objc4-818.2](https://opensource.apple.com/tarballs/objc4/objc4-818.2.tar.gz)
 - [xnu-7195.50.7.100.1](https://opensource.apple.com/tarballs/xnu/xnu-7195.50.7.100.1.tar.gz)
 - [Libc-1439.40.11](https://opensource.apple.com/tarballs/Libc/Libc-1439.40.11.tar.gz)
@@ -192,4 +193,4 @@ objc4/runtime/objc-runtime-new.mm:176:1: '_static_assert' declared as an array w
 
 ## 许可协议
 
-此项目遵守 **MIT** 许可协议。原始的 `objc4` 项目以及源代码遵守 **APPLE PUBLIC SOURCE LICENSE Version 2.0**.
+此项目遵守 **MIT** 许可协议。原始的 `objc4` 项目以及源代码遵守 **APPLE PUBLIC SOURCE LICENSE Version 2.0**。
