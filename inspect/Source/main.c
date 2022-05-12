@@ -2,8 +2,8 @@
 //  main.c
 //  objc-inspect
 //
-//  Created by showxu on 2017/12/15.
-//  Copyright © 2017年 showxu. All rights reserved.
+//  Created by Xudong Xu on 2017/12/15.
+//  Copyright © 2017年 Xudong Xu. All rights reserved.
 //
 
 /// System Headers

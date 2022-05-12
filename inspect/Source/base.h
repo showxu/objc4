@@ -2,8 +2,8 @@
 //  base.h
 //  objc-inspect
 //
-//  Created by showxu on 2016/12/2.
-//  Copyright © 2016年 showxu. All rights reserved.
+//  Created by Xudong Xu on 2016/12/2.
+//  Copyright © 2016年 Xudong Xu. All rights reserved.
 //
 
 _Pragma("once")
